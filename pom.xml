@@ -24,6 +24,13 @@
             <artifactId>spring-core</artifactId>
             <version>5.2.10.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc10</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>D:/OneDrive - Politechnika Warszawska/Sem 3/PAP/Apka/lib/ojdbc10.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <properties>

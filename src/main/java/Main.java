@@ -1,19 +1,28 @@
-import java.util.Scanner;
+import org.hibernate.*;
+import org.hibernate.boot.*;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        int to_calculate;
-        while (true) {
-            to_calculate = input.nextInt();
-            if (to_calculate < 0) break;
-            System.out.println(to_calculate + "! = " + Main.calculate(to_calculate));
+        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure() // configures settings from hibernate.cfg.xml
+                .build();
+        try {
+            SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+            Session session = factory.openSession();
+            Transaction transaction = session.beginTransaction();
+
+            Regions regions = new Regions(35,"USA");
+
+            session.save(regions);
+            transaction.commit();
+            session.close();
+            factory.close();
+
+        } catch (Exception ex) {
+            StandardServiceRegistryBuilder.destroy(registry);
         }
-        input.close();
     }
 
-    private static long calculate(int factor) {
-        if (factor > 0) return calculate(factor - 1) * factor;
-        else return 1;
-    }
 }
