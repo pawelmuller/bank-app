@@ -13,7 +13,7 @@ public class Main {
             Session session = factory.openSession();
             Transaction transaction = session.beginTransaction();
 
-            Regions regions = new Regions(35,"USA");
+            Regions regions = new Regions("USA");
 
             session.save(regions);
             transaction.commit();

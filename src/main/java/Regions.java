@@ -1,19 +1,20 @@
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "REGIONS")
 public class Regions {
     private Integer region_id;
     private String name;
-    public Regions(Integer region_id, String name) {
-        this.region_id = region_id;
+    public Regions(String name) {
         this.name = name;
     }
     public Regions() {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "incrementator-inator")
+    @GenericGenerator(name = "incrementator-inator", strategy = "increment")
     public Integer getRegion_ID() {
         return region_id;
     }
