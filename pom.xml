@@ -29,7 +29,7 @@
             <artifactId>ojdbc10</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>D:/OneDrive - Politechnika Warszawska/Sem 3/PAP/Apka/lib/ojdbc10.jar</systemPath>
+            <systemPath>${basedir}/lib/ojdbc10.jar</systemPath>
         </dependency>
     </dependencies>
 
