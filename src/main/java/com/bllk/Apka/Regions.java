@@ -1,3 +1,5 @@
+package com.bllk.Apka;
+
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

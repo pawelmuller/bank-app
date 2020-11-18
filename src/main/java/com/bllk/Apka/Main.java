@@ -1,3 +1,5 @@
+package com.bllk.Apka;
+
 import org.hibernate.*;
 import org.hibernate.boot.*;
 import org.hibernate.boot.registry.StandardServiceRegistry;
