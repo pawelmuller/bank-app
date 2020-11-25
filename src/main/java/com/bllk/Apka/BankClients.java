@@ -5,14 +5,17 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
+@Table
 public class BankClients {
     private Integer id;
     private String name;
     private String surname;
+
     public BankClients(String name, String surname) {
         this.name = name;
         this.surname = surname;
     }
+
     public BankClients(Integer id, String name, String surname) {
         this.id = id;
         this.name = name;

@@ -16,7 +16,7 @@ import java.util.Scanner;
 
 @SpringBootApplication
 public class ApkaApplication {
-	public static void main(String[] args) {
+	public static void foo_main(String[] args) {
 		SpringApplication.run(ApkaApplication.class, args);
 
 		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
@@ -38,8 +38,8 @@ public class ApkaApplication {
 			Query query = session.createQuery(hql);
 			List results = query.list();
 			boolean indata = false;
-			for (int i=0; i<results.size(); i++) {
-				BankClients client = (BankClients) results.get(i);
+			for (Object result : results) {
+				BankClients client = (BankClients) result;
 				if (client.getName().equals(name) && client.getSurname().equals(surname)) {
 					System.out.println("You are in database");
 					indata = true;
@@ -55,8 +55,8 @@ public class ApkaApplication {
 
 			query = session.createQuery(hql);
 			results = query.list();
-			for (int i=0; i<results.size(); i++) {
-				BankClients reg = (BankClients) results.get(i);
+			for (Object result : results) {
+				BankClients reg = (BankClients) result;
 				System.out.println(reg.getName() + " " + reg.getSurname());
 			}
 
