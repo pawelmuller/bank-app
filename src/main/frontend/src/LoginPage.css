@@ -1,0 +1,88 @@
+body {
+    background-color: #222;
+}
+
+h1 {
+    text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6, p, form {
+    color: white;
+}
+
+.LoginPage-flex {
+    width: 95%;
+    min-height: 100vh;
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    font-size: calc(10px + 2vmin);
+}
+
+.logo_container, .form_container {
+    width: 40%;
+}
+
+.logo_container {
+    background: linear-gradient(-225deg, #32cb1d 0%, #44107a 29%, #FF1361 67%, #FFF800 100%);
+    font-size: 72px;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
+    background-size: 400%;
+
+    animation: logo_animation 30s infinite;
+}
+
+@keyframes logo_animation {
+    0%{background-position:0% 0%}
+    25%{background-position:0% 100%}
+    50%{background-position:100% 100%}
+    75%{background-position:100% 0%}
+    100%{background-position:0% 0%}
+}
+
+.form_container {
+    text-align: right;
+    align-content: center;
+    background: linear-gradient(145deg, rgba(131,58,180,1) 0%, rgba(29,253,245,1) 50%, rgba(69,252,172,1) 100%);
+    background-size: 100%;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
+}
+
+input[type=text], input[type=password] {
+    font-size: 16px;
+    width: 100%;
+    padding: 14px 18px;
+    margin: 8px;
+    display: inline-block;
+    border: solid 10px transparent;
+    box-sizing: border-box;
+    border-radius: 2em;
+    background: grey;
+
+    -webkit-text-fill-color: white;
+    -moz-text-fill-color: white;
+}
+
+button {
+    background: linear-gradient(to right, #f9d423 0%, #ff4e50 100%);
+    background-size: 200%;
+    color: white;
+    font-size: calc(1px + 2vmin);
+    width: 30%;
+    padding: 14px 18px;
+    border: transparent;
+    border-radius: 2em;
+
+    -webkit-text-fill-color: white;
+    -moz-text-fill-color: white;
+}
+
