@@ -1,0 +1,12 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/dataSources.local.xml
+/src/main/resources/hibernate.cfg.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+
+/.idea
+/.mvn
+/target
