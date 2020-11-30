@@ -2,6 +2,21 @@ import React, { component } from 'react';
 import logo from './logo.svg';
 import './LoginPage.css';
 
+export async function getAllUsers() {
+
+    const response = await fetch('/api/clients');
+    return await response.json();
+}
+
+export async function createUser(data) {
+    const response = await fetch(`/api/clients`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    return await response.json();
+}
+
 function LoginPage() {
     return (
         <div className="LoginPage">

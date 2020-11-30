@@ -2,36 +2,39 @@ package com.bllk.Apka;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-public class TestApp {
-    public static void main(String[] args) {
+@Component
+public class DatabaseLoader implements CommandLineRunner {
+    private final BankClientsRepository clientsRepository;
+
+    @Autowired
+    public DatabaseLoader(BankClientsRepository repository) {
+        this.clientsRepository = repository;
+    }
+
+    @Override
+    public void run(String... strings) throws Exception {
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure() // configures settings from hibernate.cfg.xml
                 .build();
         try {
             SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
             Session session = factory.openSession();
-            Transaction transaction = session.beginTransaction();
-
-            BankClients client = new BankClients((long) 1,"Tomasz", "Niewiemjaki");
-            session.save(client);
-            transaction.commit();
-
+            //---------------------------------------------------
             String hql = "FROM BankClients";
             Query query = session.createQuery(hql);
             List results = query.list();
-
-            for (int i=0; i<results.size(); i++) {
-                BankClients reg = (BankClients) results.get(i);
-                System.out.println(reg.getName());
-                System.out.println(reg.getSurname());
+            for (Object result : results) {
+                this.clientsRepository.save((BankClients) result);
             }
 
             session.close();
