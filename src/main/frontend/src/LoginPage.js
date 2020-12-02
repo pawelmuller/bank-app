@@ -1,9 +1,8 @@
-import React, { component } from 'react';
-import logo from './logo.svg';
+//import React, { component } from 'react';
+//import logo from './logo.svg';
 import './LoginPage.css';
 
 export async function getAllUsers() {
-
     const response = await fetch('/api/clients');
     return await response.json();
 }
