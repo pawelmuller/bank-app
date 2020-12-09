@@ -179,6 +179,9 @@ public class DatabaseConnection {
 			result.setMoneyonaccount(i+amount);
 			session.update(result);
 
+			TransactionHistory transaction = new TransactionHistory((Integer)payerid, (Integer)targetid, (Double)amount, "PLN");
+			session.save(transaction);
+
 			tx.commit();
 			session.close();
 			factory.close();
