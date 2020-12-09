@@ -14,5 +14,6 @@
         <mapping class="com.bllk.Apka.BankClients" />
         <mapping class="com.bllk.Apka.Money" />
         <mapping class="com.bllk.Apka.Logins" />
+        <mapping class="com.bllk.Apka.TransactionHistory" />
     </session-factory>
 </hibernate-configuration>

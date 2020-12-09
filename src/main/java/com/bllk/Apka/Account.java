@@ -92,7 +92,7 @@ public class Account implements ActionListener {
             if (target_id == clientid) {
                 message.setText("Transaction failed: You can't send money to yourself.");
             }
-            else if (money_value > yourmoney_value || money_value == 0) {
+            else if (money_value > yourmoney_value || money_value <= 0) {
                 message.setText("Transaction failed: Invalid amount of money.");
             }
             else if (!connection.check_client(Integer.parseInt(target.getText()))) {
@@ -105,7 +105,7 @@ public class Account implements ActionListener {
             }
         }
         catch (Exception ex) {
-            message.setText("Transaction failed");
+            message.setText("Transaction failed: " + ex.getMessage());
         }
     }
 }
