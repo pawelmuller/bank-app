@@ -6,12 +6,9 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.*;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-
 import org.hibernate.query.Query;
 
-import javax.xml.crypto.Data;
 import java.util.List;
-import java.util.Scanner;
 
 public class DatabaseConnection {
 	public boolean validate(String name, String surname) {
@@ -93,6 +90,30 @@ public class DatabaseConnection {
 		}
 		return result;
 	}
+	public boolean check_client(int accountid) {
+		boolean valid = false;
+
+		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+				.configure() // configures settings from hibernate.cfg.xml
+				.build();
+		try {
+			SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+			Session session = factory.openSession();
+
+			String hql = "FROM BankClients WHERE id=" + accountid;
+			Query query = session.createQuery(hql);
+			List list = query.list();
+
+			if (list.size() == 1)
+				valid = true;
+			session.close();
+			factory.close();
+		} catch (Exception ex) {
+			StandardServiceRegistryBuilder.destroy(registry);
+		}
+		return valid;
+	}
+
 	public BankClients get_client(String login) {
 		BankClients client = new BankClients();
 
@@ -135,5 +156,34 @@ public class DatabaseConnection {
 			StandardServiceRegistryBuilder.destroy(registry);
 		}
 		return result;
+	}
+
+	public void make_transfer(int payerid, int targetid, double amount) {
+		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+				.configure() // configures settings from hibernate.cfg.xml
+				.build();
+		try {
+			SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+			Session session = factory.openSession();
+			Transaction tx = session.beginTransaction();
+
+			Query q = session.createQuery("from Money where accountid=" + payerid);
+			Money result = (Money)q.list().get(0);
+			Double i = result.getMoneyonaccount();
+			result.setMoneyonaccount(i-amount);
+			session.update(result);
+
+			q = session.createQuery("from Money where accountid=" + targetid);
+			result = (Money)q.list().get(0);
+			i = result.getMoneyonaccount();
+			result.setMoneyonaccount(i+amount);
+			session.update(result);
+
+			tx.commit();
+			session.close();
+			factory.close();
+		} catch (Exception ex) {
+			StandardServiceRegistryBuilder.destroy(registry);
+		}
 	}
 }

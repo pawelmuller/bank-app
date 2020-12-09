@@ -10,7 +10,7 @@ public class Apka extends JFrame implements ActionListener {
     JLabel user_label, password_label, message;
     JTextField userName_text;
     JPasswordField password_text;
-    JButton submit, cancel;
+    JButton submit;
     DatabaseConnection connection;
 
     Apka() {
