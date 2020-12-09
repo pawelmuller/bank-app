@@ -12,5 +12,7 @@
         <property name="show_sql">true</property>
 
         <mapping class="com.bllk.Apka.BankClients" />
+        <mapping class="com.bllk.Apka.Money" />
+        <mapping class="com.bllk.Apka.Logins" />
     </session-factory>
 </hibernate-configuration>
