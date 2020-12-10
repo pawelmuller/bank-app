@@ -11,8 +11,7 @@ public class Login {
     private JPanel mainPanel;
     private JTextField loginField;
     private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton forgotPasswordButton;
+    private JButton loginButton, forgotPasswordButton;
     private JLabel message;
 
     public static void main(String[] args) {
@@ -32,14 +31,17 @@ public class Login {
             public void actionPerformed(ActionEvent e) {
                 String login = loginField.getText();
                 String password = passwordField.getText();
+                if (login.isEmpty() || password.isEmpty()) {
+                    message.setText("No login or password given.");
+                    return;
+                }
                 try {
+                    message.setText("Checking...");
                     Logins current_login = connection.check_login(login, password);
-                    message.setVisible(true);
                     message.setText("Hello");
                     new Account(connection, current_login.getAccountid());
                 }
                 catch (Exception ex) {
-                    message.setVisible(true);
                     message.setText("Invalid user...");
                 }
             }
