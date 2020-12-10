@@ -85,7 +85,7 @@ public class DatabaseConnection {
 		try {
 			Session session = factory.openSession();
 
-			Query query = session.createQuery("FROM BankClients WHERE id= :accountid");
+			Query query = session.createQuery("FROM TransactionHistory WHERE payerid= :accountid OR targetid= :accountid");
 			query.setParameter("accountid", accountid);
 			history = (TransactionHistory) query.list();
 
