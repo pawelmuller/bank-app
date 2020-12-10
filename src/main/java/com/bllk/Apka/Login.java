@@ -20,6 +20,7 @@ public class Login {
         frame = new JFrame("BLLK");
         loginPanel = new Login().mainPanel;
         frame.setContentPane(loginPanel);
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -41,7 +42,7 @@ public class Login {
                 try {
                     message.setText("Checking...");
                     Logins current_login = connection.get_login(login, password);
-                    frame.setContentPane(new MainUserPage(frame, loginPanel, connection, current_login.getAccountid()).mainPanel);
+                    frame.setContentPane(new MainUserPage(frame, loginPanel, connection, current_login.getAccountid()).upperPanel);
                     loginField.setText("");
                     passwordField.setText("");
                     message.setText(" ");

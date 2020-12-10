@@ -10,13 +10,16 @@ public class MainUserPage {
     double your_money_value;
 
     JFrame frame;
-    JPanel previousPanel, mainPanel;
+    JPanel previousPanel, upperPanel;
     private JLabel logoLabel, nameLabel;
     private JTextField accountNumber, amount;
     private JButton sendMoneyButton, logOutButton;
     private JLabel message;
     private JLabel currentBalance;
     private JLabel idLabel;
+    private JPanel contentPanel;
+    private JTabbedPane tabbedPane1;
+    private JPanel historyPanel;
 
     public MainUserPage(JFrame _frame, JPanel _previousPanel, DatabaseConnection _connection, int _client_id) {
         frame = _frame;
