@@ -6,17 +6,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Login {
+    private static JFrame frame;
     private final DatabaseConnection connection;
 
-    private JPanel mainPanel;
+    static JPanel loginPanel;
+    JPanel mainPanel;
     private JTextField loginField;
     private JPasswordField passwordField;
     private JButton loginButton, forgotPasswordButton;
     private JLabel message;
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("BLLK Login");
-        frame.setContentPane(new Login().mainPanel);
+        frame = new JFrame("BLLK");
+        loginPanel = new Login().mainPanel;
+        frame.setContentPane(loginPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -38,8 +41,10 @@ public class Login {
                 try {
                     message.setText("Checking...");
                     Logins current_login = connection.get_login(login, password);
-                    message.setText("Hello");
-                    new Account(connection, current_login.getAccountid());
+                    frame.setContentPane(new MainUserPage(frame, loginPanel, connection, current_login.getAccountid()).mainPanel);
+                    loginField.setText("");
+                    passwordField.setText("");
+                    message.setText(" ");
                 }
                 catch (Exception ex) {
                     message.setText("Invalid user...");
