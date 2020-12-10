@@ -23,51 +23,6 @@ public class DatabaseConnection {
 		factory = meta.getSessionFactoryBuilder().build();
 	}
 
-	public boolean validate(String name, String surname) {
-		boolean indata = false;
-		try {
-			Session session = factory.openSession();
-
-			String hql = "FROM BankClients";
-			Query query = session.createQuery(hql);
-			List results = query.list();
-			for (Object result : results) {
-				BankClients client = (BankClients) result;
-				if (client.getName().equals(name) && client.getSurname().equals(surname)) {
-					indata = true;
-					break;
-				}
-			}
-			session.close();
-		} catch (Exception ex) {
-			StandardServiceRegistryBuilder.destroy(registry);
-			refresh();
-		}
-		return indata;
-	}
-	public boolean validate_login(String login, String password) {
-		boolean valid = false;
-		try {
-			Session session = factory.openSession();
-
-			String hql = "FROM Logins";
-			Query query = session.createQuery(hql);
-			List results = query.list();
-			for (Object result : results) {
-				Logins result_login = (Logins) result;
-				if (result_login.getLogin().equals(login) && result_login.getPassword().equals(password)) {
-					valid = true;
-					break;
-				}
-			}
-			session.close();
-		} catch (Exception ex) {
-			StandardServiceRegistryBuilder.destroy(registry);
-			refresh();
-		}
-		return valid;
-	}
-
 	public Logins get_login(String login, String password) {
 		Logins result = new Logins();
 
@@ -90,6 +45,58 @@ public class DatabaseConnection {
 		}
 		return result;
 	}
+	public double get_money(int accountid) {
+		double result = 0.0;
+
+		try {
+			Session session = factory.openSession();
+
+			String hql = "FROM Money WHERE accountid=" + accountid;
+			Query query = session.createQuery(hql);
+			Money money = (Money) query.list().get(0);
+			result = money.getMoneyonaccount();
+
+			session.close();
+		} catch (Exception ex) {
+			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
+		}
+		return result;
+	}
+	public BankClients get_client(int clientid) {
+		BankClients client = new BankClients();
+
+		try {
+			Session session = factory.openSession();
+
+			String hql = "FROM BankClients WHERE id=" + clientid;
+			Query query = session.createQuery(hql);
+			client = (BankClients) query.list().get(0);
+
+			session.close();
+		} catch (Exception ex) {
+			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
+		}
+		return client;
+	}
+	public TransactionHistory get_history(int accountid) {
+		TransactionHistory history = new TransactionHistory();
+		try {
+			Session session = factory.openSession();
+
+			Query query = session.createQuery("FROM BankClients WHERE id= :accountid");
+			query.setParameter("accountid", accountid);
+			history = (TransactionHistory) query.list();
+
+			session.close();
+		} catch (Exception ex) {
+			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
+		}
+		return history;
+	}
+
 	public boolean check_client(int accountid) {
 		boolean valid = false;
 
@@ -109,43 +116,6 @@ public class DatabaseConnection {
 		}
 		return valid;
 	}
-
-	public BankClients get_client(int clientid) {
-		BankClients client = new BankClients();
-
-		try {
-			Session session = factory.openSession();
-
-			String hql = "FROM BankClients WHERE id=" + clientid;
-			Query query = session.createQuery(hql);
-			client = (BankClients) query.list().get(0);
-
-			session.close();
-		} catch (Exception ex) {
-			StandardServiceRegistryBuilder.destroy(registry);
-			refresh();
-		}
-		return client;
-	}
-	public double get_money(int accountid) {
-		double result = 0.0;
-
-		try {
-			Session session = factory.openSession();
-
-			String hql = "FROM Money WHERE accountid=" + accountid;
-			Query query = session.createQuery(hql);
-			Money money = (Money) query.list().get(0);
-			result = money.getMoneyonaccount();
-
-			session.close();
-		} catch (Exception ex) {
-			StandardServiceRegistryBuilder.destroy(registry);
-			refresh();
-		}
-		return result;
-	}
-
 	public void make_transfer(int payerid, int targetid, double amount) {
 		try {
 			Session session = factory.openSession();
@@ -172,5 +142,29 @@ public class DatabaseConnection {
 			StandardServiceRegistryBuilder.destroy(registry);
 			refresh();
 		}
+	}
+	public int create_client(String name, String surname, String password) {
+		int clientid = 0;
+		try {
+			Session session = factory.openSession();
+			Transaction tx = session.beginTransaction();
+
+			BankClients client = new BankClients(name, surname);
+			session.save(client);
+			clientid = client.getID();
+
+			Money money = new Money(0.0, (Integer)clientid);
+			session.save(money);
+
+			Logins login = new Logins(Integer.toString(clientid+1000), password, clientid);
+			session.save(login);
+
+			tx.commit();
+			session.close();
+		} catch (Exception ex) {
+			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
+		}
+		return clientid;
 	}
 }

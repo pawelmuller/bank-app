@@ -9,7 +9,7 @@ import java.util.Objects;
 public class BankClients {
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
     private String name;
     private String surname;
 
@@ -18,7 +18,7 @@ public class BankClients {
         this.surname = surname;
     }
 
-    public BankClients(Long id, String name, String surname) {
+    public BankClients(Integer id, String name, String surname) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -30,7 +30,7 @@ public class BankClients {
     @Id
     @GeneratedValue(generator = "incrementator-inator")
     @GenericGenerator(name = "incrementator-inator", strategy = "increment")
-    public Long getID() {
+    public Integer getID() {
         return id;
     }
     public String getName() {
@@ -40,7 +40,7 @@ public class BankClients {
         return surname;
     }
 
-    public void setID(Long id) {
+    public void setID(Integer id) {
         this.id = id;
     }
     public void setName(String name) {
