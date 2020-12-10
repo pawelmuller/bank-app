@@ -110,13 +110,13 @@ public class DatabaseConnection {
 		return valid;
 	}
 
-	public BankClients get_client(String login) {
+	public BankClients get_client(int clientid) {
 		BankClients client = new BankClients();
 
 		try {
 			Session session = factory.openSession();
 
-			String hql = "FROM BankClients WHERE name='" + login + "'";
+			String hql = "FROM BankClients WHERE id=" + clientid;
 			Query query = session.createQuery(hql);
 			client = (BankClients) query.list().get(0);
 
