@@ -11,13 +11,21 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class DatabaseConnection {
+	private StandardServiceRegistry registry;
+	private SessionFactory factory;
+
+	DatabaseConnection() {
+		refresh();
+	}
+	private void refresh() {
+		registry = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
+		Metadata meta = new MetadataSources(registry).getMetadataBuilder().build();
+		factory = meta.getSessionFactoryBuilder().build();
+	}
+
 	public boolean validate(String name, String surname) {
 		boolean indata = false;
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.configure() // configures settings from hibernate.cfg.xml
-				.build();
 		try {
-			SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 			Session session = factory.openSession();
 
 			String hql = "FROM BankClients";
@@ -31,19 +39,15 @@ public class DatabaseConnection {
 				}
 			}
 			session.close();
-			factory.close();
 		} catch (Exception ex) {
 			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
 		}
 		return indata;
 	}
 	public boolean validate_login(String login, String password) {
 		boolean valid = false;
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.configure() // configures settings from hibernate.cfg.xml
-				.build();
 		try {
-			SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 			Session session = factory.openSession();
 
 			String hql = "FROM Logins";
@@ -57,21 +61,17 @@ public class DatabaseConnection {
 				}
 			}
 			session.close();
-			factory.close();
 		} catch (Exception ex) {
 			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
 		}
 		return valid;
 	}
 
-	public Logins check_login(String login, String password) {
+	public Logins get_login(String login, String password) {
 		Logins result = new Logins();
 
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.configure() // configures settings from hibernate.cfg.xml
-				.build();
 		try {
-			SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 			Session session = factory.openSession();
 
 			String hql = "FROM Logins WHERE login='" + login + "' AND password='" + password + "'";
@@ -84,20 +84,16 @@ public class DatabaseConnection {
 				result = (Logins) query.list().get(0);
 
 			session.close();
-			factory.close();
 		} catch (Exception ex) {
 			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
 		}
 		return result;
 	}
 	public boolean check_client(int accountid) {
 		boolean valid = false;
 
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.configure() // configures settings from hibernate.cfg.xml
-				.build();
 		try {
-			SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 			Session session = factory.openSession();
 
 			String hql = "FROM BankClients WHERE id=" + accountid;
@@ -107,9 +103,9 @@ public class DatabaseConnection {
 			if (list.size() == 1)
 				valid = true;
 			session.close();
-			factory.close();
 		} catch (Exception ex) {
 			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
 		}
 		return valid;
 	}
@@ -117,11 +113,7 @@ public class DatabaseConnection {
 	public BankClients get_client(String login) {
 		BankClients client = new BankClients();
 
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.configure() // configures settings from hibernate.cfg.xml
-				.build();
 		try {
-			SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 			Session session = factory.openSession();
 
 			String hql = "FROM BankClients WHERE name='" + login + "'";
@@ -129,20 +121,16 @@ public class DatabaseConnection {
 			client = (BankClients) query.list().get(0);
 
 			session.close();
-			factory.close();
 		} catch (Exception ex) {
 			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
 		}
 		return client;
 	}
 	public double get_money(int accountid) {
 		double result = 0.0;
 
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.configure() // configures settings from hibernate.cfg.xml
-				.build();
 		try {
-			SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 			Session session = factory.openSession();
 
 			String hql = "FROM Money WHERE accountid=" + accountid;
@@ -151,19 +139,15 @@ public class DatabaseConnection {
 			result = money.getMoneyonaccount();
 
 			session.close();
-			factory.close();
 		} catch (Exception ex) {
 			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
 		}
 		return result;
 	}
 
 	public void make_transfer(int payerid, int targetid, double amount) {
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-				.configure() // configures settings from hibernate.cfg.xml
-				.build();
 		try {
-			SessionFactory factory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 			Session session = factory.openSession();
 			Transaction tx = session.beginTransaction();
 
@@ -184,9 +168,9 @@ public class DatabaseConnection {
 
 			tx.commit();
 			session.close();
-			factory.close();
 		} catch (Exception ex) {
 			StandardServiceRegistryBuilder.destroy(registry);
+			refresh();
 		}
 	}
 }

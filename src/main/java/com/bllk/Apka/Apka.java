@@ -55,7 +55,7 @@ public class Apka extends JFrame implements ActionListener {
         String login = userName_text.getText();
         String password = password_text.getText();
         try {
-            Logins current_login = connection.check_login(login, password);
+            Logins current_login = connection.get_login(login, password);
             message.setText("Hello");
             new Account(connection, current_login.getAccountid());
         }

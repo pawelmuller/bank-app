@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Login {
-    private DatabaseConnection connection;
+    private final DatabaseConnection connection;
 
     private JPanel mainPanel;
     private JTextField loginField;
@@ -33,7 +33,7 @@ public class Login {
                 String login = loginField.getText();
                 String password = passwordField.getText();
                 try {
-                    Logins current_login = connection.check_login(login, password);
+                    Logins current_login = connection.get_login(login, password);
                     message.setVisible(true);
                     message.setText("Hello");
                     new Account(connection, current_login.getAccountid());
