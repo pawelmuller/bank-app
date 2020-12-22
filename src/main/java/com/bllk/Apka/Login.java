@@ -1,7 +1,8 @@
 package com.bllk.Apka;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.*;import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Login {
     private static JFrame frame;
@@ -25,26 +26,47 @@ public class Login {
         frame.setMinimumSize(new Dimension(400, 320));
     }
 
+    public void Submit() {
+        String login = loginField.getText();
+        String password = passwordField.getText();
+        if (login.isEmpty() || password.isEmpty()) {
+            message.setText("No login or password given.");
+            return;
+        }
+        try {
+            message.setText("Checking...");
+            Logins current_login = connection.get_login(login, password);
+            frame.setContentPane(new MainUserPage(frame, loginPanel, connection, current_login.getAccountid()).menuPanel);
+            loginField.setText("");
+            passwordField.setText("");
+            message.setText(" ");
+        }
+        catch (Exception ex) {
+            message.setText("Invalid user...");
+        }
+    }
+
     public Login() {
         connection = new DatabaseConnection();
 
         loginButton.addActionListener(e -> {
-            String login = loginField.getText();
-            String password = passwordField.getText();
-            if (login.isEmpty() || password.isEmpty()) {
-                message.setText("No login or password given.");
-                return;
+            Submit();
+        });
+
+        passwordField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    Submit();
+                }
             }
-            try {
-                message.setText("Checking...");
-                Logins current_login = connection.get_login(login, password);
-                frame.setContentPane(new MainUserPage(frame, loginPanel, connection, current_login.getAccountid()).menuPanel);
-                loginField.setText("");
-                passwordField.setText("");
-                message.setText(" ");
-            }
-            catch (Exception ex) {
-                message.setText("Invalid user...");
+        });
+        loginField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    Submit();
+                }
             }
         });
     }
