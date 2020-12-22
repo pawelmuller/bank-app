@@ -10,7 +10,7 @@ public class MainUserPage {
     double your_money_value;
 
     JFrame frame;
-    JPanel previousPanel, upperPanel;
+    JPanel previousPanel, menuPanel;
     private JLabel logoLabel, nameLabel;
     private JTextField accountNumber, amount;
     private JButton sendMoneyButton, logOutButton;
@@ -32,38 +32,30 @@ public class MainUserPage {
         idLabel.setText("Numer klienta: " + client_id);
         UpdateMoney();
 
-        sendMoneyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    int target_id = Integer.parseInt(accountNumber.getText());
-                    double money_value = Double.parseDouble(amount.getText());
-                    if (target_id == client_id) {
-                        message.setText("Transaction failed: You can't send money to yourself.");
-                    }
-                    else if (money_value > your_money_value || money_value <= 0) {
-                        message.setText("Transaction failed: Invalid amount of money.");
-                    }
-                    else if (!connection.check_client(Integer.parseInt(accountNumber.getText()))) {
-                        message.setText("Transaction failed: Account don't exists.");
-                    }
-                    else {
-                        message.setText("Sending " + money_value + " PLN to Account " + target_id);
-                        connection.make_transfer(client_id, target_id, money_value);
-                        UpdateMoney();
-                    }
+        sendMoneyButton.addActionListener(e -> {
+            try {
+                int target_id = Integer.parseInt(accountNumber.getText());
+                double money_value = Double.parseDouble(amount.getText());
+                if (target_id == client_id) {
+                    message.setText("Transaction failed: You can't send money to yourself.");
                 }
-                catch (Exception ex) {
-                    message.setText("Transaction failed: " + ex.getMessage());
+                else if (money_value > your_money_value || money_value <= 0) {
+                    message.setText("Transaction failed: Invalid amount of money.");
+                }
+                else if (!connection.check_client(Integer.parseInt(accountNumber.getText()))) {
+                    message.setText("Transaction failed: Account don't exists.");
+                }
+                else {
+                    message.setText("Sending " + money_value + " PLN to Account " + target_id);
+                    connection.make_transfer(client_id, target_id, money_value);
+                    UpdateMoney();
                 }
             }
-        });
-        logOutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.setContentPane(previousPanel);
+            catch (Exception ex) {
+                message.setText("Transaction failed: " + ex.getMessage());
             }
         });
+        logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
     }
 
     void UpdateMoney() {

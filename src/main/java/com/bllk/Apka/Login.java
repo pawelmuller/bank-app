@@ -2,8 +2,6 @@ package com.bllk.Apka;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Login {
     private static JFrame frame;
@@ -30,26 +28,23 @@ public class Login {
     public Login() {
         connection = new DatabaseConnection();
 
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String login = loginField.getText();
-                String password = passwordField.getText();
-                if (login.isEmpty() || password.isEmpty()) {
-                    message.setText("No login or password given.");
-                    return;
-                }
-                try {
-                    message.setText("Checking...");
-                    Logins current_login = connection.get_login(login, password);
-                    frame.setContentPane(new MainUserPage(frame, loginPanel, connection, current_login.getAccountid()).upperPanel);
-                    loginField.setText("");
-                    passwordField.setText("");
-                    message.setText(" ");
-                }
-                catch (Exception ex) {
-                    message.setText("Invalid user...");
-                }
+        loginButton.addActionListener(e -> {
+            String login = loginField.getText();
+            String password = passwordField.getText();
+            if (login.isEmpty() || password.isEmpty()) {
+                message.setText("No login or password given.");
+                return;
+            }
+            try {
+                message.setText("Checking...");
+                Logins current_login = connection.get_login(login, password);
+                frame.setContentPane(new MainUserPage(frame, loginPanel, connection, current_login.getAccountid()).menuPanel);
+                loginField.setText("");
+                passwordField.setText("");
+                message.setText(" ");
+            }
+            catch (Exception ex) {
+                message.setText("Invalid user...");
             }
         });
     }
