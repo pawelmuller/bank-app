@@ -14,7 +14,7 @@ public class DatabaseConnection {
 	private StandardServiceRegistry registry;
 	private SessionFactory factory;
 
-	DatabaseConnection() {
+	public DatabaseConnection() {
 		refresh();
 	}
 	private void refresh() {

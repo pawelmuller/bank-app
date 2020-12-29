@@ -70,4 +70,7 @@ public class Login {
             }
         });
     }
+    public void pullDataFromServer(String login, String password) {
+
+    }
 }
