@@ -1,6 +1,8 @@
 package com.bllk.Servlet;
 import com.bllk.Apka.BankClients;
 import com.bllk.Apka.Logins;
+import com.bllk.Apka.Money;
+import com.bllk.Apka.TransactionHistory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -31,6 +33,8 @@ public class Database {
             configuration.setProperties(settings);
             configuration.addAnnotatedClass(Logins.class);
             configuration.addAnnotatedClass(BankClients.class);
+            configuration.addAnnotatedClass(Money.class);
+            configuration.addAnnotatedClass(TransactionHistory.class);
 
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                     .applySettings(configuration.getProperties()).build();
@@ -53,6 +57,7 @@ public class Database {
 
             session.close();
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             factory.close();
             refresh();
         }
@@ -73,9 +78,29 @@ public class Database {
 
             session.close();
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             factory.close();
             refresh();
         }
         return result;
+    }
+    public Money get_money(int accountid) {
+        Money money = null;
+        try {
+            Session session = factory.openSession();
+
+            String hql = "FROM Money WHERE accountid=" + accountid;
+            Query query = session.createQuery(hql);
+
+            if (query.list().size() >= 1)
+                money = (Money) query.list().get(0);
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return money;
     }
 }

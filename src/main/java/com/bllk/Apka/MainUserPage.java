@@ -5,8 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainUserPage {
-    DatabaseConnection connection;
-    int client_id;
+    ClientServerConnection connection;
+    BankClients client;
+    Logins login;
     double your_money_value;
 
     JFrame frame;
@@ -21,33 +22,33 @@ public class MainUserPage {
     private JTabbedPane tabbedPane1;
     private JPanel historyPanel;
 
-    public MainUserPage(JFrame _frame, JPanel _previousPanel, DatabaseConnection _connection, int _client_id) {
+    public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, BankClients _client, Logins _login) {
         frame = _frame;
         previousPanel = _previousPanel;
         connection = _connection;
-        client_id = _client_id;
-        your_money_value = connection.get_money(client_id);
-        BankClients client = connection.get_client(client_id);
+        client = _client;
+        login = _login;
+        your_money_value = connection.get_money(login.getLogin(), login.getPassword());
         nameLabel.setText("Witaj " + client.getName() + " " + client.getSurname() + "!");
-        idLabel.setText("Numer klienta: " + client_id);
+        idLabel.setText("Numer klienta: " + client.getID());
         UpdateMoney();
 
         sendMoneyButton.addActionListener(e -> {
             try {
                 int target_id = Integer.parseInt(accountNumber.getText());
                 double money_value = Double.parseDouble(amount.getText());
-                if (target_id == client_id) {
+                if (target_id == client.getID()) {
                     message.setText("Transaction failed: You can't send money to yourself.");
                 }
                 else if (money_value > your_money_value || money_value <= 0) {
                     message.setText("Transaction failed: Invalid amount of money.");
                 }
-                else if (!connection.check_client(Integer.parseInt(accountNumber.getText()))) {
-                    message.setText("Transaction failed: Account don't exists.");
-                }
+//                else if (!connection.check_client(Integer.parseInt(accountNumber.getText()))) {
+//                    message.setText("Transaction failed: Account don't exists.");
+//                }
                 else {
                     message.setText("Sending " + money_value + " PLN to Account " + target_id);
-                    connection.make_transfer(client_id, target_id, money_value);
+//                    connection.make_transfer(client.getID(), target_id, money_value);
                     UpdateMoney();
                 }
             }
@@ -59,7 +60,7 @@ public class MainUserPage {
     }
 
     void UpdateMoney() {
-        your_money_value = connection.get_money(client_id);
+        your_money_value = connection.get_money(login.getLogin(), login.getPassword());
         currentBalance.setText(your_money_value + " PLN");
     }
 }

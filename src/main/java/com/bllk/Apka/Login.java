@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 
 public class Login {
     private static JFrame frame;
-    private final DatabaseConnection connection;
+    private static ClientServerConnection connection;
 
     static JPanel loginPanel;
     JPanel mainPanel;
@@ -18,6 +18,7 @@ public class Login {
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
         loginPanel = new Login().mainPanel;
+        connection = new ClientServerConnection();
         frame.setContentPane(loginPanel);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,8 +36,9 @@ public class Login {
         }
         try {
             message.setText("Checking...");
-            Logins current_login = connection.get_login(login, password);
-            frame.setContentPane(new MainUserPage(frame, loginPanel, connection, current_login.getAccountid()).menuPanel);
+            BankClients client = connection.get_login(login, password);
+            Logins log = new Logins(login, password, client.getID());
+            frame.setContentPane(new MainUserPage(frame, loginPanel, connection, client, log).menuPanel);
             loginField.setText("");
             passwordField.setText("");
             message.setText(" ");
@@ -47,8 +49,6 @@ public class Login {
     }
 
     public Login() {
-        connection = new DatabaseConnection();
-
         loginButton.addActionListener(e -> {
             Submit();
         });
