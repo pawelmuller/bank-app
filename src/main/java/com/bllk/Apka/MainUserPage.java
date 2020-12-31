@@ -43,12 +43,12 @@ public class MainUserPage {
                 else if (money_value > your_money_value || money_value <= 0) {
                     message.setText("Transaction failed: Invalid amount of money.");
                 }
-//                else if (!connection.check_client(Integer.parseInt(accountNumber.getText()))) {
-//                    message.setText("Transaction failed: Account don't exists.");
-//                }
+                else if (!connection.check_client(Integer.parseInt(accountNumber.getText()))) {
+                    message.setText("Transaction failed: Account don't exists.");
+                }
                 else {
                     message.setText("Sending " + money_value + " PLN to Account " + target_id);
-//                    connection.make_transfer(client.getID(), target_id, money_value);
+                    connection.make_transfer(login.getLogin(), login.getPassword(), target_id, money_value);
                     UpdateMoney();
                 }
             }
