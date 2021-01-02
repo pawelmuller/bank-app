@@ -64,6 +64,24 @@ public class Database {
         }
         return client;
     }
+    public List get_countries() {
+        List countries = null;
+
+        try {
+            Session session = factory.openSession();
+
+            String hql = "FROM Country";
+            Query query = session.createQuery(hql);
+            countries = query.list();
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return countries;
+    }
     public Login get_login(String login, String password) {
         Login result = null;
 
