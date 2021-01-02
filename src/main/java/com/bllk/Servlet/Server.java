@@ -3,6 +3,7 @@ package com.bllk.Servlet;
 import com.bllk.Servlet.mapclasses.Client;
 import com.bllk.Servlet.mapclasses.Login;
 import com.bllk.Servlet.mapclasses.Account;
+import com.bllk.Servlet.mapclasses.Country;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,8 @@ import java.util.Date;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
+
+import java.util.List;
 
 public class Server extends HttpServlet {
     private Database data;
@@ -25,8 +28,24 @@ public class Server extends HttpServlet {
         Login login;
         Client client;
         String json;
+        List countries;
+        Country country;
 
         switch (atributes.length) {
+            case 1:
+                if (atributes[0].equals("countries")) {
+                    countries = data.get_countries();
+                    if (countries != null) {
+                        json = "{\n";
+                        for (int i = 0; i < countries.size(); ++i) {
+                            country = (Country) countries.get(i);
+                            json += "\"" + country.getId() + "\": \"" + country.getName() + "\",\n";
+                        }
+                        json += "}";
+                        response.getOutputStream().println(json);
+                    } else
+                        response.getOutputStream().println("{}");
+                }
             case 2:
                 if (atributes[0].equals("account")) {
                     boolean valid = data.check_client(Integer.parseInt(atributes[1]));
@@ -35,6 +54,7 @@ public class Server extends HttpServlet {
                     else
                         response.getOutputStream().println("{}");
                 }
+                break;
             case 3:
                 if (atributes[0].equals("login")) {
                     login = data.get_login(atributes[1], atributes[2]);
