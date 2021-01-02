@@ -32,19 +32,25 @@ public class LoginWindow {
 
     public void Submit() {
         String login = loginField.getText();
-        String password = passwordField.getText();
+        String password = String.valueOf(passwordField.getPassword());
+
         if (login.isEmpty() || password.isEmpty()) {
             message.setText("No login or password given.");
             return;
         }
         try {
             message.setText("Checking...");
-            Client client = connection.get_login(login, password);
-            Login log = new Login(client.getID(), login, password);
+            String password_salt = BCrypt.gensalt(12);
+            String hashed_password = BCrypt.hashpw(password, password_salt);
+            System.out.println(hashed_password);
+
+            Client client = connection.get_login(login, hashed_password);
+            Login log = new Login(client.getID(), login, hashed_password);
+
             frame.setContentPane(new MainUserPage(frame, loginPanel, connection, client, log).menuPanel);
             loginField.setText("");
             passwordField.setText("");
-            message.setText(" ");
+            message.setText("");
         }
         catch (Exception ex) {
             message.setText("Invalid user...");
