@@ -14,6 +14,8 @@ public class Account {
     private Integer value;
     @Column(name = "CURRENCY_ID")
     private Integer currency_id;
+    @Column(name = "OWNER_ID")
+    private Integer owner_id;
 
     public Integer getID() {
         return id;
@@ -24,6 +26,9 @@ public class Account {
     public Integer getValue() {
         return value;
     }
+    public Integer getOwnerID() {
+        return owner_id;
+    }
     public void setValue(Integer value) {
         this.value = value;
     }
@@ -32,6 +37,9 @@ public class Account {
     }
     public void setCurrencyID(Integer currency_id) {
         this.currency_id = currency_id;
+    }
+    public void setOwnerID(Integer owner_id) {
+        this.owner_id = owner_id;
     }
 
     public Account() {
