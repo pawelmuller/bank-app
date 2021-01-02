@@ -91,6 +91,23 @@ public class Database {
         }
         return countries;
     }
+    public List get_currencies() {
+        List currencies = null;
+
+        try {
+            Session session = factory.openSession();
+
+            Query query = session.createQuery("FROM Currency");
+            currencies = query.list();
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return currencies;
+    }
     public Login get_login(String login, String password) {
         Login result = null;
 

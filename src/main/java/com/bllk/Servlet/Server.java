@@ -1,11 +1,9 @@
 package com.bllk.Servlet;
 
-import com.bllk.Servlet.mapclasses.Client;
-import com.bllk.Servlet.mapclasses.Login;
-import com.bllk.Servlet.mapclasses.Account;
-import com.bllk.Servlet.mapclasses.Country;
+import com.bllk.Servlet.mapclasses.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.ServletConfig;
@@ -28,21 +26,28 @@ public class Server extends HttpServlet {
         Login login;
         Client client;
         String json;
-        List countries;
-        Country country;
 
         switch (atributes.length) {
             case 1:
                 if (atributes[0].equals("countries")) {
-                    countries = data.get_countries();
+                    List countries = data.get_countries();
                     if (countries != null) {
                         json = "{\n";
-                        for (int i = 0; i < countries.size(); ++i) {
-                            country = (Country) countries.get(i);
-                            json += "\"" + country.getId() + "\": \"" + country.getName() + "\",\n";
-                        }
+                        for (Object country: countries)
+                            json += "\"" + ((Country) country).getId() + "\": \"" + ((Country) country).getName() + "\",\n";
                         json += "}";
-                        response.getOutputStream().println(json);
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));;
+                    } else
+                        response.getOutputStream().println("{}");
+                }
+                else if (atributes[0].equals("currencies")) {
+                    List currencies = data.get_currencies();
+                    if (currencies != null) {
+                        json = "{\n";
+                        for (Object currency: currencies)
+                            json += "\"" + ((Currency) currency).getID() + "\": \"" + ((Currency) currency).getName() + "\",\n";
+                        json += "}";
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     } else
                         response.getOutputStream().println("{}");
                 }
