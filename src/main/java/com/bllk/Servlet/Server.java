@@ -101,13 +101,16 @@ public class Server extends HttpServlet {
                     try {
                         String name = request.getParameter("name");
                         String surname = request.getParameter("surname");
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date = formatter.parse(request.getParameter("date"));
+                        String date = request.getParameter("date");
+                        String street = request.getParameter("street");
+                        String num = request.getParameter("num");
+                        String city = request.getParameter("city");
+                        String postal_code = request.getParameter("postal_code");
+                        String country_name = request.getParameter("country");
                         String login = request.getParameter("login");
                         String password_hash = request.getParameter("passwordhash");
 
-                        int id = data.add_login(login, password_hash);
-                        data.add_client(id, name, surname, date);
+                        data.add_client(name, surname, date, street, num, city, postal_code, country_name, login, password_hash);
                     }
                     catch (Exception ignored) {}
                 }

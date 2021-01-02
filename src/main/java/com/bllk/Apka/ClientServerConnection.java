@@ -51,14 +51,19 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
-    public void create_client(String name, String surname, Date date, String login, String passwordhash) {
+    public void create_client(String name, String surname, String date, String street, String num, String city, String postal_code, String country, String login, String passwordhash) {
         try {
             HttpURLConnection httpconnection = (HttpURLConnection) new URL("http://localhost:8080/createclient").openConnection();
             httpconnection.setRequestMethod("POST");
 
             String postData = "name=" + name;
             postData += "&surname=" + surname;
-            postData += "&date=" + date.toString();
+            postData += "&date=" + date;
+            postData += "&street=" + street;
+            postData += "&num=" + num;
+            postData += "&city=" + city;
+            postData += "&postal_code=" + postal_code;
+            postData += "&country=" + country;
             postData += "&login=" + login;
             postData += "&passwordhash=" + passwordhash;
 

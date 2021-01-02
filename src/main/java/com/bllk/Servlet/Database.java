@@ -1,19 +1,28 @@
 package com.bllk.Servlet;
 import com.bllk.Servlet.mapclasses.*;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
+import org.hibernate.procedure.ProcedureCall;
+import org.hibernate.procedure.ProcedureOutputs;
 import org.hibernate.query.Query;
+import org.hibernate.result.Output;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.Transaction;
 
+import javax.persistence.*;
+import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 public class Database {
     private static SessionFactory factory;
+
     public Database() {
         refresh();
     }
@@ -159,8 +168,8 @@ public class Database {
             result.setValue(i+amount);
             session.update(result);
 
-            Transaction transaction = new Transaction((Integer)payerid, (Integer)targetid, "nowy", amount, 0);
-            session.save(transaction);
+//            Transaction transaction = new org.bllk.Transaction((Integer)payerid, (Integer)targetid, "nowy", amount, 0);
+//            session.save(transaction);
 
             tx.commit();
             session.close();
@@ -170,7 +179,6 @@ public class Database {
             refresh();
         }
     }
-
     public int add_login(String _login, String _password) {
         try {
             Session session = factory.openSession();
@@ -190,22 +198,34 @@ public class Database {
             return -1;
         }
     }
-    public int add_client(int _id, String _name, String _surname, Date _date) {
+    public void add_client(String _name, String _surname, String _date, String _street,
+                           String _num, String _city, String _postal_code,
+                           String _country_name, String _login, String _password) {
+
         try {
             Session session = factory.openSession();
-            org.hibernate.Transaction tx = session.beginTransaction();
+            Transaction tx = session.beginTransaction();
 
-            Client client = new Client(_id, _name, _surname, _date, 0, _id);
-            session.save(client);
+            StoredProcedureQuery query = session.createStoredProcedureQuery("ADD_CLIENT");
+            query.registerStoredProcedureParameter("p_name", String.class, ParameterMode.IN).setParameter("p_name", _name);
+            query.registerStoredProcedureParameter("p_surname", String.class, ParameterMode.IN).setParameter("p_surname", _surname);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            query.registerStoredProcedureParameter("p_birth_date", Date.class, ParameterMode.IN).setParameter("p_birth_date", formatter.parse(_date));
+            query.registerStoredProcedureParameter("p_street", String.class, ParameterMode.IN).setParameter("p_street", _street);
+            query.registerStoredProcedureParameter("p_num", String.class, ParameterMode.IN).setParameter("p_num", _num);
+            query.registerStoredProcedureParameter("p_city", String.class, ParameterMode.IN).setParameter("p_city", _city);
+            query.registerStoredProcedureParameter("p_postal_code", String.class, ParameterMode.IN).setParameter("p_postal_code", _postal_code);
+            query.registerStoredProcedureParameter("p_country_name", String.class, ParameterMode.IN).setParameter("p_country_name", _country_name);
+            query.registerStoredProcedureParameter("p_login", String.class, ParameterMode.IN).setParameter("p_login", _login);
+            query.registerStoredProcedureParameter("p_password_hash", String.class, ParameterMode.IN).setParameter("p_password_hash", _password);
+            query.execute();
 
             tx.commit();
             session.close();
-            return _id;
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             factory.close();
             refresh();
-            return -1;
         }
     }
 }

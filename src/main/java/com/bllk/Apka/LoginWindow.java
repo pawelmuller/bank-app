@@ -49,7 +49,7 @@ public class LoginWindow {
             String hashed_password = BCrypt.hashpw(password, password_salt);
             System.out.println(hashed_password);
 
-            connection.create_client("Bilbo", "Baggins", "2000-01-12", "bilbo", "shire");
+            // connection.create_client("Bilbo", "Baggins", "2000-01-12", "Bagshot Row","1", "Hobbiton", "00-001", "Shire", "bilbo", "shire");
 
             Client client = connection.get_login(login, hashed_password);
             Login log = new Login(client.getID(), login, hashed_password);
