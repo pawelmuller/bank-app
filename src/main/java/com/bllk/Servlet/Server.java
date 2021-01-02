@@ -1,13 +1,12 @@
 package com.bllk.Servlet;
 
-import com.bllk.Apka.BankClients;
-import com.bllk.Apka.Logins;
-import com.bllk.Apka.Money;
+import com.bllk.Servlet.mapclasses.Client;
+import com.bllk.Servlet.mapclasses.Login;
+import com.bllk.Servlet.mapclasses.Account;
 
 import java.io.*;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
 public class Server extends HttpServlet {
@@ -21,8 +20,8 @@ public class Server extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestUrl = request.getRequestURI();
         String[] atributes = requestUrl.substring(1).split("/");
-        Logins login;
-        BankClients client;
+        Login login;
+        Client client;
         String json;
 
         switch (atributes.length) {
@@ -38,7 +37,7 @@ public class Server extends HttpServlet {
                 if (atributes[0].equals("login")) {
                     login = data.get_login(atributes[1], atributes[2]);
                     if (login != null) {
-                        client = data.get_client(login.getAccountid());
+                        client = data.get_client(login.getID());
                         json = "{\n";
                         json += "\"id\": \"" + client.getID() + "\",\n";
                         json += "\"name\": \"" + client.getName() + "\",\n";
@@ -54,11 +53,11 @@ public class Server extends HttpServlet {
                 if (atributes[0].equals("login") && atributes[3].equals("money")) {
                     login = data.get_login(atributes[1], atributes[2]);
                     if (login != null) {
-                        Money money = data.get_money(login.getAccountid());
+                        Account account = data.get_money(login.getID());
                         String mjson = "{\n";
-                        mjson += "\"id\": \"" + money.getID() + "\",\n";
-                        mjson += "\"moneyonaccount\": \"" + money.getMoneyonaccount() + "\",\n";
-                        mjson += "\"accountid\": \"" + money.getAccountid() + "\"\n";
+                        mjson += "\"id\": \"" + account.getID() + "\",\n";
+                        mjson += "\"moneyonaccount\": \"" + account.getValue() + "\",\n";
+                        mjson += "\"accountid\": \"" + account.getValue() + "\"\n";
                         mjson += "}";
                         response.getOutputStream().println(mjson);
                     }
@@ -75,11 +74,11 @@ public class Server extends HttpServlet {
         String requestUrl = request.getRequestURI();
         String[] atributes = requestUrl.substring(1).split("/");
         if (atributes.length == 4 && atributes[0].equals("login") && atributes[3].equals("transaction")) {
-            Logins login = data.get_login(atributes[1], atributes[2]);
+            Login login = data.get_login(atributes[1], atributes[2]);
             if (login != null) {
                 int targetid = Integer.parseInt(request.getParameter("targetid"));
-                double amount = Double.parseDouble(request.getParameter("amount"));
-                data.make_transfer(login.getAccountid(), targetid, amount);
+                int amount = Integer.parseInt(request.getParameter("amount"));
+                data.make_transfer(login.getID(), targetid, amount);
             }
         }
     }

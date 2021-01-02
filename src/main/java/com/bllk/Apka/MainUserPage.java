@@ -1,13 +1,14 @@
 package com.bllk.Apka;
 
+import com.bllk.Servlet.mapclasses.Client;
+import com.bllk.Servlet.mapclasses.Login;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainUserPage {
     ClientServerConnection connection;
-    BankClients client;
-    Logins login;
+    Client client;
+    Login login;
     double your_money_value;
 
     JFrame frame;
@@ -22,13 +23,13 @@ public class MainUserPage {
     private JTabbedPane tabbedPane1;
     private JPanel historyPanel;
 
-    public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, BankClients _client, Logins _login) {
+    public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, Client _client, Login _login) {
         frame = _frame;
         previousPanel = _previousPanel;
         connection = _connection;
         client = _client;
         login = _login;
-        your_money_value = connection.get_money(login.getLogin(), login.getPassword());
+        your_money_value = connection.get_money(login.getLogin(), login.getPasswordHash());
         nameLabel.setText("Witaj " + client.getName() + " " + client.getSurname() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
         UpdateMoney();
@@ -48,7 +49,7 @@ public class MainUserPage {
                 }
                 else {
                     message.setText("Sending " + money_value + " PLN to Account " + target_id);
-                    connection.make_transfer(login.getLogin(), login.getPassword(), target_id, money_value);
+                    connection.make_transfer(login.getLogin(), login.getPasswordHash(), target_id, money_value);
                     UpdateMoney();
                 }
             }
@@ -60,7 +61,7 @@ public class MainUserPage {
     }
 
     void UpdateMoney() {
-        your_money_value = connection.get_money(login.getLogin(), login.getPassword());
+        your_money_value = connection.get_money(login.getLogin(), login.getPasswordHash());
         currentBalance.setText(your_money_value + " PLN");
     }
 }

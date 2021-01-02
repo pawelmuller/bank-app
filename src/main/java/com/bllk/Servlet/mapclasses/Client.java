@@ -1,35 +1,36 @@
-package com.bllk.Apka;
+package com.bllk.Servlet.mapclasses;
 
-import org.hibernate.annotations.GenericGenerator;
-
+import java.util.Date;
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class BankClients {
+@Table(name ="CLIENTS")
+public class Client {
     @Id
-    @GeneratedValue
-    private Integer id;
-    private String name;
-    private String surname;
+    @Column(name = "CLIENT_ID")
+    Integer id;
+    @Column(name = "NAME")
+    String name;
+    @Column(name = "SURNAME")
+    String surname;
+    @Column(name = "BIRTH_DATE")
+    Date birth_date;
+    @Column(name = "ADDRESS_ID")
+    Integer address_id;
 
-    public BankClients(String name, String surname) {
+    public Client(String name, String surname) {
         this.name = name;
         this.surname = surname;
     }
-
-    public BankClients(Integer id, String name, String surname) {
+    public Client(Integer id, String name, String surname) {
         this.id = id;
         this.name = name;
         this.surname = surname;
     }
-
-    public BankClients() {
+    public Client() {
     }
 
-    @Id
-    @GeneratedValue(generator = "incrementator-inator")
-    @GenericGenerator(name = "incrementator-inator", strategy = "increment")
     public Integer getID() {
         return id;
     }
@@ -38,6 +39,12 @@ public class BankClients {
     }
     public String getSurname() {
         return surname;
+    }
+    public Date getBirth_date() {
+        return birth_date;
+    }
+    public int getAddress_id() {
+        return address_id;
     }
 
     public void setID(Integer id) {
@@ -48,6 +55,12 @@ public class BankClients {
     }
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+    public void setBirth_date(Date birth_date) {
+        this.birth_date = birth_date;
+    }
+    public void setAddress_id(int address_id) {
+        this.address_id = address_id;
     }
 
     @Override

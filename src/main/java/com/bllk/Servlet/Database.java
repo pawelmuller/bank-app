@@ -1,11 +1,7 @@
 package com.bllk.Servlet;
-import com.bllk.Apka.BankClients;
-import com.bllk.Apka.Logins;
-import com.bllk.Apka.Money;
-import com.bllk.Apka.TransactionHistory;
+import com.bllk.Servlet.mapclasses.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
@@ -32,13 +28,16 @@ public class Database {
             settings.put(Environment.DIALECT, "org.hibernate.dialect.Oracle8iDialect");
             settings.put(Environment.SHOW_SQL, "true");
             configuration.setProperties(settings);
-            configuration.addAnnotatedClass(Logins.class);
-            configuration.addAnnotatedClass(BankClients.class);
-            configuration.addAnnotatedClass(Money.class);
-            configuration.addAnnotatedClass(TransactionHistory.class);
 
-            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                    .applySettings(configuration.getProperties()).build();
+            configuration.addAnnotatedClass(Account.class);
+            configuration.addAnnotatedClass(Address.class);
+            configuration.addAnnotatedClass(Client.class);
+            configuration.addAnnotatedClass(Country.class);
+            configuration.addAnnotatedClass(Currency.class);
+            configuration.addAnnotatedClass(Login.class);
+            configuration.addAnnotatedClass(Transaction.class);
+
+            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
             System.out.println("Hibernate Java Config serviceRegistry created");
             factory = configuration.buildSessionFactory(serviceRegistry);
         } catch (Exception e) {
@@ -46,15 +45,15 @@ public class Database {
         }
     }
 
-    public BankClients get_client(int clientid) {
-        BankClients client = null;
+    public Client get_client(int clientid) {
+        Client client = null;
 
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM BankClients WHERE id=" + clientid;
+            String hql = "FROM Client WHERE id=" + clientid;
             Query query = session.createQuery(hql);
-            client = (BankClients) query.list().get(0);
+            client = (Client) query.list().get(0);
 
             session.close();
         } catch (Exception ex) {
@@ -64,18 +63,18 @@ public class Database {
         }
         return client;
     }
-    public Logins get_login(String login, String password) {
-        Logins result = null;
+    public Login get_login(String login, String password) {
+        Login result = null;
 
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM Logins WHERE login='" + login + "' AND password='" + password + "'";
+            String hql = "FROM Login WHERE login='" + login + "' AND passwordhash='" + password + "'";
             Query query = session.createQuery(hql);
             List list = query.list();
 
             if (list.size() >= 1)
-                result = (Logins) query.list().get(0);
+                result = (Login) query.list().get(0);
 
             session.close();
         } catch (Exception ex) {
@@ -85,16 +84,16 @@ public class Database {
         }
         return result;
     }
-    public Money get_money(int accountid) {
-        Money money = null;
+    public Account get_money(int accountid) {
+        Account account = null;
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM Money WHERE accountid=" + accountid;
+            String hql = "FROM Account WHERE accountid=" + accountid;
             Query query = session.createQuery(hql);
 
             if (query.list().size() >= 1)
-                money = (Money) query.list().get(0);
+                account = (Account) query.list().get(0);
 
             session.close();
         } catch (Exception ex) {
@@ -102,7 +101,7 @@ public class Database {
             factory.close();
             refresh();
         }
-        return money;
+        return account;
     }
     public boolean check_client(int accountid) {
         boolean valid = false;
@@ -110,7 +109,7 @@ public class Database {
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM BankClients WHERE id=" + accountid;
+            String hql = "FROM Client WHERE id=" + accountid;
             Query query = session.createQuery(hql);
             List list = query.list();
 
@@ -124,24 +123,24 @@ public class Database {
         }
         return valid;
     }
-    public void make_transfer(int payerid, int targetid, double amount) {
+    public void make_transfer(int payerid, int targetid, int amount) {
         try {
             Session session = factory.openSession();
-            Transaction tx = session.beginTransaction();
+            org.hibernate.Transaction tx = session.beginTransaction();
 
-            Query q = session.createQuery("from Money where accountid=" + payerid);
-            Money result = (Money)q.list().get(0);
-            Double i = result.getMoneyonaccount();
-            result.setMoneyonaccount(i-amount);
+            Query q = session.createQuery("from Account where accountid=" + payerid);
+            Account result = (Account)q.list().get(0);
+            Integer i = result.getValue();
+            result.setValue(i-amount);
             session.update(result);
 
-            q = session.createQuery("from Money where accountid=" + targetid);
-            result = (Money)q.list().get(0);
-            i = result.getMoneyonaccount();
-            result.setMoneyonaccount(i+amount);
+            q = session.createQuery("from Account where accountid=" + targetid);
+            result = (Account)q.list().get(0);
+            i = result.getValue();
+            result.setValue(i+amount);
             session.update(result);
 
-            TransactionHistory transaction = new TransactionHistory((Integer)payerid, (Integer)targetid, (Double)amount, "PLN");
+            Transaction transaction = new Transaction((Integer)payerid, (Integer)targetid, "nowy", amount, 0);
             session.save(transaction);
 
             tx.commit();

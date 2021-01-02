@@ -1,21 +1,18 @@
 package com.bllk.Apka;
 
-import org.hibernate.Session;
-import org.hibernate.query.Query;
+import com.bllk.Servlet.mapclasses.Client;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.List;
 import java.util.Scanner;
 
 public class ClientServerConnection {
-    public BankClients get_login(String login, String password) {
+    public Client get_login(String login, String password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/%s/%s", login, password)));
-        return new BankClients(jsonObject.getInt("id"), jsonObject.getString("name"), jsonObject.getString("surname"));
+        return new Client(jsonObject.getInt("id"), jsonObject.getString("name"), jsonObject.getString("surname"));
     }
     public double get_money(String login, String password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/%s/%s/money", login, password)));

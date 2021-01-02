@@ -1,10 +1,13 @@
 package com.bllk.Apka;
 
+import com.bllk.Servlet.mapclasses.Client;
+import com.bllk.Servlet.mapclasses.Login;
+
 import javax.swing.*;
 import java.awt.*;import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class Login {
+public class LoginWindow {
     private static JFrame frame;
     private static ClientServerConnection connection;
 
@@ -17,7 +20,7 @@ public class Login {
 
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
-        loginPanel = new Login().mainPanel;
+        loginPanel = new LoginWindow().mainPanel;
         connection = new ClientServerConnection();
         frame.setContentPane(loginPanel);
         frame.setLocationRelativeTo(null);
@@ -36,8 +39,8 @@ public class Login {
         }
         try {
             message.setText("Checking...");
-            BankClients client = connection.get_login(login, password);
-            Logins log = new Logins(login, password, client.getID());
+            Client client = connection.get_login(login, password);
+            Login log = new Login(client.getID(), login, password);
             frame.setContentPane(new MainUserPage(frame, loginPanel, connection, client, log).menuPanel);
             loginField.setText("");
             passwordField.setText("");
@@ -48,10 +51,8 @@ public class Login {
         }
     }
 
-    public Login() {
-        loginButton.addActionListener(e -> {
-            Submit();
-        });
+    public LoginWindow() {
+        loginButton.addActionListener(e -> Submit());
 
         passwordField.addKeyListener(new KeyAdapter() {
             @Override
