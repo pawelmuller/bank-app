@@ -206,18 +206,19 @@ public class Database {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
 
-            StoredProcedureQuery query = session.createStoredProcedureQuery("ADD_CLIENT");
-            query.registerStoredProcedureParameter("p_name", String.class, ParameterMode.IN).setParameter("p_name", _name);
-            query.registerStoredProcedureParameter("p_surname", String.class, ParameterMode.IN).setParameter("p_surname", _surname);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            query.registerStoredProcedureParameter("p_birth_date", Date.class, ParameterMode.IN).setParameter("p_birth_date", formatter.parse(_date));
-            query.registerStoredProcedureParameter("p_street", String.class, ParameterMode.IN).setParameter("p_street", _street);
-            query.registerStoredProcedureParameter("p_num", String.class, ParameterMode.IN).setParameter("p_num", _num);
-            query.registerStoredProcedureParameter("p_city", String.class, ParameterMode.IN).setParameter("p_city", _city);
-            query.registerStoredProcedureParameter("p_postal_code", String.class, ParameterMode.IN).setParameter("p_postal_code", _postal_code);
-            query.registerStoredProcedureParameter("p_country_name", String.class, ParameterMode.IN).setParameter("p_country_name", _country_name);
-            query.registerStoredProcedureParameter("p_login", String.class, ParameterMode.IN).setParameter("p_login", _login);
-            query.registerStoredProcedureParameter("p_password_hash", String.class, ParameterMode.IN).setParameter("p_password_hash", _password);
+
+            StoredProcedureQuery query = session.createStoredProcedureQuery("ADD_CLIENT");
+            query.registerStoredProcedureParameter("p_name",          String.class, ParameterMode.IN).setParameter("p_name",          _name        );
+            query.registerStoredProcedureParameter("p_surname",       String.class, ParameterMode.IN).setParameter("p_surname",       _surname     );
+            query.registerStoredProcedureParameter("p_birth_date",      Date.class, ParameterMode.IN).setParameter("p_birth_date",    formatter.parse(_date));
+            query.registerStoredProcedureParameter("p_street",        String.class, ParameterMode.IN).setParameter("p_street",        _street      );
+            query.registerStoredProcedureParameter("p_num",           String.class, ParameterMode.IN).setParameter("p_num",           _num         );
+            query.registerStoredProcedureParameter("p_city",          String.class, ParameterMode.IN).setParameter("p_city",          _city        );
+            query.registerStoredProcedureParameter("p_postal_code",   String.class, ParameterMode.IN).setParameter("p_postal_code",   _postal_code );
+            query.registerStoredProcedureParameter("p_country_name",  String.class, ParameterMode.IN).setParameter("p_country_name",  _country_name);
+            query.registerStoredProcedureParameter("p_login",         String.class, ParameterMode.IN).setParameter("p_login",         _login       );
+            query.registerStoredProcedureParameter("p_password_hash", String.class, ParameterMode.IN).setParameter("p_password_hash", _password    );
             query.execute();
 
             tx.commit();
