@@ -11,23 +11,28 @@ public class LoginWindow {
     private static JFrame frame;
     private static ClientServerConnection connection;
 
-    static JPanel loginPanel;
-    JPanel mainPanel;
+    static JPanel startingPanel;
+    private JPanel mainPanel;
     private JTextField loginField;
     private JPasswordField passwordField;
     private JButton loginButton, forgotPasswordButton;
     private JLabel message;
+    private JPanel loginTabPanel;
+    private JTabbedPane mainTabbedPane;
+    private JLabel logoLabel;
+    private JPanel headerPanel;
+    private JPanel registerTabPanel;
 
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
-        loginPanel = new LoginWindow().mainPanel;
+        startingPanel = new LoginWindow().mainPanel;
         connection = new ClientServerConnection();
-        frame.setContentPane(loginPanel);
-        frame.setLocationRelativeTo(null);
+        frame.setContentPane(startingPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setMinimumSize(new Dimension(640, 480));
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        frame.setMinimumSize(new Dimension(400, 320));
     }
 
     public void Submit() {
@@ -47,7 +52,7 @@ public class LoginWindow {
             Client client = connection.get_login(login, hashed_password);
             Login log = new Login(client.getID(), login, hashed_password);
 
-            frame.setContentPane(new MainUserPage(frame, loginPanel, connection, client, log).menuPanel);
+            frame.setContentPane(new MainUserPage(frame, startingPanel, connection, client, log).menuPanel);
             loginField.setText("");
             passwordField.setText("");
             message.setText("");
