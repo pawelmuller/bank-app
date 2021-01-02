@@ -101,7 +101,7 @@ public class Server extends HttpServlet {
                     try {
                         String name = request.getParameter("name");
                         String surname = request.getParameter("surname");
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                         Date date = formatter.parse(request.getParameter("date"));
                         String login = request.getParameter("login");
                         String password_hash = request.getParameter("passwordhash");

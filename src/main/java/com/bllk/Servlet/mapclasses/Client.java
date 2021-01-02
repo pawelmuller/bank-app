@@ -18,18 +18,21 @@ public class Client {
     Date birth_date;
     @Column(name = "ADDRESS_ID")
     Integer address_id;
+    @Column(name = "LOGIN_ID")
+    Integer login_id;
 
     public Client(Integer id, String name, String surname) {
         this.id = id;
         this.name = name;
         this.surname = surname;
     }
-    public Client(Integer id, String name, String surname, Date birth_date, Integer address_id) {
+    public Client(Integer id, String name, String surname, Date birth_date, Integer address_id, Integer login_id) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.birth_date = birth_date;
         this.address_id = address_id;
+        this.login_id = login_id;
     }
     public Client() {
     }
@@ -64,6 +67,12 @@ public class Client {
     }
     public void setAddress_id(int address_id) {
         this.address_id = address_id;
+    }
+    public Integer getLoginID() {
+        return login_id;
+    }
+    public void setLoginID(Integer login_id) {
+        this.login_id = login_id;
     }
 
     @Override
