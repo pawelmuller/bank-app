@@ -195,7 +195,7 @@ public class Database {
             Session session = factory.openSession();
             org.hibernate.Transaction tx = session.beginTransaction();
 
-            Client client = new Client(_id, _name, _surname, _date, 0);
+            Client client = new Client(_id, _name, _surname, _date, 0, _id);
             session.save(client);
 
             tx.commit();
