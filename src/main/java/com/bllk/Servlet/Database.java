@@ -8,6 +8,7 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.query.Query;
 import org.hibernate.service.ServiceRegistry;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -149,6 +150,44 @@ public class Database {
             System.out.println(ex.getMessage());
             factory.close();
             refresh();
+        }
+    }
+
+    public int add_login(String _login, String _password) {
+        try {
+            Session session = factory.openSession();
+            org.hibernate.Transaction tx = session.beginTransaction();
+
+            int id = session.createSQLQuery("SELECT MAX(LOGIN_ID) FROM LOGINS").getFirstResult() + 1;
+            Login login = new Login(id, _login, _password);
+            session.save(login);
+
+            tx.commit();
+            session.close();
+            return id;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+            return -1;
+        }
+    }
+    public int add_client(int _id, String _name, String _surname, Date _date) {
+        try {
+            Session session = factory.openSession();
+            org.hibernate.Transaction tx = session.beginTransaction();
+
+            Client client = new Client(_id, _name, _surname, _date, 0);
+            session.save(client);
+
+            tx.commit();
+            session.close();
+            return _id;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+            return -1;
         }
     }
 }

@@ -19,14 +19,17 @@ public class Client {
     @Column(name = "ADDRESS_ID")
     Integer address_id;
 
-    public Client(String name, String surname) {
-        this.name = name;
-        this.surname = surname;
-    }
     public Client(Integer id, String name, String surname) {
         this.id = id;
         this.name = name;
         this.surname = surname;
+    }
+    public Client(Integer id, String name, String surname, Date birth_date, Integer address_id) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.birth_date = birth_date;
+        this.address_id = address_id;
     }
     public Client() {
     }

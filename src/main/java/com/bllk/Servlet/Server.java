@@ -5,6 +5,8 @@ import com.bllk.Servlet.mapclasses.Login;
 import com.bllk.Servlet.mapclasses.Account;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -73,13 +75,33 @@ public class Server extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String requestUrl = request.getRequestURI();
         String[] atributes = requestUrl.substring(1).split("/");
-        if (atributes.length == 4 && atributes[0].equals("login") && atributes[3].equals("transaction")) {
-            Login login = data.get_login(atributes[1], atributes[2]);
-            if (login != null) {
-                int targetid = Integer.parseInt(request.getParameter("targetid"));
-                int amount = Integer.parseInt(request.getParameter("amount"));
-                data.make_transfer(login.getID(), targetid, amount);
-            }
+        switch (atributes.length) {
+            case 1:
+                if (atributes[0].equals("createclient")) {
+                    try {
+                        String name = request.getParameter("name");
+                        String surname = request.getParameter("surname");
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+                        Date date = formatter.parse(request.getParameter("date"));
+                        String login = request.getParameter("login");
+                        String password_hash = request.getParameter("passwordhash");
+
+                        int id = data.add_login(login, password_hash);
+                        data.add_client(id, name, surname, date);
+                    }
+                    catch (Exception ignored) {}
+                }
+                break;
+            case 4:
+                if (atributes[0].equals("login") && atributes[3].equals("transaction")) {
+                    Login login = data.get_login(atributes[1], atributes[2]);
+                    if (login != null) {
+                        int targetid = Integer.parseInt(request.getParameter("targetid"));
+                        int amount = Integer.parseInt(request.getParameter("amount"));
+                        data.make_transfer(login.getID(), targetid, amount);
+                    }
+                }
+                break;
         }
     }
 }

@@ -17,12 +17,15 @@ public class Currency {
     String shortcut;
     @Column(name = "SYMBOL")
     String symbol;
+    @Column(name = "VALUE_IN_USD")
+    Double valueUSD;
 
-    public Currency(Integer id, String name, String shortcut, String symbol) {
+    public Currency(Integer id, String name, String shortcut, String symbol, Double valueUSD) {
         this.id = id;
         this.name = name;
         this.shortcut = shortcut;
         this.symbol = symbol;
+        this.valueUSD = valueUSD;
     }
     public Currency() {}
 
@@ -49,5 +52,11 @@ public class Currency {
     }
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+    }
+    public Double getValueUSD() {
+        return valueUSD;
+    }
+    public void setValueUSD(Double valueUSD) {
+        this.valueUSD = valueUSD;
     }
 }

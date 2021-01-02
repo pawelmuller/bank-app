@@ -22,7 +22,7 @@ public class Credit {
     Double rrso;
     @Column(name = "DATE_CREATED")
     Date datecreated;
-    @Column(name = "DATE_ENDS")
+    @Column(name = "DATE_ENDED")
     Date dateend;
     @Column(name = "CURRENCY_ID")
     Integer currencyid;

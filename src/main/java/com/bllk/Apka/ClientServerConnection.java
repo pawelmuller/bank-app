@@ -3,10 +3,10 @@ package com.bllk.Apka;
 import com.bllk.Servlet.mapclasses.Client;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.Scanner;
 
 public class ClientServerConnection {
@@ -28,24 +28,53 @@ public class ClientServerConnection {
             return false;
         }
     }
-    public void make_transfer(String login, String password, int targetid, double amount) throws IOException {
-        HttpURLConnection httpconnection = (HttpURLConnection) new URL(String.format("http://localhost:8080/login/%s/%s/transaction", login, password)).openConnection();
-        httpconnection.setRequestMethod("POST");
+    public void make_transfer(String login, String password, int targetid, double amount) {
+        try {
+            HttpURLConnection httpconnection = (HttpURLConnection) new URL(String.format("http://localhost:8080/login/%s/%s/transaction", login, password)).openConnection();
+            httpconnection.setRequestMethod("POST");
 
-        String postData = "targetid=" + targetid;
-        postData += "&amount=" + amount;
+            String postData = "targetid=" + targetid;
+            postData += "&amount=" + amount;
 
-        httpconnection.setDoOutput(true);
-        OutputStreamWriter wr = new OutputStreamWriter(httpconnection.getOutputStream());
-        wr.write(postData);
-        wr.flush();
+            httpconnection.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(httpconnection.getOutputStream());
+            wr.write(postData);
+            wr.flush();
 
-        int responseCode = httpconnection.getResponseCode();
-        if(responseCode == 200){
-            System.out.println("POST was successful.");
+            int responseCode = httpconnection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
         }
-        else if(responseCode == 401){
-            System.out.println("Wrong password.");
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    public void create_client(String name, String surname, Date date, String login, String passwordhash) {
+        try {
+            HttpURLConnection httpconnection = (HttpURLConnection) new URL("http://localhost:8080/createclient").openConnection();
+            httpconnection.setRequestMethod("POST");
+
+            String postData = "name=" + name;
+            postData += "&surname=" + surname;
+            postData += "&date=" + date.toString();
+            postData += "&login=" + login;
+            postData += "&passwordhash=" + passwordhash;
+
+            httpconnection.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(httpconnection.getOutputStream());
+            wr.write(postData);
+            wr.flush();
+
+            int responseCode = httpconnection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
