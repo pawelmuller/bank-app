@@ -10,9 +10,11 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class ClientServerConnection {
-    public Client get_login(String login, String hashed_password) {
-        JSONObject jsonObject = new JSONObject(getData(String.format("login/%s/%s", login, hashed_password)));
-        return new Client(jsonObject.getInt("id"), jsonObject.getString("name"), jsonObject.getString("surname"));
+    public Client getClient(String login, String hashed_password) {
+        JSONObject jsonObject = new JSONObject(getData(String.format("login?login=%s&password=%s", login, hashed_password)));
+        return new Client(jsonObject.getInt("id"), jsonObject.getString("name"),
+                jsonObject.getString("surname"), jsonObject.getString("birthdate"),
+                jsonObject.getInt("addressid"), jsonObject.getInt("loginid"));
     }
     public String get_salt(String login) {
         JSONObject jsonObject = new JSONObject(getData(String.format("getsalt/%s", login)));
@@ -90,6 +92,7 @@ public class ClientServerConnection {
     public String getData(String url) {
     try {
         HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8080/" + url).openConnection();
+        System.out.println("http://localhost:8080/" + url);
         connection.setRequestMethod("GET");
 
         int responseCode = connection.getResponseCode();
@@ -106,6 +109,7 @@ public class ClientServerConnection {
         else throw new Exception("Invalid response code");
     }
     catch (Exception ex) {
+        System.out.println(ex.getMessage());
         return "";
     }
 }

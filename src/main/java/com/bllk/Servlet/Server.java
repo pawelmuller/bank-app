@@ -23,7 +23,7 @@ public class Server extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestUrl = request.getRequestURI();
         String[] atributes = requestUrl.substring(1).split("/");
-        Login login;
+        System.out.println(requestUrl);
         Client client;
         String json;
 
@@ -51,6 +51,28 @@ public class Server extends HttpServlet {
                     } else
                         response.getOutputStream().println("{}");
                 }
+                else if (atributes[0].equals("login")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("password");
+
+                    Login loginclass = data.get_login(login, password);
+                    System.out.println(loginclass.toString());
+                    if (login != null) {
+                        client = data.get_client(loginclass.getID());
+                        json = "{\n";
+                        json += "\"id\": \"" + client.getID() + "\",\n";
+                        json += "\"name\": \"" + client.getName() + "\",\n";
+                        json += "\"surname\": \"" + client.getSurname() + "\",\n";
+                        json += "\"birthdate\": \"" + client.getBirth_date().toString() + "\",\n";
+                        json += "\"addressid\": \"" + client.getAddress_id() + "\",\n";
+                        json += "\"loginid\": \"" + client.getLoginID() + "\"\n";
+                        json += "}";
+                        response.getOutputStream().println(json);
+                    } else {
+                        response.getOutputStream().println("{}");
+                    }
+                }
+            break;
             case 2:
                 if (atributes[0].equals("account")) {
                     boolean valid = data.check_client(Integer.parseInt(atributes[1]));
@@ -66,10 +88,10 @@ public class Server extends HttpServlet {
                     else
                         response.getOutputStream().println("{}");
                 }
-                break;
+            break;
             case 3:
                 if (atributes[0].equals("login")) {
-                    login = data.get_login(atributes[1], atributes[2]);
+                    Login login = data.get_login(atributes[1], atributes[2]);
                     if (login != null) {
                         client = data.get_client(login.getID());
                         json = "{\n";
@@ -82,10 +104,10 @@ public class Server extends HttpServlet {
                         response.getOutputStream().println("{}");
                     }
                 }
-                break;
+            break;
             case 4:
                 if (atributes[0].equals("login") && atributes[3].equals("money")) {
-                    login = data.get_login(atributes[1], atributes[2]);
+                    Login login = data.get_login(atributes[1], atributes[2]);
                     if (login != null) {
                         Account account = data.get_money(login.getID());
                         String mjson = "{\n";
@@ -99,7 +121,7 @@ public class Server extends HttpServlet {
                         response.getOutputStream().println("{}");
                     }
                 }
-                break;
+            break;
         }
     }
 

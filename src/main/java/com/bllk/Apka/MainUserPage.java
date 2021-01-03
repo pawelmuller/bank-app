@@ -29,10 +29,10 @@ public class MainUserPage {
         connection = _connection;
         client = _client;
         login = _login;
-        your_money_value = connection.get_money(login.getLogin(), login.getPasswordHash());
+//        your_money_value = connection.get_money(login.getLogin(), login.getPasswordHash());
         nameLabel.setText("Witaj " + client.getName() + " " + client.getSurname() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
-        UpdateMoney();
+//        UpdateMoney();
 
         sendMoneyButton.addActionListener(e -> {
             try {

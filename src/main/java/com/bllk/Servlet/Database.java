@@ -48,22 +48,24 @@ public class Database {
             configuration.addAnnotatedClass(Transaction.class);
 
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-            System.out.println("Hibernate Java Config serviceRegistry created");
             factory = configuration.buildSessionFactory(serviceRegistry);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public Client get_client(int clientid) {
+    public Client get_client(int loginid) {
         Client client = null;
 
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM Client WHERE id=" + clientid;
+            String hql = "FROM Client WHERE login_id=" + loginid;
             Query query = session.createQuery(hql);
-            client = (Client) query.list().get(0);
+            List list = query.list();
+
+            if (list.size() >= 1)
+                client = (Client) query.list().get(0);
 
             session.close();
         } catch (Exception ex) {
@@ -236,6 +238,7 @@ public class Database {
             return -1;
         }
     }
+
     public void add_client(String _name, String _surname, String _date, String _street,
                            String _num, String _city, String _postal_code,
                            String _country_name, String _login, String _password) {

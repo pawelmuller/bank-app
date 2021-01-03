@@ -1,5 +1,7 @@
 package com.bllk.Servlet.mapclasses;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.*;
 import java.util.Objects;
@@ -21,11 +23,6 @@ public class Client {
     @Column(name = "LOGIN_ID")
     Integer login_id;
 
-    public Client(Integer id, String name, String surname) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-    }
     public Client(Integer id, String name, String surname, Date birth_date, Integer address_id, Integer login_id) {
         this.id = id;
         this.name = name;
@@ -33,6 +30,19 @@ public class Client {
         this.birth_date = birth_date;
         this.address_id = address_id;
         this.login_id = login_id;
+    }
+    public Client(Integer id, String name, String surname, String birth_date, Integer address_id, Integer login_id) {
+        try {
+            this.id = id;
+            this.name = name;
+            this.surname = surname;
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            this.birth_date = formatter.parse(birth_date);
+            this.address_id = address_id;
+            this.login_id = login_id;
+        } catch (ParseException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
     public Client() {
     }
