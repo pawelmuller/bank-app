@@ -1,12 +1,11 @@
 package com.bllk.Apka;
 
+import com.bllk.Servlet.mapclasses.Account;
 import com.bllk.Servlet.mapclasses.Client;
 import com.bllk.Servlet.mapclasses.Currency;
 import com.bllk.Servlet.mapclasses.Login;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Map;
 
 public class MainUserPage {
@@ -37,11 +36,10 @@ public class MainUserPage {
         connection = _connection;
         client = _client;
         login = _login;
-//        your_money_value = connection.get_money(login.getLogin(), login.getPasswordHash());
         nameLabel.setText("Witaj " + client.getName() + " " + client.getSurname() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
         updateCurrencies();
-        //        UpdateMoney();
+        updateMoney();
 
         sendMoneyButton.addActionListener(e -> {
             try {
@@ -50,16 +48,16 @@ public class MainUserPage {
                 if (target_id == client.getID()) {
                     message.setText("Transaction failed: You can't send money to yourself.");
                 }
-//                else if (money_value > your_money_value || money_value <= 0) {
-//                    message.setText("Transaction failed: Invalid amount of money.");
-//                }
+                else if (money_value > your_money_value || money_value <= 0) {
+                    message.setText("Transaction failed: Invalid amount of money.");
+                }
                 else if (!connection.check_client(Integer.parseInt(accountNumber.getText()))) {
                     message.setText("Transaction failed: Account don't exists.");
                 }
                 else {
                     message.setText("Sending " + money_value + " PLN to Account " + target_id);
                     connection.makeTransfer(login.getLogin(), login.getPasswordHash(), target_id, money_value);
-                    UpdateMoney();
+                    updateMoney();
                 }
             }
             catch (Exception ex) {
@@ -74,8 +72,8 @@ public class MainUserPage {
         });
     }
 
-    void UpdateMoney() {
-        your_money_value = connection.get_money(login.getLogin(), login.getPasswordHash());
+    void updateMoney() {
+        your_money_value = connection.getAccount(login.getLogin(), login.getPasswordHash(), 0).getValue() / 100.0;
         currentBalance.setText(your_money_value + " PLN");
     }
     void updateCurrencies() {

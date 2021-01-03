@@ -56,10 +56,10 @@ public class Client {
     public String getSurname() {
         return surname;
     }
-    public Date getBirth_date() {
+    public Date getBirthDate() {
         return birth_date;
     }
-    public int getAddress_id() {
+    public int getAddressID() {
         return address_id;
     }
 
@@ -72,10 +72,10 @@ public class Client {
     public void setSurname(String surname) {
         this.surname = surname;
     }
-    public void setBirth_date(Date birth_date) {
+    public void setBirthDate(Date birth_date) {
         this.birth_date = birth_date;
     }
-    public void setAddress_id(int address_id) {
+    public void setAddressID(int address_id) {
         this.address_id = address_id;
     }
     public Integer getLoginID() {
