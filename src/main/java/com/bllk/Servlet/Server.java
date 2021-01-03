@@ -34,7 +34,7 @@ public class Server extends HttpServlet {
                     if (countries != null) {
                         json = "{\n";
                         for (Object country: countries)
-                            json += "\"" + ((Country) country).getId() + "\": \"" + ((Country) country).getName() + "\",\n";
+                            json += "\"" + ((Country) country).getName() + "\": \"" + ((Country) country).getId() + "\",\n";
                         json += "}";
                         response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));;
                     } else
