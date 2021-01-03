@@ -15,6 +15,11 @@ public class ClientServerConnection {
         Map<String,String> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
         return map;
     }
+    public Map<String, Integer> getCountries() {
+        JSONObject jsonObject = new JSONObject(getData("countries"));
+        Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
+        return map;
+    }
     public Client getClient(String login, String hashed_password) {
         JSONObject json_object = new JSONObject(getData(String.format("login?login=%s&password=%s", login, hashed_password)));
         return new Client(json_object.getInt("id"), json_object.getString("name"),
