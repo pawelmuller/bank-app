@@ -49,7 +49,7 @@ public class MainUserPage {
                 }
                 else {
                     message.setText("Sending " + money_value + " PLN to Account " + target_id);
-                    connection.make_transfer(login.getLogin(), login.getPasswordHash(), target_id, money_value);
+                    connection.makeTransfer(login.getLogin(), login.getPasswordHash(), target_id, money_value);
                     UpdateMoney();
                 }
             }

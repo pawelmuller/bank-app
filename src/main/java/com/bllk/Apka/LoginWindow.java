@@ -49,10 +49,8 @@ public class LoginWindow {
 
         try {
             message.setText("Checking...");
-            String password_salt = connection.get_salt(login);
+            String password_salt = connection.getSalt(login);
             String hashed_password = BCrypt.hashpw(password, password_salt);
-//            System.out.println(hashed_password);
-//            System.out.println(password_salt);
 
             client = connection.getClient(login, hashed_password);
             log = new Login(client.getID(), login, hashed_password);
