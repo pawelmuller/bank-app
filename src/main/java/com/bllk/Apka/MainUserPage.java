@@ -38,6 +38,7 @@ public class MainUserPage {
         login = _login;
         nameLabel.setText("Witaj " + client.getName() + " " + client.getSurname() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
+
         updateCurrencies();
         updateMoney();
 
@@ -55,8 +56,9 @@ public class MainUserPage {
                     message.setText("Transaction failed: Account don't exists.");
                 }
                 else {
+                    System.out.println(currencySelect.getSelectedItem());
                     message.setText("Sending " + money_value + " PLN to Account " + target_id);
-                    connection.makeTransfer(login.getLogin(), login.getPasswordHash(), target_id, money_value);
+                    connection.makeTransfer(login.getLogin(), login.getPasswordHash(), target_id, money_value, 0);
                     updateMoney();
                 }
             }
@@ -77,8 +79,8 @@ public class MainUserPage {
         currentBalance.setText(your_money_value + " PLN");
     }
     void updateCurrencies() {
-        for (Map.Entry<String,String> entry : connection.getCurrencies().entrySet())
-            currencySelect.addItem(entry.getValue());
+        for (Map.Entry<String,Integer> entry : connection.getCurrencies().entrySet())
+            currencySelect.addItem(entry.getKey());
 //        active_currency = connection.getCurrencyByName((String)currencySelect.getSelectedItem());
     }
 }

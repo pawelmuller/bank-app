@@ -1,12 +1,13 @@
 package com.bllk.Servlet.mapclasses;
 
+import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="TRANSACTIONS")
-public class Transaction {
+public class TransactionRecord {
     @Id
     @Column(name = "TRANSACTION_ID")
     private Integer id;
@@ -21,14 +22,14 @@ public class Transaction {
     @Column(name = "CURRENCY_ID")
     private Integer currencyid;
 
-    public Transaction(Integer senderid, Integer receiverid, String title, Integer value, Integer currencyid) {
+    public TransactionRecord(Integer senderid, Integer receiverid, String title, Integer value, Integer currencyid) {
         this.senderid = senderid;
         this.receiverid = receiverid;
         this.title = title;
         this.value = value;
         this.currencyid = currencyid;
     }
-    public Transaction(Integer id, Integer senderid, Integer receiverid, String title, Integer value, Integer currencyid) {
+    public TransactionRecord(Integer id, Integer senderid, Integer receiverid, String title, Integer value, Integer currencyid) {
         this.id = id;
         this.senderid = senderid;
         this.receiverid = receiverid;
@@ -36,7 +37,7 @@ public class Transaction {
         this.value = value;
         this.currencyid = currencyid;
     }
-    public Transaction() {
+    public TransactionRecord() {
     }
 
     public Integer getID() {

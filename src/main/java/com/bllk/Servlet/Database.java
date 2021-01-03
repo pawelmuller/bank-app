@@ -1,20 +1,15 @@
 package com.bllk.Servlet;
 import com.bllk.Servlet.mapclasses.*;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
-import org.hibernate.procedure.ProcedureCall;
-import org.hibernate.procedure.ProcedureOutputs;
 import org.hibernate.query.Query;
-import org.hibernate.result.Output;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.Transaction;
 
 import javax.persistence.*;
-import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -42,10 +37,13 @@ public class Database {
             configuration.addAnnotatedClass(Account.class);
             configuration.addAnnotatedClass(Address.class);
             configuration.addAnnotatedClass(Client.class);
+            configuration.addAnnotatedClass(Contact.class);
             configuration.addAnnotatedClass(Country.class);
+            configuration.addAnnotatedClass(Credit.class);
             configuration.addAnnotatedClass(Currency.class);
+            configuration.addAnnotatedClass(Investment.class);
             configuration.addAnnotatedClass(Login.class);
-            configuration.addAnnotatedClass(Transaction.class);
+            configuration.addAnnotatedClass(TransactionRecord.class);
 
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
             factory = configuration.buildSessionFactory(serviceRegistry);
@@ -102,7 +100,7 @@ public class Database {
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM Country";
+            String hql = "FROM Country ORDER BY name";
             Query query = session.createQuery(hql);
             countries = query.list();
 
@@ -193,27 +191,33 @@ public class Database {
         }
         return valid;
     }
-    public void makeTransfer(int payerid, int targetid, int amount) {
+    public void makeTransfer(int payerid, int targetid, int amount, int currencyid) {
         try {
             Session session = factory.openSession();
-            org.hibernate.Transaction tx = session.beginTransaction();
+            Transaction tx = session.beginTransaction();
 
-            Query q = session.createQuery("from Account where accountid=" + payerid);
+            Query q = session.createQuery("from Account where id=:param");
+            q.setParameter("param", payerid);
             Account result = (Account)q.list().get(0);
             Integer i = result.getValue();
             result.setValue(i-amount);
             session.update(result);
 
-            q = session.createQuery("from Account where accountid=" + targetid);
+            q = session.createQuery("from Account where id=:param1");
+            q.setParameter("param1", targetid);
             result = (Account)q.list().get(0);
             i = result.getValue();
             result.setValue(i+amount);
             session.update(result);
-
-//            Transaction transaction = new org.bllk.Transaction((Integer)payerid, (Integer)targetid, "nowy", amount, 0);
-//            session.save(transaction);
-
             tx.commit();
+
+//            tx = session.beginTransaction();
+//            int id = session.createSQLQuery("SELECT MAX(TRANSACTION_ID) FROM TRANSACTIONS").getFirstResult() + 1;
+//            System.out.println(id);
+//            TransactionRecord transactionRecord = new TransactionRecord(id, payerid, targetid, "nowy", amount, currencyid);
+//            session.save(transactionRecord);
+//            tx.commit();
+
             session.close();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

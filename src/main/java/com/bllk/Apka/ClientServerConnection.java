@@ -11,15 +11,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClientServerConnection {
-    public Map<String, String> getCurrencies() {
+    public Map<String, Integer> getCurrencies() {
         JSONObject jsonObject = new JSONObject(getData("currencies"));
-        Map<String,String> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
-        return map;
+        Map<String,Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
+        Map<String, Integer> sortedMap = new TreeMap<String, Integer>(map);
+        return sortedMap;
     }
     public Map<String, Integer> getCountries() {
         JSONObject jsonObject = new JSONObject(getData("countries"));
         Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
-        return map;
+        Map<String, Integer> sortedMap = new TreeMap<String, Integer>(map);
+        return sortedMap;
     }
     public Client getClient(String login, String hashed_password) {
         JSONObject json_object = new JSONObject(getData(String.format("login?login=%s&password=%s", login, hashed_password)));
@@ -31,9 +33,13 @@ public class ClientServerConnection {
         JSONObject json_object = new JSONObject(getData(String.format("getsalt/%s", login)));
         return new String(json_object.getString("salt"));
     }
-    public Account getAccount(String login, String hashed_password, int currency) {
-        JSONObject json_object = new JSONObject(getData(String.format("login/money?login=%s&password=%s&currency=%s", login, hashed_password, currency)));
+    public Account getAccount(String login, String hashed_password, int currencyid) {
+        JSONObject json_object = new JSONObject(getData(String.format("login/money?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
         return new Account(json_object.getInt("id"), json_object.getInt("value"), json_object.getInt("currency"), json_object.getInt("ownerid"));
+    }
+    public double getTotalSavings(String login, String hashed_password, int currencyid) {
+        JSONObject json_object = new JSONObject(getData(String.format("login/totalmoney?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
+        return json_object.getInt("value");
     }
     public boolean check_client(int client_id) {
         JSONObject json_object = new JSONObject(getData(String.format("account/%d", client_id)));
@@ -45,13 +51,16 @@ public class ClientServerConnection {
             return false;
         }
     }
-    public void makeTransfer(String login, String hashed_password, int target_id, double amount) {
+    public void makeTransfer(String login, String hashed_password, int target_id, double amount, int currencyid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL(String.format("http://localhost:8080/login/%s/%s/transaction", login, hashed_password)).openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/transaction").openConnection();
             http_connection.setRequestMethod("POST");
 
-            String postData = "targetid=" + target_id;
-            postData += "&amount=" + amount;
+            String postData = "login=" + login;
+            postData += "&password=" + hashed_password;
+            postData += "&targetid=" + target_id;
+            postData += "&amount=" + (int)(amount * 100);
+            postData += "&currencyid=" + currencyid;
 
             http_connection.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(http_connection.getOutputStream());
@@ -61,8 +70,8 @@ public class ClientServerConnection {
             int response_code = http_connection.getResponseCode();
             if (response_code == 200)
                 System.out.println("POST was successful.");
-            else if (response_code == 401)
-                throw new Exception("Wrong password");
+            else
+                throw new Exception("Something went wrong: " + response_code);
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -99,7 +108,6 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
-
     public String getData(String url) {
     try {
         HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/" + url).openConnection();
