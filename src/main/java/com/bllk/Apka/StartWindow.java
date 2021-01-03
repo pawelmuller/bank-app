@@ -26,18 +26,14 @@ public class StartWindow {
     private JScrollPane registerTab;
     private JTextField register_loginField;
     private JPasswordField register_passwordField, register_repeatPasswordField;
-    private JTextField register_name;
-    private JTextField register_surname;
-    private JComboBox<Integer> register_yearsComboBox;
-    private JComboBox<Integer> register_monthsComboBox;
-    private JComboBox<Integer> register_daysComboBox;
-    private JTextField register_street;
-    private JTextField register_number;
-    private JTextField register_city;
-    private JTextField register_postalcode;
-    private JComboBox register_countriesComboBox;
+    private JTextField register_name, register_surname;
+    private JComboBox<Integer> register_yearsComboBox, register_monthsComboBox, register_daysComboBox;
+    private JTextField register_street, register_number, register_city, register_postalcode;
+    private JComboBox<String> register_countriesComboBox;
     private JButton register_button;
     private JPanel registerPanel;
+    private JRadioButton kobietaRadioButton;
+    private JRadioButton mężczyznaRadioButton;
 
     private Integer year, month, day;
 
@@ -82,6 +78,10 @@ public class StartWindow {
         loginField.setText("");
         passwordField.setText("");
         message.setText("");
+    }
+
+    public void performRegister() {
+        // Rejestracja, sprawdzanie bledow, itp.
     }
 
     public StartWindow() {
@@ -200,7 +200,4 @@ public class StartWindow {
             register_countriesComboBox.addItem(entry.getKey());
     }
 
-    public void pullDataFromServer(String login, String password) {
-
-    }
 }
