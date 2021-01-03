@@ -59,6 +59,13 @@ public class Server extends HttpServlet {
                     else
                         response.getOutputStream().println("{}");
                 }
+                if (atributes[0].equals("getsalt")) {
+                    String salt = data.get_salt(atributes[1]);
+                    if (salt != null)
+                        response.getOutputStream().println("{\n\"salt\": \"" + salt + "\"\n}");
+                    else
+                        response.getOutputStream().println("{}");
+                }
                 break;
             case 3:
                 if (atributes[0].equals("login")) {

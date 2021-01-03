@@ -73,6 +73,27 @@ public class Database {
         }
         return client;
     }
+    public String get_salt(String user_login) {
+        String salt = null, hash = null;
+        Login login = null;
+
+        try {
+            Session session = factory.openSession();
+
+            String hql = "FROM Login WHERE login='" + user_login + "'";
+            Query query = session.createQuery(hql);
+            login = (Login) query.list().get(0);
+            hash = login.getPasswordHash();
+            salt = hash.substring(0, 29);
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return salt;
+    }
     public List get_countries() {
         List countries = null;
 
