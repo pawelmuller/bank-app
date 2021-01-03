@@ -129,13 +129,13 @@ public class Database {
         }
         return currencies;
     }
-    public Login get_login(String login, String password) {
+    public Login get_login(String login, String hashed_password) {
         Login result = null;
 
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM Login WHERE login='" + login + "' AND passwordhash='" + password + "'";
+            String hql = "FROM Login WHERE login='" + login + "' AND passwordhash='" + hashed_password + "'";
             Query query = session.createQuery(hql);
             List list = query.list();
 

@@ -10,9 +10,13 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class ClientServerConnection {
-    public Client get_login(String login, String password) {
-        JSONObject jsonObject = new JSONObject(getData(String.format("login/%s/%s", login, password)));
+    public Client get_login(String login, String hashed_password) {
+        JSONObject jsonObject = new JSONObject(getData(String.format("login/%s/%s", login, hashed_password)));
         return new Client(jsonObject.getInt("id"), jsonObject.getString("name"), jsonObject.getString("surname"));
+    }
+    public String get_salt(String login) {
+        JSONObject jsonObject = new JSONObject(getData(String.format("getsalt/%s", login)));
+        return new String(jsonObject.getString("salt"));
     }
     public double get_money(String login, String password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/%s/%s/money", login, password)));

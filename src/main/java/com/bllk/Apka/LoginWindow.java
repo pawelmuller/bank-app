@@ -35,9 +35,10 @@ public class LoginWindow {
         frame.setVisible(true);
     }
 
-    public void Submit() {
+    public void performLogin() {
         String login = loginField.getText();
         String password = String.valueOf(passwordField.getPassword());
+        String salt = null;
 
         if (login.isEmpty() || password.isEmpty()) {
             message.setText("No login or password given.");
@@ -45,11 +46,10 @@ public class LoginWindow {
         }
         try {
             message.setText("Checking...");
-            String password_salt = BCrypt.gensalt(12);
+            String password_salt = connection.get_salt(login);
             String hashed_password = BCrypt.hashpw(password, password_salt);
             System.out.println(hashed_password);
-
-            // connection.create_client("Bilbo", "Baggins", "2000-01-12", "Bagshot Row","1", "Hobbiton", "00-001", "Shire", "bilbo", "shire");
+            System.out.println(password_salt);
 
             Client client = connection.get_login(login, hashed_password);
             Login log = new Login(client.getID(), login, hashed_password);
@@ -65,13 +65,13 @@ public class LoginWindow {
     }
 
     public LoginWindow() {
-        loginButton.addActionListener(e -> Submit());
+        loginButton.addActionListener(e -> performLogin());
 
         passwordField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    Submit();
+                    performLogin();
                 }
             }
         });
@@ -79,7 +79,7 @@ public class LoginWindow {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    Submit();
+                    performLogin();
                 }
             }
         });
