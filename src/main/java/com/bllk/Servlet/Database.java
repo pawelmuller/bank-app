@@ -54,7 +54,7 @@ public class Database {
         }
     }
 
-    public Client get_client(int loginid) {
+    public Client getClient(int loginid) {
         Client client = null;
 
         try {
@@ -75,7 +75,7 @@ public class Database {
         }
         return client;
     }
-    public String get_salt(String user_login) {
+    public String getSalt(String user_login) {
         String salt = null, hash = null;
         Login login = null;
 
@@ -96,7 +96,7 @@ public class Database {
         }
         return salt;
     }
-    public List get_countries() {
+    public List getCountries() {
         List countries = null;
 
         try {
@@ -114,7 +114,7 @@ public class Database {
         }
         return countries;
     }
-    public List get_currencies() {
+    public List getCurrencies() {
         List currencies = null;
 
         try {
@@ -131,7 +131,7 @@ public class Database {
         }
         return currencies;
     }
-    public Login get_login(String login, String hashed_password) {
+    public Login getLogin(String login, String hashed_password) {
         Login result = null;
 
         try {
@@ -152,13 +152,15 @@ public class Database {
         }
         return result;
     }
-    public Account get_money(int accountid) {
+    public Account getAccount(String login, String hashed_password, int currencyid) {
         Account account = null;
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM Account WHERE accountid=" + accountid;
-            Query query = session.createQuery(hql);
+            Query query = session.createQuery("SELECT A FROM Account A, Client C, Login L WHERE A.owner_id=C.id AND C.login_id=L.id AND L.login=:login AND L.passwordhash=:password AND A.currency_id=:currency");
+            query.setParameter("login", login);
+            query.setParameter("password", hashed_password);
+            query.setParameter("currency", currencyid);
 
             if (query.list().size() >= 1)
                 account = (Account) query.list().get(0);
@@ -171,7 +173,7 @@ public class Database {
         }
         return account;
     }
-    public boolean check_client(int accountid) {
+    public boolean checkClient(int accountid) {
         boolean valid = false;
 
         try {
@@ -191,7 +193,7 @@ public class Database {
         }
         return valid;
     }
-    public void make_transfer(int payerid, int targetid, int amount) {
+    public void makeTransfer(int payerid, int targetid, int amount) {
         try {
             Session session = factory.openSession();
             org.hibernate.Transaction tx = session.beginTransaction();
@@ -219,7 +221,7 @@ public class Database {
             refresh();
         }
     }
-    public int add_login(String _login, String _password) {
+    public int addLogin(String _login, String _password) {
         try {
             Session session = factory.openSession();
             org.hibernate.Transaction tx = session.beginTransaction();
@@ -239,9 +241,9 @@ public class Database {
         }
     }
 
-    public void add_client(String _name, String _surname, String _date, String _street,
-                           String _num, String _city, String _postal_code,
-                           String _country_name, String _login, String _password) {
+    public void addClient(String _name, String _surname, String _date, String _street,
+                          String _num, String _city, String _postal_code,
+                          String _country_name, String _login, String _password) {
 
         try {
             Session session = factory.openSession();

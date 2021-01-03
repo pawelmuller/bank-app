@@ -1,5 +1,6 @@
 package com.bllk.Apka;
 
+import com.bllk.Servlet.mapclasses.Account;
 import com.bllk.Servlet.mapclasses.Client;
 import org.json.JSONObject;
 
@@ -25,9 +26,9 @@ public class ClientServerConnection {
         JSONObject json_object = new JSONObject(getData(String.format("getsalt/%s", login)));
         return new String(json_object.getString("salt"));
     }
-    public double get_money(String login, String hashed_password) {
-        JSONObject json_object = new JSONObject(getData(String.format("login/%s/%s/money", login, hashed_password)));
-        return json_object.getDouble("moneyonaccount");
+    public Account getAccount(String login, String hashed_password, int currency) {
+        JSONObject json_object = new JSONObject(getData(String.format("login/money?login=%s&password=%s&currency=%s", login, hashed_password, currency)));
+        return new Account(json_object.getInt("id"), json_object.getInt("value"), json_object.getInt("currency"), json_object.getInt("ownerid"));
     }
     public boolean check_client(int client_id) {
         JSONObject json_object = new JSONObject(getData(String.format("account/%d", client_id)));

@@ -4,8 +4,6 @@ import com.bllk.Servlet.mapclasses.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -23,14 +21,14 @@ public class Server extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestUrl = request.getRequestURI();
         String[] atributes = requestUrl.substring(1).split("/");
-        System.out.println(requestUrl);
+//        System.out.println(requestUrl);
         Client client;
         String json;
 
         switch (atributes.length) {
             case 1:
                 if (atributes[0].equals("countries")) {
-                    List countries = data.get_countries();
+                    List countries = data.getCountries();
                     if (countries != null) {
                         json = "{\n";
                         for (Object country: countries)
@@ -41,7 +39,7 @@ public class Server extends HttpServlet {
                         response.getOutputStream().println("{}");
                 }
                 else if (atributes[0].equals("currencies")) {
-                    List currencies = data.get_currencies();
+                    List currencies = data.getCurrencies();
                     if (currencies != null) {
                         json = "{\n";
                         for (Object currency: currencies)
@@ -55,16 +53,16 @@ public class Server extends HttpServlet {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");
 
-                    Login loginclass = data.get_login(login, password);
+                    Login loginclass = data.getLogin(login, password);
                     System.out.println(loginclass.toString());
                     if (login != null) {
-                        client = data.get_client(loginclass.getID());
+                        client = data.getClient(loginclass.getID());
                         json = "{\n";
                         json += "\"id\": \"" + client.getID() + "\",\n";
                         json += "\"name\": \"" + client.getName() + "\",\n";
                         json += "\"surname\": \"" + client.getSurname() + "\",\n";
-                        json += "\"birthdate\": \"" + client.getBirth_date().toString() + "\",\n";
-                        json += "\"addressid\": \"" + client.getAddress_id() + "\",\n";
+                        json += "\"birthdate\": \"" + client.getBirthDate().toString() + "\",\n";
+                        json += "\"addressid\": \"" + client.getAddressID() + "\",\n";
                         json += "\"loginid\": \"" + client.getLoginID() + "\"\n";
                         json += "}";
                         response.getOutputStream().println(json);
@@ -75,25 +73,43 @@ public class Server extends HttpServlet {
             break;
             case 2:
                 if (atributes[0].equals("account")) {
-                    boolean valid = data.check_client(Integer.parseInt(atributes[1]));
+                    boolean valid = data.checkClient(Integer.parseInt(atributes[1]));
                     if (valid)
                         response.getOutputStream().println("{\n\"id\": \"" + atributes[1] + "\"\n}");
                     else
                         response.getOutputStream().println("{}");
                 }
-                if (atributes[0].equals("getsalt")) {
-                    String salt = data.get_salt(atributes[1]);
+                else if (atributes[0].equals("getsalt")) {
+                    String salt = data.getSalt(atributes[1]);
                     if (salt != null)
                         response.getOutputStream().println("{\n\"salt\": \"" + salt + "\"\n}");
                     else
                         response.getOutputStream().println("{}");
                 }
-            break;
+                else if (atributes[0].equals("login") && atributes[1].equals("money")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("password");
+                    int currency = Integer.parseInt(request.getParameter("currency"));
+
+                    Account account = data.getAccount(login, password, currency);
+                    if (account != null) {
+                        json = "{\n";
+                        json += "\"id\": \"" + account.getID() + "\",\n";
+                        json += "\"value\": \"" + account.getValue() + "\",\n";
+                        json += "\"currency\": \"" + account.getCurrencyID() + "\",\n";
+                        json += "\"ownerid\": \"" + account.getOwnerID() + "\"\n";
+                        json += "}";
+                        response.getOutputStream().println(json);
+                    }
+                    else
+                        response.getOutputStream().println("{}");
+                }
+                break;
             case 3:
                 if (atributes[0].equals("login")) {
-                    Login login = data.get_login(atributes[1], atributes[2]);
+                    Login login = data.getLogin(atributes[1], atributes[2]);
                     if (login != null) {
-                        client = data.get_client(login.getID());
+                        client = data.getClient(login.getID());
                         json = "{\n";
                         json += "\"id\": \"" + client.getID() + "\",\n";
                         json += "\"name\": \"" + client.getName() + "\",\n";
@@ -101,23 +117,6 @@ public class Server extends HttpServlet {
                         json += "}";
                         response.getOutputStream().println(json);
                     } else {
-                        response.getOutputStream().println("{}");
-                    }
-                }
-            break;
-            case 4:
-                if (atributes[0].equals("login") && atributes[3].equals("money")) {
-                    Login login = data.get_login(atributes[1], atributes[2]);
-                    if (login != null) {
-                        Account account = data.get_money(login.getID());
-                        String mjson = "{\n";
-                        mjson += "\"id\": \"" + account.getID() + "\",\n";
-                        mjson += "\"moneyonaccount\": \"" + account.getValue() + "\",\n";
-                        mjson += "\"accountid\": \"" + account.getValue() + "\"\n";
-                        mjson += "}";
-                        response.getOutputStream().println(mjson);
-                    }
-                    else{
                         response.getOutputStream().println("{}");
                     }
                 }
@@ -144,18 +143,18 @@ public class Server extends HttpServlet {
                         String login = request.getParameter("login");
                         String password_hash = request.getParameter("passwordhash");
 
-                        data.add_client(name, surname, date, street, num, city, postal_code, country_name, login, password_hash);
+                        data.addClient(name, surname, date, street, num, city, postal_code, country_name, login, password_hash);
                     }
                     catch (Exception ignored) {}
                 }
                 break;
             case 4:
                 if (atributes[0].equals("login") && atributes[3].equals("transaction")) {
-                    Login login = data.get_login(atributes[1], atributes[2]);
+                    Login login = data.getLogin(atributes[1], atributes[2]);
                     if (login != null) {
                         int targetid = Integer.parseInt(request.getParameter("targetid"));
                         int amount = Integer.parseInt(request.getParameter("amount"));
-                        data.make_transfer(login.getID(), targetid, amount);
+                        data.makeTransfer(login.getID(), targetid, amount);
                     }
                 }
                 break;

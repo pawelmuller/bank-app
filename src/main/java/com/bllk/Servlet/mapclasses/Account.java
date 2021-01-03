@@ -44,5 +44,10 @@ public class Account {
 
     public Account() {
     }
-
+    public Account(Integer id, Integer value, Integer currency_id, Integer owner_id) {
+        this.id = id;
+        this.value = value;
+        this.currency_id = currency_id;
+        this.owner_id = owner_id;
+    }
 }
