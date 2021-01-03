@@ -1,9 +1,13 @@
 package com.bllk.Apka;
 
 import com.bllk.Servlet.mapclasses.Client;
+import com.bllk.Servlet.mapclasses.Currency;
 import com.bllk.Servlet.mapclasses.Login;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Map;
 
 public class MainUserPage {
     ClientServerConnection connection;
@@ -22,6 +26,10 @@ public class MainUserPage {
     private JPanel contentPanel;
     private JTabbedPane tabbedPane1;
     private JPanel historyPanel;
+    private JComboBox<String> currencySelect;
+    private JTextField title;
+
+    Currency active_currency;
 
     public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, Client _client, Login _login) {
         frame = _frame;
@@ -32,7 +40,8 @@ public class MainUserPage {
 //        your_money_value = connection.get_money(login.getLogin(), login.getPasswordHash());
         nameLabel.setText("Witaj " + client.getName() + " " + client.getSurname() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
-//        UpdateMoney();
+        updateCurrencies();
+        //        UpdateMoney();
 
         sendMoneyButton.addActionListener(e -> {
             try {
@@ -41,9 +50,9 @@ public class MainUserPage {
                 if (target_id == client.getID()) {
                     message.setText("Transaction failed: You can't send money to yourself.");
                 }
-                else if (money_value > your_money_value || money_value <= 0) {
-                    message.setText("Transaction failed: Invalid amount of money.");
-                }
+//                else if (money_value > your_money_value || money_value <= 0) {
+//                    message.setText("Transaction failed: Invalid amount of money.");
+//                }
                 else if (!connection.check_client(Integer.parseInt(accountNumber.getText()))) {
                     message.setText("Transaction failed: Account don't exists.");
                 }
@@ -58,10 +67,20 @@ public class MainUserPage {
             }
         });
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
+
+
+        currencySelect.addActionListener(e -> {
+
+        });
     }
 
     void UpdateMoney() {
         your_money_value = connection.get_money(login.getLogin(), login.getPasswordHash());
         currentBalance.setText(your_money_value + " PLN");
+    }
+    void updateCurrencies() {
+        for (Map.Entry<String,String> entry : connection.getCurrencies().entrySet())
+            currencySelect.addItem(entry.getValue());
+//        active_currency = connection.getCurrencyByName((String)currencySelect.getSelectedItem());
     }
 }

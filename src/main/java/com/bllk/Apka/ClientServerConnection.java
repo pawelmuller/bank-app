@@ -6,10 +6,15 @@ import org.json.JSONObject;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ClientServerConnection {
+    public Map<String, String> getCurrencies() {
+        JSONObject jsonObject = new JSONObject(getData("currencies"));
+        Map<String,String> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
+        return map;
+    }
     public Client getClient(String login, String hashed_password) {
         JSONObject json_object = new JSONObject(getData(String.format("login?login=%s&password=%s", login, hashed_password)));
         return new Client(json_object.getInt("id"), json_object.getString("name"),

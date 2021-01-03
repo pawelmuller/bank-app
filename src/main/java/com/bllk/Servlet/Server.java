@@ -45,7 +45,7 @@ public class Server extends HttpServlet {
                     if (currencies != null) {
                         json = "{\n";
                         for (Object currency: currencies)
-                            json += "\"" + ((Currency) currency).getID() + "\": \"" + ((Currency) currency).getName() + "\",\n";
+                            json += "\"" + ((Currency) currency).getID() + "\": \"" + ((Currency) currency).getShortcut() + "\",\n";
                         json += "}";
                         response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     } else
