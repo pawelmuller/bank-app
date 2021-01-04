@@ -10,6 +10,7 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.Transaction;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -270,28 +271,33 @@ public class Database {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
 
-            Query q = session.createQuery("from Account where id=:param");
+            Query q = session.createQuery("FROM Account WHERE id=:param");
             q.setParameter("param", payerid);
-            Account result = (Account)q.list().get(0);
-            Integer i = result.getValue();
-            result.setValue(i-amount);
-            session.update(result);
+            Account payer = (Account)q.list().get(0);
+
+            Integer i = payer.getValue();
+            payer.setValue(i-amount);
+            session.update(payer);
 
             q = session.createQuery("from Account where id=:param1");
             q.setParameter("param1", targetid);
-            result = (Account)q.list().get(0);
-            i = result.getValue();
-            result.setValue(i+amount);
-            session.update(result);
+            Account target = (Account) q.list().get(0);
+            i = target.getValue();
+
+            q = session.createSQLQuery("SELECT C.VALUE_IN_USD*(1/C2.VALUE_IN_USD) FROM CURRENCIES C, CURRENCIES C2 WHERE C.CURRENCY_ID=:param AND C2.CURRENCY_ID=:param2");
+            q.setParameter("param", payer.getCurrencyID());
+            q.setParameter("param2", target.getCurrencyID());
+            float modifier = ((BigDecimal) q.list().get(0)).floatValue();
+            int new_amount = (int) (amount*modifier);
+
+            target.setValue(i+new_amount);
+            session.update(target);
+
+            int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(TRANSACTION_ID) FROM TRANSACTIONS").list().get(0)).intValue() + 1;
+            TransactionRecord transactionRecord = new TransactionRecord(id, payerid, targetid, "nowy", amount, currencyid);
+            session.save(transactionRecord);
+
             tx.commit();
-
-//            tx = session.beginTransaction();
-//            int id = session.createSQLQuery("SELECT MAX(TRANSACTION_ID) FROM TRANSACTIONS").getFirstResult() + 1;
-//            System.out.println(id);
-//            TransactionRecord transactionRecord = new TransactionRecord(id, payerid, targetid, "nowy", amount, currencyid);
-//            session.save(transactionRecord);
-//            tx.commit();
-
             session.close();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -318,7 +324,6 @@ public class Database {
             return -1;
         }
     }
-
     public void addClient(String _name, String _surname, String _date, String _street,
                           String _num, String _city, String _postal_code,
                           String _country_name, String _login, String _password) {
