@@ -80,8 +80,7 @@ public class Server extends HttpServlet {
                         Account account = data.getAccount(accountid);
                         if (account != null) {
                             json = "{\n";
-                            json += "\"id\": \"" + account.getID() + "\"\n";
-                            json += "\"owner\": \"" + account.getOwnerID() + "\"\n";
+                            json += "\"id\": \"" + account.getID() + "\",\n";
                             json += "\"currency\": \"" + account.getCurrencyID() + "\"\n";
                             json += "}";
                             response.getOutputStream().println(json);
@@ -95,16 +94,18 @@ public class Server extends HttpServlet {
                             Account account = data.getAccount(accountid);
                             if (account != null) {
                                 json = "{\n";
-                                json += "\"id\": \"" + account.getID() + "\"\n";
-                                json += "\"owner\": \"" + account.getOwnerID() + "\"\n";
-                                json += "\"value\": \"" + account.getValue() + "\"\n";
-                                json += "\"currency\": \"" + account.getCurrencyID() + "\"\n";
+                                json += "\"id\": \"" + account.getID() + "\",\n";
+                                json += "\"value\": \"" + account.getValue() + "\",\n";
+                                json += "\"currency\": \"" + account.getCurrencyID() + "\",\n";
+                                json += "\"ownerid\": \"" + account.getOwnerID() + "\"\n";
                                 json += "}";
                                 response.getOutputStream().println(json);
                             }
                             else
                                 response.getOutputStream().println("{}");
                         }
+                        else
+                            response.getOutputStream().println("{}");
                     }
                 }
                 else if (atributes[0].equals("getsalt")) {
@@ -112,24 +113,6 @@ public class Server extends HttpServlet {
                     if (salt != null)
                         response.getOutputStream().println("{\n\"salt\": \"" + salt + "\"\n}");
                     else
-                        response.getOutputStream().println("{}");
-                }
-                else if (atributes[0].equals("login") && atributes[1].equals("money")) {
-//                    String login = request.getParameter("login");
-//                    String password = request.getParameter("password");
-//                    int currency = Integer.parseInt(request.getParameter("currency"));
-//
-//                    Account account = data.getAccount(login, password, currency);
-//                    if (account != null) {
-//                        json = "{\n";
-//                        json += "\"id\": \"" + account.getID() + "\",\n";
-//                        json += "\"value\": \"" + account.getValue() + "\",\n";
-//                        json += "\"currency\": \"" + account.getCurrencyID() + "\",\n";
-//                        json += "\"ownerid\": \"" + account.getOwnerID() + "\"\n";
-//                        json += "}";
-//                        response.getOutputStream().println(json);
-//                    }
-//                    else
                         response.getOutputStream().println("{}");
                 }
                 else if (atributes[0].equals("login") && atributes[1].equals("accounts")) {

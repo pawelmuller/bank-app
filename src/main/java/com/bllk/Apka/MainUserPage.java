@@ -1,5 +1,6 @@
 package com.bllk.Apka;
 
+import com.bllk.Servlet.mapclasses.Account;
 import com.bllk.Servlet.mapclasses.Client;
 import com.bllk.Servlet.mapclasses.Currency;
 import com.bllk.Servlet.mapclasses.Login;
@@ -27,10 +28,11 @@ public class MainUserPage {
     private JComboBox<String> currencySelect;
     private JTextField title;
     private JComboBox<String> accountSelect;
-    private JLabel payerbalance;
+    private JLabel payerBalance;
 
     Currency active_currency;
-    Integer active_payerid = null;
+    Account active_payer_account = null;
+    Map <String, Integer> currencies;
 
     public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, Client _client, Login _login) {
         frame = _frame;
@@ -43,29 +45,28 @@ public class MainUserPage {
 
         updateAccounts();
         updateCurrencies();
-//        updateMoney();
 
         sendMoneyButton.addActionListener(e -> {
             try {
                 int target_id = Integer.parseInt(accountNumber.getText());
                 double money_value = Double.parseDouble(amount.getText());
-                if (active_payerid == target_id) {
+                if (active_payer_account.getID() == target_id) {
                     message.setText("Transaction failed: You can't send money to yourself.");
                 }
-                else if (money_value > your_money_value || money_value <= 0) {
+                else if (money_value*100 > active_payer_account.getValue() || money_value <= 0) {
                     message.setText("Transaction failed: Invalid amount of money.");
                 }
                 else if (!connection.checkAccount(Integer.parseInt(accountNumber.getText()))) {
                     message.setText("Transaction failed: Account don't exists.");
                 }
-                else if (active_payerid == null) {
+                else if (active_payer_account == null) {
                     message.setText("Transaction failed: Account don't selected.");
                 }
                 else {
                     System.out.println(currencySelect.getSelectedItem());
                     message.setText("Sending " + money_value + " PLN to Account " + target_id);
-                    connection.makeTransfer(login.getLogin(), login.getPasswordHash(), active_payerid, target_id, money_value, 0);
-//                    updateMoney();
+                    connection.makeTransfer(login.getLogin(), login.getPasswordHash(), active_payer_account.getID(), target_id, money_value, 0);
+                    updateMoney();
                 }
             }
             catch (Exception ex) {
@@ -74,24 +75,22 @@ public class MainUserPage {
         });
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
         currencySelect.addActionListener(e -> {});
-        accountSelect.addActionListener(e -> {
-            if (accountSelect.getItemCount()>=0)
-                active_payerid = Integer.parseInt((String) accountSelect.getSelectedItem());
-        });
+        accountSelect.addActionListener(e -> updateMoney());
+    }
+    void updateMoney() {
+        if (accountSelect.getItemCount()>=0) {
+            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
+            payerBalance.setText(String.format("%.2f", active_payer_account.getValue() / 100.0));
+        }
     }
     void updateAccounts() {
         for (Map.Entry<String,Integer> entry : connection.getUserAccounts(login.getLogin(), login.getPasswordHash()).entrySet())
             accountSelect.addItem(entry.getKey());
-
-        if (accountSelect.getItemCount()>=0)
-            active_payerid = Integer.parseInt((String) accountSelect.getSelectedItem());
-    }
-    void updateMoney() {
-        your_money_value = connection.getAccount(login.getLogin(), login.getPasswordHash(), 0).getValue() / 100.0;
-        currentBalance.setText(your_money_value + " PLN");
+        updateMoney();
     }
     void updateCurrencies() {
-        for (Map.Entry<String,Integer> entry : connection.getCurrencies().entrySet())
+        currencies = connection.getCurrencies();
+        for (Map.Entry<String,Integer> entry : currencies.entrySet())
             currencySelect.addItem(entry.getKey());
     }
 }

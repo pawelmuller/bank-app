@@ -192,7 +192,7 @@ public class Database {
             Session session = factory.openSession();
 
             Query query = session.createQuery("SELECT A FROM Account A, Client C, Login L WHERE C.id=A.owner_id AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2 AND A.id=:param3");
-            query.setParameter("param", accountid);
+            query.setParameter("param", login);
             query.setParameter("param2", hashed_password);
             query.setParameter("param3", accountid);
 
