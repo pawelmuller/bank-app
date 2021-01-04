@@ -25,14 +25,14 @@ public class MainUserPage {
     private JPanel contentPanel;
     private JTabbedPane tabbedPane1;
     private JPanel historyPanel;
-    private JComboBox<String> currencySelect;
-    private JTextField title;
+    private JTextField titleTextField;
     private JComboBox<String> accountSelect;
     private JLabel payerBalance;
+    private JLabel currencyLabel;
 
     Currency active_currency;
     Account active_payer_account = null;
-    Map <String, Integer> currencies;
+    Map <String, String> currencies;
 
     public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, Client _client, Login _login) {
         frame = _frame;
@@ -42,30 +42,36 @@ public class MainUserPage {
         login = _login;
         nameLabel.setText("Witaj " + client.getName() + " " + client.getSurname() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
+        currencies = connection.getCurrencies();
 
         updateAccounts();
-        updateCurrencies();
 
         sendMoneyButton.addActionListener(e -> {
             try {
+                int payer_id = active_payer_account.getID();
                 int target_id = Integer.parseInt(accountNumber.getText());
-                double money_value = Double.parseDouble(amount.getText());
+                int currency_id = active_payer_account.getCurrencyID();
+                int money_value = (int) (Double.parseDouble(amount.getText()) * 100);
+                String title = titleTextField.getText();
+
                 if (active_payer_account.getID() == target_id) {
                     message.setText("Transaction failed: You can't send money to yourself.");
                 }
-                else if (money_value*100 > active_payer_account.getValue() || money_value <= 0) {
+                else if (money_value > active_payer_account.getValue() || money_value <= 0) {
                     message.setText("Transaction failed: Invalid amount of money.");
                 }
                 else if (!connection.checkAccount(Integer.parseInt(accountNumber.getText()))) {
                     message.setText("Transaction failed: Account don't exists.");
                 }
+                else if (titleTextField.getText().equals("")) {
+                    message.setText("Transaction failed: Title can't be null.");
+                }
                 else if (active_payer_account == null) {
                     message.setText("Transaction failed: Account don't selected.");
                 }
                 else {
-                    System.out.println(currencySelect.getSelectedItem());
-                    message.setText("Sending " + money_value + " PLN to Account " + target_id);
-                    connection.makeTransfer(login.getLogin(), login.getPasswordHash(), active_payer_account.getID(), target_id, money_value, 0);
+                    message.setText(String.format("Sending %.2f %s to Account %d", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
+                    connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
                     updateMoney();
                 }
             }
@@ -74,23 +80,18 @@ public class MainUserPage {
             }
         });
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
-        currencySelect.addActionListener(e -> {});
         accountSelect.addActionListener(e -> updateMoney());
     }
     void updateMoney() {
         if (accountSelect.getItemCount()>=0) {
             active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
             payerBalance.setText(String.format("%.2f", active_payer_account.getValue() / 100.0));
+            currencyLabel.setText(currencies.get("" + active_payer_account.getCurrencyID()));
         }
     }
     void updateAccounts() {
         for (Map.Entry<String,Integer> entry : connection.getUserAccounts(login.getLogin(), login.getPasswordHash()).entrySet())
             accountSelect.addItem(entry.getKey());
         updateMoney();
-    }
-    void updateCurrencies() {
-        currencies = connection.getCurrencies();
-        for (Map.Entry<String,Integer> entry : currencies.entrySet())
-            currencySelect.addItem(entry.getKey());
     }
 }

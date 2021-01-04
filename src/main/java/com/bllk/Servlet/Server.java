@@ -43,7 +43,7 @@ public class Server extends HttpServlet {
                     if (currencies != null) {
                         json = "{\n";
                         for (Object currency: currencies)
-                            json += "\"" + ((Currency) currency).getShortcut() + "\": \"" + ((Currency) currency).getID() + "\",\n";
+                            json += "\"" + ((Currency) currency).getID() + "\": \"" + ((Currency) currency).getShortcut() + "\",\n";
                         json += "}";
                         response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     } else
@@ -144,7 +144,7 @@ public class Server extends HttpServlet {
                     else
                         response.getOutputStream().println("{}");
                 }
-                break;
+            break;
             case 3:
                 if (atributes[0].equals("login")) {
                     Login login = data.getLogin(atributes[1], atributes[2]);
@@ -196,9 +196,10 @@ public class Server extends HttpServlet {
                     if (log != null) {
                         int payerid = Integer.parseInt(request.getParameter("payerid"));
                         int targetid = Integer.parseInt(request.getParameter("targetid"));
+                        String title = request.getParameter("title");
                         int amount = Integer.parseInt(request.getParameter("amount"));
                         int currency = Integer.parseInt(request.getParameter("currencyid"));
-                        data.makeTransfer(payerid, targetid, amount, currency);
+                        data.makeTransfer(payerid, targetid, amount, title, currency);
                     }
                 }
                 break;

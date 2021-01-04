@@ -266,7 +266,7 @@ public class Database {
         }
         return savings;
     }
-    public void makeTransfer(int payerid, int targetid, int amount, int currencyid) {
+    public void makeTransfer(int payerid, int targetid, int amount, String title, int currencyid) {
         try {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
@@ -294,7 +294,7 @@ public class Database {
             session.update(target);
 
             int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(TRANSACTION_ID) FROM TRANSACTIONS").list().get(0)).intValue() + 1;
-            TransactionRecord transactionRecord = new TransactionRecord(id, payerid, targetid, "nowy", amount, currencyid);
+            TransactionRecord transactionRecord = new TransactionRecord(id, payerid, targetid, title, amount, currencyid);
             session.save(transactionRecord);
 
             tx.commit();

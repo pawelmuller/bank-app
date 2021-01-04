@@ -172,14 +172,6 @@
                   <text value="Label"/>
                 </properties>
               </component>
-              <component id="53aca" class="javax.swing.JComboBox" binding="currencySelect">
-                <constraints>
-                  <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                    <preferred-size width="139" height="30"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
               <component id="dbab" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -188,7 +180,7 @@
                   <text value="Title"/>
                 </properties>
               </component>
-              <component id="d8815" class="javax.swing.JTextField" binding="title">
+              <component id="d8815" class="javax.swing.JTextField" binding="titleTextField">
                 <constraints>
                   <grid row="6" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -219,6 +211,17 @@
                 <properties>
                   <font name="Arial Black" size="18"/>
                   <text value="Label"/>
+                </properties>
+              </component>
+              <component id="d7a21" class="javax.swing.JLabel" binding="currencyLabel">
+                <constraints>
+                  <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                    <preferred-size width="139" height="26"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <font name="Arial Black" size="18"/>
+                  <text value="PLN"/>
                 </properties>
               </component>
             </children>
