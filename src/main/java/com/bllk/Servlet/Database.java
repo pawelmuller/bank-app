@@ -1,5 +1,6 @@
 package com.bllk.Servlet;
 import com.bllk.Servlet.mapclasses.*;
+import com.bllk.Servlet.mapclasses.Currency;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -12,9 +13,9 @@ import org.hibernate.Transaction;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Database {
     private static SessionFactory factory;
@@ -33,6 +34,10 @@ public class Database {
             settings.put(Environment.PASS, "***REMOVED***");
             settings.put(Environment.DIALECT, "org.hibernate.dialect.Oracle8iDialect");
             settings.put(Environment.SHOW_SQL, "true");
+            settings.put("hibernate.connection.defaultNChar", "true");
+            settings.put("hibernate.connection.useUnicode", "true");
+            settings.put("hibernate.connection.characterEncoding", "utf8");
+            settings.put("hibernate.connection.CharSet", "utf8");
             configuration.setProperties(settings);
 
             configuration.addAnnotatedClass(Account.class);
@@ -168,11 +173,11 @@ public class Database {
         }
         return accounts;
     }
-    public List getTransactionsIN(String login, String hashed_password) {
+    public List getTransactions(String login, String hashed_password) {
         List transactions = null;
         try {
             Session session = factory.openSession();
-            Query query = session.createQuery("SELECT T FROM TransactionRecord T, Account A, Client C, Login L WHERE (A.id=T.receiverid OR A.id=T.senderid) AND A.owner_id=C.id AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
+            Query query = session.createQuery("SELECT DISTINCT T FROM TransactionRecord T, Account A, Client C, Login L WHERE (A.id=T.receiverid OR A.id=T.senderid) AND A.owner_id=C.id AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
             query.setParameter("param", login);
             query.setParameter("param2", hashed_password);
 

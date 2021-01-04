@@ -19,6 +19,8 @@ public class Server extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         String requestUrl = request.getRequestURI();
         String[] atributes = requestUrl.substring(1).split("/");
 //        System.out.println(requestUrl);
@@ -66,7 +68,7 @@ public class Server extends HttpServlet {
                         json += "\"loginid\": \"" + client.getLoginID() + "\",\n";
                         json += "\"gender\": \"" + client.getGender() + "\"\n";
                         json += "}";
-                        response.getOutputStream().println(json);
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     } else {
                         response.getOutputStream().println("{}");
                     }
@@ -85,7 +87,7 @@ public class Server extends HttpServlet {
                             json += "\"id\": \"" + account.getID() + "\",\n";
                             json += "\"currency\": \"" + account.getCurrencyID() + "\"\n";
                             json += "}";
-                            response.getOutputStream().println(json);
+                            response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                         }
                         else
                             response.getOutputStream().println("{}");
@@ -101,7 +103,7 @@ public class Server extends HttpServlet {
                                 json += "\"currency\": \"" + account.getCurrencyID() + "\",\n";
                                 json += "\"ownerid\": \"" + account.getOwnerID() + "\"\n";
                                 json += "}";
-                                response.getOutputStream().println(json);
+                                response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                             }
                             else
                                 response.getOutputStream().println("{}");
@@ -148,7 +150,7 @@ public class Server extends HttpServlet {
                         json = "{\n";
                         json += "\"value\": \"" + savings + "\",\n";
                         json += "}";
-                        response.getOutputStream().println(json);
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     }
                     else
                         response.getOutputStream().println("{}");
@@ -157,7 +159,7 @@ public class Server extends HttpServlet {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");
 
-                    List transactions = data.getTransactionsIN(login, password);
+                    List transactions = data.getTransactions(login, password);
                     if (transactions != null) {
                         json = "{\n";
                         int iter = 1;
@@ -191,7 +193,7 @@ public class Server extends HttpServlet {
                         json += "\"name\": \"" + client.getName() + "\",\n";
                         json += "\"surname\": \"" + client.getSurname() + "\"\n";
                         json += "}";
-                        response.getOutputStream().println(json);
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     } else {
                         response.getOutputStream().println("{}");
                     }
@@ -202,6 +204,8 @@ public class Server extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         String requestUrl = request.getRequestURI();
         String[] atributes = requestUrl.substring(1).split("/");
         switch (atributes.length) {
