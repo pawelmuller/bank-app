@@ -117,6 +117,13 @@ public class Server extends HttpServlet {
                     else
                         response.getOutputStream().println("{}");
                 }
+                else if (atributes[0].equals("checklogin")) {
+                    boolean does_exist = data.checkLogin(atributes[1]);
+                    if (does_exist)
+                        response.getOutputStream().println("{\n\"bool\": \"true\"\n}");
+                    else
+                        response.getOutputStream().println("{\n\"bool\": \"false\"\n}");
+                }
                 else if (atributes[0].equals("login") && atributes[1].equals("accounts")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");

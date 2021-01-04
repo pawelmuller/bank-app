@@ -40,6 +40,14 @@ public class ClientServerConnection {
         JSONObject json_object = new JSONObject(getData(String.format("getsalt/%s", login)));
         return json_object.getString("salt");
     }
+    public boolean checkLogin(String login) {
+        JSONObject json_object = new JSONObject(getData(String.format("checklogin/%s", login)));
+        String result = json_object.getString("bool");
+        if (result.equals("true"))
+            return true;
+        else
+            return false;
+    }
     public Account getAccount(String login, String hashed_password, int accountid) {
         JSONObject json_object = new JSONObject(getData(String.format("account/%s?login=%s&password=%s", accountid, login, hashed_password)));
         return new Account(json_object.getInt("id"), json_object.getInt("value"), json_object.getInt("currency"), json_object.getInt("ownerid"));

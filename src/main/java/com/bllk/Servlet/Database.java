@@ -95,6 +95,27 @@ public class Database {
         }
         return salt;
     }
+    public boolean checkLogin(String user_login) {
+        boolean does_exist;
+        Login login = null;
+
+        try {
+            Session session = factory.openSession();
+
+            String hql = "FROM Login WHERE login='" + user_login + "'";
+            Query query = session.createQuery(hql);
+            login = (Login) query.list().get(0);
+            does_exist = true;
+
+            session.close();
+        } catch (Exception ex) {
+            does_exist = false;
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return does_exist;
+    }
     public List getCountries() {
         List countries = null;
 
