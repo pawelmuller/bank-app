@@ -51,32 +51,30 @@ public class MainUserPage {
         updateTransactionTable();
         sendMoneyButton.addActionListener(e -> {
             try {
-                int payer_id = active_payer_account.getID();
-                int target_id = Integer.parseInt(accountNumber.getText());
-                int currency_id = active_payer_account.getCurrencyID();
-                int money_value = (int) (Double.parseDouble(amount.getText()) * 100);
-                String title = titleTextField.getText();
-
-                if (active_payer_account.getID() == target_id) {
-                    message.setText("Transaction failed: You can't send money to yourself.");
-                }
-                else if (money_value > active_payer_account.getValue() || money_value <= 0) {
-                    message.setText("Transaction failed: Invalid amount of money.");
-                }
-                else if (!connection.checkAccount(Integer.parseInt(accountNumber.getText()))) {
-                    message.setText("Transaction failed: Account don't exists.");
-                }
-                else if (titleTextField.getText().equals("")) {
-                    message.setText("Transaction failed: Title can't be null.");
-                }
-                else if (active_payer_account == null) {
-                    message.setText("Transaction failed: Account don't selected.");
+                if (active_payer_account == null) {
+                    message.setText("Transaction failed: You don't have any account.");
                 }
                 else {
-                    message.setText(String.format("Sending %.2f %s to Account %d", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
-                    connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
-                    updateMoney();
-                    updateTransactionTable();
+                    int payer_id = active_payer_account.getID();
+                    int target_id = Integer.parseInt(accountNumber.getText());
+                    int currency_id = active_payer_account.getCurrencyID();
+                    int money_value = (int) (Double.parseDouble(amount.getText()) * 100);
+                    String title = titleTextField.getText();
+
+                    if (active_payer_account.getID() == target_id) {
+                        message.setText("Transaction failed: You can't send money to yourself.");
+                    } else if (money_value > active_payer_account.getValue() || money_value <= 0) {
+                        message.setText("Transaction failed: Invalid amount of money.");
+                    } else if (!connection.checkAccount(Integer.parseInt(accountNumber.getText()))) {
+                        message.setText("Transaction failed: Account don't exists.");
+                    } else if (titleTextField.getText().equals("")) {
+                        message.setText("Transaction failed: Title can't be null.");
+                    } else {
+                        message.setText(String.format("Sending %.2f %s to Account %d", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
+                        connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
+                        updateMoney();
+                        updateTransactionTable();
+                    }
                 }
             }
             catch (Exception ex) {
@@ -111,7 +109,7 @@ public class MainUserPage {
         historyPanel.getViewport().add(table);
     }
     void updateMoney() {
-        if (accountSelect.getItemCount()>=0) {
+        if (accountSelect.getItemCount()>0) {
             active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
             payerBalance.setText(String.format("%.2f", active_payer_account.getValue() / 100.0));
             currencyLabel.setText(currencies.get("" + active_payer_account.getCurrencyID()));

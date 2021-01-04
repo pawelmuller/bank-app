@@ -168,7 +168,7 @@
                 </constraints>
                 <properties>
                   <font name="Arial Black" size="18"/>
-                  <text value="Label"/>
+                  <text value="0.00 PLN"/>
                 </properties>
               </component>
               <component id="dbab" class="javax.swing.JLabel">
@@ -209,7 +209,7 @@
                 </constraints>
                 <properties>
                   <font name="Arial Black" size="18"/>
-                  <text value="Label"/>
+                  <text value=""/>
                 </properties>
               </component>
               <component id="d7a21" class="javax.swing.JLabel" binding="currencyLabel">
