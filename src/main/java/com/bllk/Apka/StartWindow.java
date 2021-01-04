@@ -57,12 +57,14 @@ public class StartWindow {
         Login log = null;
 
         if (login.isEmpty() || password.isEmpty()) {
-            message.setText("No login or password given.");
+            login_mainErrorLabel.setVisible(true);
+            login_mainErrorLabel.setText("No login or password given.");
             return;
         }
 
         try {
-            message.setText("Checking...");
+            login_mainErrorLabel.setVisible(true);
+            login_mainErrorLabel.setText("Checking...");
             String password_salt = connection.getSalt(login);
             String hashed_password = BCrypt.hashpw(password, password_salt);
 
@@ -71,13 +73,15 @@ public class StartWindow {
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());
-            message.setText("Invalid user...");
+            login_mainErrorLabel.setVisible(true);
+            login_mainErrorLabel.setText("Invalid user...");
         }
 
         frame.setContentPane(new MainUserPage(frame, startingPanel, connection, client, log).menuPanel);
         loginField.setText("");
         passwordField.setText("");
-        message.setText("");
+        login_mainErrorLabel.setText("");
+        login_mainErrorLabel.setVisible(false);
     }
 
     public void performRegister() {
