@@ -14,28 +14,33 @@ public class StartWindow {
     private static ClientServerConnection connection;
 
     static JPanel startingPanel;
-    private JPanel mainPanel;
+    private JPanel mainPanel, headerPanel, loginTab, registerTab;
     private JTextField loginField;
     private JPasswordField passwordField;
     private JButton loginButton, forgotPasswordButton;
-    private JLabel message;
-    private JPanel loginTab;
+    private JLabel login_mainErrorLabel;
     private JTabbedPane mainTabbedPane;
     private JLabel logoLabel;
-    private JPanel headerPanel;
-    private JScrollPane registerTab;
-    private JTextField register_loginField;
-    private JPasswordField register_passwordField, register_repeatPasswordField;
+    private JScrollPane registerTabPane;
+    private JTextField register_login;
+    private JPasswordField register_password, register_repeatPassword;
     private JTextField register_name, register_surname;
     private JComboBox<Integer> register_yearsComboBox, register_monthsComboBox, register_daysComboBox;
-    private JTextField register_street, register_number, register_city, register_postalcode;
+    private JTextField register_street, register_number, register_city, register_postcode;
     private JComboBox<String> register_countriesComboBox;
     private JButton register_button;
-    private JPanel registerPanel;
-    private JRadioButton kobietaRadioButton;
-    private JRadioButton mężczyznaRadioButton;
+    private JRadioButton femaleRadioButton, maleRadioButton;
+    private JLabel register_loginErrorLabel, register_passwordErrorLabel, register_repeatPasswordErrorLabel;
+    private JLabel register_nameErrorLabel, register_surnameErrorLabel, register_genderErrorLabel;
+    private JLabel register_address1ErrorLabel, register_buildingNumberErrorLabel;
+    private JLabel register_address2ErrorLabel, register_postcodeErrorLabel;
+    private JLabel register_mainErrorLabel;
 
+    private String login, password, repeatedPassword;
+    private String name, surname, gender;
+    private String street, buildingNumber, city, postcode, country;
     private Integer year, month, day;
+    private boolean isDataValid;
 
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
@@ -85,7 +90,18 @@ public class StartWindow {
     }
 
     public void performRegister() {
-        // Rejestracja, sprawdzanie bledow, itp.
+        if (areAllFieldsValid()) {
+            register_mainErrorLabel.setVisible(false);
+            String password_hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+            String date = year + "-" + month + "-" + day;
+            connection.createClient(name, surname, date, gender, street, buildingNumber, city, postcode, country, login, password_hash);
+            register_mainErrorLabel.setText("Konto zostało utworzone.\nMożesz się zalogować :)");
+            register_mainErrorLabel.setForeground(Color.green);
+        } else {
+            register_mainErrorLabel.setForeground(Color.red);
+            register_mainErrorLabel.setText("Formularz został błędnie uzupełniony.\n Sprawdź poprawność danych i spróbuj ponownie.");
+        }
+        register_mainErrorLabel.setVisible(true);
     }
 
     public StartWindow() {
@@ -112,7 +128,6 @@ public class StartWindow {
         mainTabbedPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                super.focusGained(e);
                 if (register_yearsComboBox.getItemCount() == 0) {
                     LocalDateTime now = LocalDateTime.now();
                     year = now.getYear();
@@ -155,16 +170,80 @@ public class StartWindow {
                 day = (Integer) register_daysComboBox.getSelectedItem();
             }
         });
+
+        // Data validation
+        register_login.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                login = getDataFromField(register_login, register_loginErrorLabel, 8, 30);
+                validateLogin();
+            }
+        });
+        register_password.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                password = getPasswordFromField(register_password, register_passwordErrorLabel, 8, 30);
+            }
+        });
+        register_repeatPassword.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                repeatedPassword = getPasswordFromField(register_repeatPassword, register_repeatPasswordErrorLabel, 8, 30);
+                validatePasswords();
+            }
+        });
+        register_name.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                name = getDataFromField(register_name, register_nameErrorLabel, 0, 60);
+            }
+        });
+        register_surname.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                surname = getDataFromField(register_surname, register_surnameErrorLabel, 0, 60);
+            }
+        });
+        register_street.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                street = getDataFromField(register_street, register_address1ErrorLabel, 0, 60);
+            }
+        });
+        register_number.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                buildingNumber = getDataFromField(register_number, register_address1ErrorLabel, 0, 10);
+            }
+        });
+        register_city.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                city = getDataFromField(register_city, register_address2ErrorLabel, 0, 60);
+            }
+        });
+        register_postcode.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                postcode = getDataFromField(register_postcode, register_address2ErrorLabel, 0, 10);
+            }
+        });
+        register_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                performRegister();
+            }
+        });
     }
 
-    public void fillYearComboBox(LocalDateTime now) {
+    private void fillYearComboBox(LocalDateTime now) {
         int current_year = now.getYear();
 
         for (int i = current_year; i >= current_year - 120; --i)
             register_yearsComboBox.addItem(i);
     }
 
-    public void fillMonthComboBox(LocalDateTime now, Integer chosen_year) {
+    private void fillMonthComboBox(LocalDateTime now, Integer chosen_year) {
         int month_count = 12;
 
         if (now.getYear() == chosen_year)
@@ -174,12 +253,8 @@ public class StartWindow {
             register_monthsComboBox.addItem(i);
     }
 
-    public void fillDaysComboBox(LocalDateTime now, Integer chosen_year, Integer chosen_month) {
+    private void fillDaysComboBox(LocalDateTime now, Integer chosen_year, Integer chosen_month) {
         int day_count = 31;
-
-        /* if (register_daysComboBox.getItemCount() != 0) {
-            register_daysComboBox.removeAllItems();
-        } */
 
         switch(chosen_month) {
             case 1: case 3: case 5: case 7: case 8: case 10: case 12:
@@ -201,12 +276,12 @@ public class StartWindow {
             register_daysComboBox.addItem(i);
     }
 
-    public void fillCountriesComboBox() {
+    private void fillCountriesComboBox() {
         for (Map.Entry<String,Integer> entry : connection.getCountries().entrySet())
             register_countriesComboBox.addItem(entry.getKey());
     }
 
-    public void makeErrorLabelsInvisible() {
+    private void makeErrorLabelsInvisible() {
         login_mainErrorLabel.setVisible(false);
         register_loginErrorLabel.setVisible(false);
         register_passwordErrorLabel.setVisible(false);
@@ -215,10 +290,128 @@ public class StartWindow {
         register_surnameErrorLabel.setVisible(false);
         register_genderErrorLabel.setVisible(false);
         register_address1ErrorLabel.setVisible(false);
-        register_buildingNumberErrorLabel.setVisible(false);
         register_address2ErrorLabel.setVisible(false);
-        register_postcodeErrorLabel.setVisible(false);
         register_mainErrorLabel.setVisible(false);
     }
 
+    private boolean areAllFieldsValid() {
+        login = getDataFromField(register_login, register_loginErrorLabel, 8, 30);
+        password = getPasswordFromField(register_password, register_passwordErrorLabel, 8, 30);
+        repeatedPassword = getPasswordFromField(register_repeatPassword, register_repeatPasswordErrorLabel, 8, 30);
+        name = getDataFromField(register_name, register_nameErrorLabel, 0, 60);
+        surname = getDataFromField(register_surname, register_surnameErrorLabel, 0, 60);
+        street = getDataFromField(register_street, register_address1ErrorLabel, 0, 60);
+        buildingNumber = getDataFromField(register_number, register_address1ErrorLabel, 0, 10);
+        city = getDataFromField(register_city, register_address2ErrorLabel, 0, 60);
+        postcode = getDataFromField(register_postcode, register_address2ErrorLabel, 0, 10);
+        validatePasswords();
+        validateLogin();
+        year = (Integer) register_yearsComboBox.getSelectedItem();
+        month = (Integer) register_monthsComboBox.getSelectedItem();
+        day = (Integer) register_daysComboBox.getSelectedItem();
+        country = (String) register_countriesComboBox.getSelectedItem();
+        gender = determineGender();
+        if (login == null || password == null || repeatedPassword == null || name == null || surname == null || street == null ||
+            buildingNumber == null || city == null || postcode == null || gender == null)
+            isDataValid = false;
+        return isDataValid;
+    }
+
+    private String getDataFromField(JTextField field_to_check, JLabel label_to_modify, int min_length, int max_length) {
+        String inputData = field_to_check.getText();
+        int input_length = inputData.length();
+        boolean is_valid;
+
+        is_valid = validateDataFromField(label_to_modify, input_length, min_length, max_length, "Pole");
+
+        if (is_valid) {
+            isDataValid = true;
+            return inputData;
+        } else {
+            isDataValid = false;
+            return null;
+        }
+    }
+
+    private String getPasswordFromField(JPasswordField password_field, JLabel label_to_modify, int min_length, int max_length) {
+        String inputData = String.valueOf(password_field.getPassword());
+        int input_length = inputData.length();
+        boolean is_valid;
+
+        is_valid = validateDataFromField(label_to_modify, input_length, min_length, max_length, "Hasło");
+
+        if (is_valid) {
+            isDataValid = true;
+            return inputData;
+        } else {
+            isDataValid = false;
+            return null;
+        }
+    }
+
+    private boolean validateDataFromField(JLabel label_to_modify, int length, int min_length, int max_length, String data_name) {
+        boolean is_valid;
+        if (length == 0) {
+            is_valid = false;
+            label_to_modify.setText(data_name + " nie może być puste.");
+            label_to_modify.setVisible(true);
+        } else if (length < min_length || length > max_length) {
+            is_valid = false;
+            if (min_length == 0) {
+                label_to_modify.setText(data_name + " powinno mieć długość do " + max_length + " znaków.");
+            } else {
+                label_to_modify.setText(data_name + " powinno mieć długość pomiędzy " + min_length + ", a " + max_length + " znaków.");
+            }
+            label_to_modify.setVisible(true);
+        } else {
+            is_valid = true;
+            label_to_modify.setVisible(false);
+        }
+        return is_valid;
+    }
+
+    private void validateLogin() {
+        if (login == null) {
+            isDataValid = false;
+            return;
+        }
+        if (connection.checkLogin(login)) {
+            isDataValid = false;
+            register_loginErrorLabel.setText("Podany login już istnieje w bazie.");
+            register_loginErrorLabel.setVisible(true);
+        } else {
+            isDataValid = true;
+            register_loginErrorLabel.setVisible(false);
+        }
+    }
+
+    private void validatePasswords() {
+        if (password == null || repeatedPassword == null) {
+            isDataValid = false;
+            return;
+        }
+        if (password.equals(repeatedPassword)) {
+            register_repeatPasswordErrorLabel.setVisible(false);
+            isDataValid = true;
+        } else {
+            register_repeatPasswordErrorLabel.setText("Hasła są różne.");
+            register_repeatPasswordErrorLabel.setVisible(true);
+            isDataValid = false;
+        }
+    }
+
+    private String determineGender() {
+        if (maleRadioButton.isSelected()) {
+            register_genderErrorLabel.setVisible(false);
+            return "M";
+        } else if (femaleRadioButton.isSelected()) {
+            register_genderErrorLabel.setVisible(false);
+            return "F";
+        } else {
+            register_genderErrorLabel.setText("Należy wybrać jedną z opcji.");
+            register_genderErrorLabel.setVisible(true);
+            isDataValid = false;
+            return null;
+        }
+    }
 }
