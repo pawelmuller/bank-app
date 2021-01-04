@@ -72,11 +72,40 @@ public class Server extends HttpServlet {
             break;
             case 2:
                 if (atributes[0].equals("account")) {
-                    boolean valid = data.checkClient(Integer.parseInt(atributes[1]));
-                    if (valid)
-                        response.getOutputStream().println("{\n\"id\": \"" + atributes[1] + "\"\n}");
-                    else
-                        response.getOutputStream().println("{}");
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("password");
+                    int accountid = Integer.parseInt(atributes[1]);
+
+                    if (login == null || password == null) {
+                        Account account = data.getAccount(accountid);
+                        if (account != null) {
+                            json = "{\n";
+                            json += "\"id\": \"" + account.getID() + "\"\n";
+                            json += "\"owner\": \"" + account.getOwnerID() + "\"\n";
+                            json += "\"currency\": \"" + account.getCurrencyID() + "\"\n";
+                            json += "}";
+                            response.getOutputStream().println(json);
+                        }
+                        else
+                            response.getOutputStream().println("{}");
+                    }
+                    else {
+                        Login log = data.getLogin(login, password);
+                        if (log != null) {
+                            Account account = data.getAccount(accountid);
+                            if (account != null) {
+                                json = "{\n";
+                                json += "\"id\": \"" + account.getID() + "\"\n";
+                                json += "\"owner\": \"" + account.getOwnerID() + "\"\n";
+                                json += "\"value\": \"" + account.getValue() + "\"\n";
+                                json += "\"currency\": \"" + account.getCurrencyID() + "\"\n";
+                                json += "}";
+                                response.getOutputStream().println(json);
+                            }
+                            else
+                                response.getOutputStream().println("{}");
+                        }
+                    }
                 }
                 else if (atributes[0].equals("getsalt")) {
                     String salt = data.getSalt(atributes[1]);
@@ -86,19 +115,33 @@ public class Server extends HttpServlet {
                         response.getOutputStream().println("{}");
                 }
                 else if (atributes[0].equals("login") && atributes[1].equals("money")) {
+//                    String login = request.getParameter("login");
+//                    String password = request.getParameter("password");
+//                    int currency = Integer.parseInt(request.getParameter("currency"));
+//
+//                    Account account = data.getAccount(login, password, currency);
+//                    if (account != null) {
+//                        json = "{\n";
+//                        json += "\"id\": \"" + account.getID() + "\",\n";
+//                        json += "\"value\": \"" + account.getValue() + "\",\n";
+//                        json += "\"currency\": \"" + account.getCurrencyID() + "\",\n";
+//                        json += "\"ownerid\": \"" + account.getOwnerID() + "\"\n";
+//                        json += "}";
+//                        response.getOutputStream().println(json);
+//                    }
+//                    else
+                        response.getOutputStream().println("{}");
+                }
+                else if (atributes[0].equals("login") && atributes[1].equals("accounts")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");
-                    int currency = Integer.parseInt(request.getParameter("currency"));
-
-                    Account account = data.getAccount(login, password, currency);
-                    if (account != null) {
+                    List accounts = data.getAccounts(login, password);
+                    if (accounts != null) {
                         json = "{\n";
-                        json += "\"id\": \"" + account.getID() + "\",\n";
-                        json += "\"value\": \"" + account.getValue() + "\",\n";
-                        json += "\"currency\": \"" + account.getCurrencyID() + "\",\n";
-                        json += "\"ownerid\": \"" + account.getOwnerID() + "\"\n";
+                        for (Object account : accounts)
+                            json += "\"" + ((Account) account).getID() + "\": \"" + ((Account) account).getValue() + "\",\n";
                         json += "}";
-                        response.getOutputStream().println(json);
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     }
                     else
                         response.getOutputStream().println("{}");
@@ -108,10 +151,10 @@ public class Server extends HttpServlet {
                     String password = request.getParameter("password");
                     int currency = Integer.parseInt(request.getParameter("currency"));
 
-                    Account account = data.getAccount(login, password, currency);
-                    if (account != null) {
+                    Integer savings = data.getTotalSavings(login, password, currency);
+                    if (savings != null) {
                         json = "{\n";
-                        json += "\"value\": \"" + account.getValue() + "\",\n";
+                        json += "\"value\": \"" + savings + "\",\n";
                         json += "}";
                         response.getOutputStream().println(json);
                     }
@@ -166,12 +209,13 @@ public class Server extends HttpServlet {
                 if (atributes[0].equals("login") && atributes[1].equals("transaction")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");
-                    int targetid = Integer.parseInt(request.getParameter("targetid"));
-                    int amount = Integer.parseInt(request.getParameter("amount"));
-                    int currency = Integer.parseInt(request.getParameter("currencyid"));
-                    Account account = data.getAccount(login, password, currency);
-                    if (account != null) {
-                        data.makeTransfer(account.getID(), targetid, amount, currency);
+                    Login log = data.getLogin(login, password);
+                    if (log != null) {
+                        int payerid = Integer.parseInt(request.getParameter("payerid"));
+                        int targetid = Integer.parseInt(request.getParameter("targetid"));
+                        int amount = Integer.parseInt(request.getParameter("amount"));
+                        int currency = Integer.parseInt(request.getParameter("currencyid"));
+                        data.makeTransfer(payerid, targetid, amount, currency);
                     }
                 }
                 break;

@@ -3,7 +3,6 @@ package com.bllk.Apka;
 import com.bllk.Servlet.mapclasses.Account;
 import com.bllk.Servlet.mapclasses.Client;
 import org.json.JSONObject;
-
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -14,14 +13,16 @@ public class ClientServerConnection {
     public Map<String, Integer> getCurrencies() {
         JSONObject jsonObject = new JSONObject(getData("currencies"));
         Map<String,Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
-        Map<String, Integer> sortedMap = new TreeMap<String, Integer>(map);
-        return sortedMap;
+        return new TreeMap<>(map);
     }
     public Map<String, Integer> getCountries() {
         JSONObject jsonObject = new JSONObject(getData("countries"));
         Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
-        Map<String, Integer> sortedMap = new TreeMap<String, Integer>(map);
-        return sortedMap;
+        return new TreeMap<>(map);
+    }
+    public Map<String, Integer> getUserAccounts(String login, String hashed_password) {
+        JSONObject jsonObject = new JSONObject(getData(String.format("login/accounts?login=%s&password=%s", login, hashed_password)));
+        return jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
     }
     public Client getClient(String login, String hashed_password) {
         JSONObject json_object = new JSONObject(getData(String.format("login?login=%s&password=%s", login, hashed_password)));
@@ -31,7 +32,7 @@ public class ClientServerConnection {
     }
     public String getSalt(String login) {
         JSONObject json_object = new JSONObject(getData(String.format("getsalt/%s", login)));
-        return new String(json_object.getString("salt"));
+        return json_object.getString("salt");
     }
     public Account getAccount(String login, String hashed_password, int currencyid) {
         JSONObject json_object = new JSONObject(getData(String.format("login/money?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
@@ -41,23 +42,18 @@ public class ClientServerConnection {
         JSONObject json_object = new JSONObject(getData(String.format("login/totalmoney?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
         return json_object.getInt("value");
     }
-    public boolean check_client(int client_id) {
-        JSONObject json_object = new JSONObject(getData(String.format("account/%d", client_id)));
-        try {
-            int test = json_object.getInt("id");
-            return true;
-        }
-        catch (Exception ex) {
-            return false;
-        }
+    public boolean checkAccount(int accoundid) {
+        JSONObject json_object = new JSONObject(getData(String.format("account/%d", accoundid)));
+        return true;
     }
-    public void makeTransfer(String login, String hashed_password, int target_id, double amount, int currencyid) {
+    public void makeTransfer(String login, String hashed_password, int payer_id, int target_id, double amount, int currencyid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/transaction").openConnection();
             http_connection.setRequestMethod("POST");
 
             String postData = "login=" + login;
             postData += "&password=" + hashed_password;
+            postData += "&payerid=" + payer_id;
             postData += "&targetid=" + target_id;
             postData += "&amount=" + (int)(amount * 100);
             postData += "&currencyid=" + currencyid;
@@ -108,6 +104,7 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
+
     public String getData(String url) {
     try {
         HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/" + url).openConnection();

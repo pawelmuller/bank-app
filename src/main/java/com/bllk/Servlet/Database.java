@@ -129,6 +129,23 @@ public class Database {
         }
         return currencies;
     }
+    public List getAccounts(String login, String hashed_password) {
+        List accounts = null;
+        try {
+            Session session = factory.openSession();
+            Query query = session.createQuery("SELECT A FROM Account A, Client C, Login L WHERE C.id=A.owner_id AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
+            query.setParameter("param", login);
+            query.setParameter("param2", hashed_password);
+            accounts = query.list();
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return accounts;
+    }
     public Login getLogin(String login, String hashed_password) {
         Login result = null;
 
@@ -150,15 +167,34 @@ public class Database {
         }
         return result;
     }
-    public Account getAccount(String login, String hashed_password, int currencyid) {
+    public Account getAccount(int accountid) {
         Account account = null;
         try {
             Session session = factory.openSession();
 
-            Query query = session.createQuery("SELECT A FROM Account A, Client C, Login L WHERE A.owner_id=C.id AND C.login_id=L.id AND L.login=:login AND L.passwordhash=:password AND A.currency_id=:currency");
-            query.setParameter("login", login);
-            query.setParameter("password", hashed_password);
-            query.setParameter("currency", currencyid);
+            Query query = session.createQuery("SELECT A FROM Account A where A.id=:param");
+            query.setParameter("param", accountid);
+
+            if (query.list().size() >= 1)
+                account = (Account) query.list().get(0);
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return account;
+    }
+    public Account getAccount(String login, String hashed_password, int accountid) {
+        Account account = null;
+        try {
+            Session session = factory.openSession();
+
+            Query query = session.createQuery("SELECT A FROM Account A, Client C, Login L WHERE C.id=A.owner_id AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2 AND A.id=:param3");
+            query.setParameter("param", accountid);
+            query.setParameter("param2", hashed_password);
+            query.setParameter("param3", accountid);
 
             if (query.list().size() >= 1)
                 account = (Account) query.list().get(0);
@@ -173,7 +209,6 @@ public class Database {
     }
     public boolean checkClient(int accountid) {
         boolean valid = false;
-
         try {
             Session session = factory.openSession();
 
@@ -190,6 +225,45 @@ public class Database {
             refresh();
         }
         return valid;
+    }
+    public boolean checkAccount(int accountid) {
+        boolean valid = false;
+        try {
+            Session session = factory.openSession();
+
+            String hql = "FROM Account WHERE id=" + accountid;
+            Query query = session.createQuery(hql);
+            List list = query.list();
+
+            if (list.size() == 1)
+                valid = true;
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return valid;
+    }
+    public Integer getTotalSavings(String login, String hashed_password, int currencyid) {
+        Integer savings = null;
+        try {
+            Session session = factory.openSession();
+            Query query = session.createSQLQuery("SELECT calculate_total_savings(CLIENT_ID, 'PLN') FROM CLIENTS C\n" +
+                    "JOIN LOGINS L ON (L.LOGIN_ID=C.LOGIN_ID)\n" +
+                    "WHERE L.LOGIN=:param AND L.PASSWORD_HASH=:param2;");
+            query.setParameter("param", login);
+            query.setParameter("param2", hashed_password);
+
+            if (query.list().size() >= 1)
+                savings = query.getFirstResult();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return savings;
     }
     public void makeTransfer(int payerid, int targetid, int amount, int currencyid) {
         try {
