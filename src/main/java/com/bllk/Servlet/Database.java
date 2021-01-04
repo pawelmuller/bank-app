@@ -151,7 +151,7 @@ public class Database {
         List transactions = null;
         try {
             Session session = factory.openSession();
-            Query query = session.createQuery("SELECT T FROM TransactionRecord T, Client C, Login L WHERE (C.id=T.receiverid OR C.id=T.senderid) AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
+            Query query = session.createQuery("SELECT T FROM TransactionRecord T, Account A, Client C, Login L WHERE (A.id=T.receiverid OR A.id=T.senderid) AND A.owner_id=C.id AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
             query.setParameter("param", login);
             query.setParameter("param2", hashed_password);
 
