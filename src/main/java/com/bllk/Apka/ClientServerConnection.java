@@ -33,7 +33,8 @@ public class ClientServerConnection {
         JSONObject json_object = new JSONObject(getData(String.format("login?login=%s&password=%s", login, hashed_password)));
         return new Client(json_object.getInt("id"), json_object.getString("name"),
                 json_object.getString("surname"), json_object.getString("birthdate"),
-                json_object.getInt("addressid"), json_object.getInt("loginid"));
+                json_object.getInt("addressid"), json_object.getInt("loginid"),
+                json_object.getString("gender"));
     }
     public String getSalt(String login) {
         JSONObject json_object = new JSONObject(getData(String.format("getsalt/%s", login)));
@@ -85,7 +86,7 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
-    public void createClient(String name, String surname, String date, String street, String num, String city, String postal_code, String country, String login, String hashed_password) {
+    public void createClient(String name, String surname, String date, String gender, String street, String num, String city, String postcode, String country, String login, String hashed_password) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/createclient").openConnection();
             http_connection.setRequestMethod("POST");
@@ -93,10 +94,11 @@ public class ClientServerConnection {
             String post_data = "name=" + name;
             post_data += "&surname=" + surname;
             post_data += "&date=" + date;
+            post_data += "&gender=" + gender;
             post_data += "&street=" + street;
             post_data += "&num=" + num;
             post_data += "&city=" + city;
-            post_data += "&postal_code=" + postal_code;
+            post_data += "&postcode=" + postcode;
             post_data += "&country=" + country;
             post_data += "&login=" + login;
             post_data += "&passwordhash=" + hashed_password;

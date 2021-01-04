@@ -343,8 +343,8 @@ public class Database {
             return -1;
         }
     }
-    public void addClient(String _name, String _surname, String _date, String _street,
-                          String _num, String _city, String _postal_code,
+    public void addClient(String _name, String _surname, String _date, String _gender, String _street,
+                          String _num, String _city, String _postcode,
                           String _country_name, String _login, String _password) {
 
         try {
@@ -357,10 +357,11 @@ public class Database {
             query.registerStoredProcedureParameter("p_name",          String.class, ParameterMode.IN).setParameter("p_name",          _name        );
             query.registerStoredProcedureParameter("p_surname",       String.class, ParameterMode.IN).setParameter("p_surname",       _surname     );
             query.registerStoredProcedureParameter("p_birth_date",      Date.class, ParameterMode.IN).setParameter("p_birth_date",    formatter.parse(_date));
+            query.registerStoredProcedureParameter("p_gender",        String.class, ParameterMode.IN).setParameter("p_gender",        _gender      );
             query.registerStoredProcedureParameter("p_street",        String.class, ParameterMode.IN).setParameter("p_street",        _street      );
             query.registerStoredProcedureParameter("p_num",           String.class, ParameterMode.IN).setParameter("p_num",           _num         );
             query.registerStoredProcedureParameter("p_city",          String.class, ParameterMode.IN).setParameter("p_city",          _city        );
-            query.registerStoredProcedureParameter("p_postal_code",   String.class, ParameterMode.IN).setParameter("p_postal_code",   _postal_code );
+            query.registerStoredProcedureParameter("p_postcode",      String.class, ParameterMode.IN).setParameter("p_postcode",      _postcode    );
             query.registerStoredProcedureParameter("p_country_name",  String.class, ParameterMode.IN).setParameter("p_country_name",  _country_name);
             query.registerStoredProcedureParameter("p_login",         String.class, ParameterMode.IN).setParameter("p_login",         _login       );
             query.registerStoredProcedureParameter("p_password_hash", String.class, ParameterMode.IN).setParameter("p_password_hash", _password    );

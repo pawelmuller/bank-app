@@ -17,17 +17,17 @@ public class Address {
     String num;
     @Column(name = "CITY")
     String city;
-    @Column(name = "POSTAL_CODE")
-    String postal_code;
+    @Column(name = "POSTCODE")
+    String postcode;
     @Column(name = "COUNTRY_ID")
     String countryid;
 
-    public Address(Integer id, String street, String num, String city, String postal_code, String countryid) {
+    public Address(Integer id, String street, String num, String city, String postcode, String countryid) {
         this.id = id;
         this.street = street;
         this.num = num;
         this.city = city;
-        this.postal_code = postal_code;
+        this.postcode = postcode;
         this.countryid = countryid;
     }
     public Address() {
@@ -58,11 +58,11 @@ public class Address {
     public void setCity(String city) {
         this.city = city;
     }
-    public String getPostal_code() {
-        return postal_code;
+    public String getPostcode() {
+        return postcode;
     }
-    public void setPostal_code(String postal_code) {
-        this.postal_code = postal_code;
+    public void setPostcode(String postal_code) {
+        this.postcode = postal_code;
     }
     public String getCountryID() {
         return countryid;

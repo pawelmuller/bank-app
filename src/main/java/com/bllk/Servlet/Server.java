@@ -63,7 +63,8 @@ public class Server extends HttpServlet {
                         json += "\"surname\": \"" + client.getSurname() + "\",\n";
                         json += "\"birthdate\": \"" + client.getBirthDate().toString() + "\",\n";
                         json += "\"addressid\": \"" + client.getAddressID() + "\",\n";
-                        json += "\"loginid\": \"" + client.getLoginID() + "\"\n";
+                        json += "\"loginid\": \"" + client.getLoginID() + "\",\n";
+                        json += "\"gender\": \"" + client.getGender() + "\"\n";
                         json += "}";
                         response.getOutputStream().println(json);
                     } else {
@@ -203,15 +204,16 @@ public class Server extends HttpServlet {
                         String name = request.getParameter("name");
                         String surname = request.getParameter("surname");
                         String date = request.getParameter("date");
+                        String gender = request.getParameter("gender");
                         String street = request.getParameter("street");
                         String num = request.getParameter("num");
                         String city = request.getParameter("city");
-                        String postal_code = request.getParameter("postal_code");
+                        String postcode = request.getParameter("postcode");
                         String country_name = request.getParameter("country");
                         String login = request.getParameter("login");
                         String password_hash = request.getParameter("passwordhash");
 
-                        data.addClient(name, surname, date, street, num, city, postal_code, country_name, login, password_hash);
+                        data.addClient(name, surname, date, gender, street, num, city, postcode, country_name, login, password_hash);
                     }
                     catch (Exception ignored) {}
                 }
