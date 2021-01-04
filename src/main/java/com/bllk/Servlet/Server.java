@@ -43,10 +43,11 @@ public class Server extends HttpServlet {
                     if (currencies != null) {
                         json = "{\n";
                         for (Object currency: currencies)
-                            json += "\"" + ((Currency) currency).getShortcut() + "\": \"" + ((Currency) currency).getID() + "\",\n";
+                            json += "\"" + ((Currency) currency).getID() + "\": \"" + ((Currency) currency).getShortcut() + "\",\n";
                         json += "}";
                         response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
-                    } else
+                    }
+                    else
                         response.getOutputStream().println("{}");
                 }
                 else if (atributes[0].equals("login")) {
@@ -144,6 +145,33 @@ public class Server extends HttpServlet {
                     else
                         response.getOutputStream().println("{}");
                 }
+                else if (atributes[0].equals("login") && atributes[1].equals("transactions")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("password");
+
+                    List transactions = data.getTransactionsIN(login, password);
+                    if (transactions != null) {
+                        json = "{\n";
+                        int iter = 1;
+                        for (Object transaction: transactions) {
+                            json += "\"" + iter + "\": {\n";
+                            json += "\t\"senderid\": \"" + ((TransactionRecord) transaction).getSenderID() + "\",\n";
+                            json += "\t\"receiverid\": \"" + ((TransactionRecord) transaction).getReceiverID() + "\",\n";
+                            json += "\t\"value\": \"" + ((TransactionRecord) transaction).getValue() + "\",\n";
+                            json += "\t\"title\": \"" + ((TransactionRecord) transaction).getTitle() + "\",\n";
+                            json += "\t\"currencyid\": \"" + ((TransactionRecord) transaction).getCurrencyID() + "\"\n";
+                            if (iter == transactions.size())
+                                json += "}\n";
+                            else
+                                json += "},\n";
+                            iter++;
+                        }
+                        json += "}";
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+                    }
+                    else
+                        response.getOutputStream().println("{}");
+                }
                 break;
             case 3:
                 if (atributes[0].equals("login")) {
@@ -196,9 +224,10 @@ public class Server extends HttpServlet {
                     if (log != null) {
                         int payerid = Integer.parseInt(request.getParameter("payerid"));
                         int targetid = Integer.parseInt(request.getParameter("targetid"));
+                        String title = request.getParameter("title");
                         int amount = Integer.parseInt(request.getParameter("amount"));
                         int currency = Integer.parseInt(request.getParameter("currencyid"));
-                        data.makeTransfer(payerid, targetid, amount, currency);
+                        data.makeTransfer(payerid, targetid, amount, title, currency);
                     }
                 }
                 break;

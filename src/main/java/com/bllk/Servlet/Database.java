@@ -147,6 +147,25 @@ public class Database {
         }
         return accounts;
     }
+    public List getTransactionsIN(String login, String hashed_password) {
+        List transactions = null;
+        try {
+            Session session = factory.openSession();
+            Query query = session.createQuery("SELECT T FROM TransactionRecord T, Client C, Login L WHERE (C.id=T.receiverid OR C.id=T.senderid) AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
+            query.setParameter("param", login);
+            query.setParameter("param2", hashed_password);
+
+            if (query.list().size() >= 1)
+                transactions = query.list();
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return transactions;
+    }
     public Login getLogin(String login, String hashed_password) {
         Login result = null;
 
@@ -266,7 +285,7 @@ public class Database {
         }
         return savings;
     }
-    public void makeTransfer(int payerid, int targetid, int amount, int currencyid) {
+    public void makeTransfer(int payerid, int targetid, int amount, String title, int currencyid) {
         try {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
@@ -294,7 +313,7 @@ public class Database {
             session.update(target);
 
             int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(TRANSACTION_ID) FROM TRANSACTIONS").list().get(0)).intValue() + 1;
-            TransactionRecord transactionRecord = new TransactionRecord(id, payerid, targetid, "nowy", amount, currencyid);
+            TransactionRecord transactionRecord = new TransactionRecord(id, payerid, targetid, title, amount, currencyid);
             session.save(transactionRecord);
 
             tx.commit();

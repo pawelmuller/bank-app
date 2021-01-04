@@ -10,15 +10,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClientServerConnection {
-    public Map<String, Integer> getCurrencies() {
+    public Map<String, String> getCurrencies() {
         JSONObject jsonObject = new JSONObject(getData("currencies"));
-        Map<String,Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
-        return new TreeMap<>(map);
+        Map<String, String> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
+        return map;
     }
     public Map<String, Integer> getCountries() {
         JSONObject jsonObject = new JSONObject(getData("countries"));
         Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
         return new TreeMap<>(map);
+    }
+    public Map<String, Object> getTransactions(String login, String hashed_password) {
+        JSONObject jsonObject = new JSONObject(getData(String.format("login/transactions?login=%s&password=%s", login, hashed_password)));
+        Map<String, Object> map = jsonObject.toMap();
+        return map;
     }
     public Map<String, Integer> getUserAccounts(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/accounts?login=%s&password=%s", login, hashed_password)));
@@ -44,9 +49,15 @@ public class ClientServerConnection {
     }
     public boolean checkAccount(int accoundid) {
         JSONObject json_object = new JSONObject(getData(String.format("account/%d", accoundid)));
-        return true;
+        try {
+            int id = json_object.getInt("id");
+            return true;
+        }
+        catch (Exception ex) {
+            return false;
+        }
     }
-    public void makeTransfer(String login, String hashed_password, int payer_id, int target_id, double amount, int currencyid) {
+    public void makeTransfer(String login, String hashed_password, int payer_id, int target_id, String title, int amount, int currencyid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/transaction").openConnection();
             http_connection.setRequestMethod("POST");
@@ -55,7 +66,8 @@ public class ClientServerConnection {
             postData += "&password=" + hashed_password;
             postData += "&payerid=" + payer_id;
             postData += "&targetid=" + target_id;
-            postData += "&amount=" + (int)(amount * 100);
+            postData += "&title=" + title;
+            postData += "&amount=" + amount;
             postData += "&currencyid=" + currencyid;
 
             http_connection.setDoOutput(true);
@@ -104,7 +116,6 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
-
     public String getData(String url) {
     try {
         HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/" + url).openConnection();
