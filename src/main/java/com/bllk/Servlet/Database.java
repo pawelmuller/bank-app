@@ -147,6 +147,25 @@ public class Database {
         }
         return accounts;
     }
+    public List getTransactionsIN(String login, String hashed_password) {
+        List transactions = null;
+        try {
+            Session session = factory.openSession();
+            Query query = session.createQuery("SELECT T FROM TransactionRecord T, Client C, Login L WHERE (C.id=T.receiverid OR C.id=T.senderid) AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
+            query.setParameter("param", login);
+            query.setParameter("param2", hashed_password);
+
+            if (query.list().size() >= 1)
+                transactions = query.list();
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return transactions;
+    }
     public Login getLogin(String login, String hashed_password) {
         Login result = null;
 

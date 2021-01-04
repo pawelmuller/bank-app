@@ -2,17 +2,20 @@ package com.bllk.Apka;
 
 import com.bllk.Servlet.mapclasses.Account;
 import com.bllk.Servlet.mapclasses.Client;
-import com.bllk.Servlet.mapclasses.Currency;
 import com.bllk.Servlet.mapclasses.Login;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainUserPage {
     ClientServerConnection connection;
     Client client;
     Login login;
-    double your_money_value;
 
     JFrame frame;
     JPanel previousPanel, menuPanel;
@@ -24,13 +27,13 @@ public class MainUserPage {
     private JLabel idLabel;
     private JPanel contentPanel;
     private JTabbedPane tabbedPane1;
-    private JPanel historyPanel;
+    private JPanel historyPanel2;
     private JTextField titleTextField;
     private JComboBox<String> accountSelect;
     private JLabel payerBalance;
     private JLabel currencyLabel;
+    private JScrollPane historyPanel;
 
-    Currency active_currency;
     Account active_payer_account = null;
     Map <String, String> currencies;
 
@@ -45,7 +48,7 @@ public class MainUserPage {
         currencies = connection.getCurrencies();
 
         updateAccounts();
-
+        updateTransactionTable();
         sendMoneyButton.addActionListener(e -> {
             try {
                 int payer_id = active_payer_account.getID();
@@ -73,6 +76,7 @@ public class MainUserPage {
                     message.setText(String.format("Sending %.2f %s to Account %d", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
                     connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
                     updateMoney();
+                    updateTransactionTable();
                 }
             }
             catch (Exception ex) {
@@ -81,6 +85,30 @@ public class MainUserPage {
         });
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
         accountSelect.addActionListener(e -> updateMoney());
+    }
+    void updateTransactionTable() {
+        String[] columns = new String[] {
+                "Od", "Do", "Tytuł", "Wartość", "Waluta"
+        };
+        Map<String, Object> transactions = connection.getTransactions(login.getLogin(), login.getPasswordHash());
+        List<String[]> values = new ArrayList<String[]>();
+
+        for (Object transaction: transactions.values()) {
+            HashMap<String, String> transactionhash = (HashMap)transaction;
+            values.add(new String[] {
+                    transactionhash.get("senderid"),
+                    transactionhash.get("receiverid"),
+                    transactionhash.get("title"),
+                    String.format("%.2f", Double.parseDouble(transactionhash.get("value")) / 100.0),
+                    currencies.get(transactionhash.get("currencyid"))
+            });
+        }
+        TableModel tableModel = new DefaultTableModel(values.toArray(new Object[][] {}), columns);
+        JTable table = new JTable(tableModel);
+
+        table.setDefaultEditor(Object.class, null);
+        table.getTableHeader().setReorderingAllowed(false);
+        historyPanel.getViewport().add(table);
     }
     void updateMoney() {
         if (accountSelect.getItemCount()>=0) {

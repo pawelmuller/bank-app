@@ -20,6 +20,11 @@ public class ClientServerConnection {
         Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
         return new TreeMap<>(map);
     }
+    public Map<String, Object> getTransactions(String login, String hashed_password) {
+        JSONObject jsonObject = new JSONObject(getData(String.format("login/transactions?login=%s&password=%s", login, hashed_password)));
+        Map<String, Object> map = jsonObject.toMap();
+        return map;
+    }
     public Map<String, Integer> getUserAccounts(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/accounts?login=%s&password=%s", login, hashed_password)));
         return jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
@@ -44,7 +49,13 @@ public class ClientServerConnection {
     }
     public boolean checkAccount(int accoundid) {
         JSONObject json_object = new JSONObject(getData(String.format("account/%d", accoundid)));
-        return true;
+        try {
+            int id = json_object.getInt("id");
+            return true;
+        }
+        catch (Exception ex) {
+            return false;
+        }
     }
     public void makeTransfer(String login, String hashed_password, int payer_id, int target_id, String title, int amount, int currencyid) {
         try {
