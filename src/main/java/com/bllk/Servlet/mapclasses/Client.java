@@ -22,16 +22,19 @@ public class Client {
     Integer address_id;
     @Column(name = "LOGIN_ID")
     Integer login_id;
+    @Column(name = "GENDER")
+    String gender;
 
-    public Client(Integer id, String name, String surname, Date birth_date, Integer address_id, Integer login_id) {
+    public Client(Integer id, String name, String surname, Date birth_date, Integer address_id, Integer login_id, String gender) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.birth_date = birth_date;
         this.address_id = address_id;
         this.login_id = login_id;
+        this.gender = gender;
     }
-    public Client(Integer id, String name, String surname, String birth_date, Integer address_id, Integer login_id) {
+    public Client(Integer id, String name, String surname, String birth_date, Integer address_id, Integer login_id, String gender) {
         try {
             this.id = id;
             this.name = name;
@@ -40,6 +43,7 @@ public class Client {
             this.birth_date = formatter.parse(birth_date);
             this.address_id = address_id;
             this.login_id = login_id;
+            this.gender = gender;
         } catch (ParseException ex) {
             System.out.println(ex.getMessage());
         }
@@ -62,6 +66,9 @@ public class Client {
     public int getAddressID() {
         return address_id;
     }
+    public String getGender() {
+        return gender;
+    }
 
     public void setID(Integer id) {
         this.id = id;
@@ -83,6 +90,9 @@ public class Client {
     }
     public void setLoginID(Integer login_id) {
         this.login_id = login_id;
+    }
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     @Override
