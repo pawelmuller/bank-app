@@ -120,7 +120,7 @@ public class Server extends HttpServlet {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");
                     List accounts = data.getAccounts(login, password);
-                    if (accounts != null) {
+                    if (accounts.size() != 0) {
                         json = "{\n";
                         for (Object account : accounts)
                             json += "\"" + ((Account) account).getID() + "\": \"" + ((Account) account).getValue() + "\",\n";
