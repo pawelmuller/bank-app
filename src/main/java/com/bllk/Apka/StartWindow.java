@@ -85,6 +85,8 @@ public class StartWindow {
     }
 
     public StartWindow() {
+        makeErrorLabelsInvisible();
+
         loginButton.addActionListener(e -> performLogin());
 
         passwordField.addKeyListener(new KeyAdapter() {
@@ -198,6 +200,21 @@ public class StartWindow {
     public void fillCountriesComboBox() {
         for (Map.Entry<String,Integer> entry : connection.getCountries().entrySet())
             register_countriesComboBox.addItem(entry.getKey());
+    }
+
+    public void makeErrorLabelsInvisible() {
+        login_mainErrorLabel.setVisible(false);
+        register_loginErrorLabel.setVisible(false);
+        register_passwordErrorLabel.setVisible(false);
+        register_repeatPasswordErrorLabel.setVisible(false);
+        register_nameErrorLabel.setVisible(false);
+        register_surnameErrorLabel.setVisible(false);
+        register_genderErrorLabel.setVisible(false);
+        register_address1ErrorLabel.setVisible(false);
+        register_buildingNumberErrorLabel.setVisible(false);
+        register_address2ErrorLabel.setVisible(false);
+        register_postcodeErrorLabel.setVisible(false);
+        register_mainErrorLabel.setVisible(false);
     }
 
 }
