@@ -101,7 +101,7 @@ public class Database {
         return salt;
     }
     public boolean checkLogin(String user_login) {
-        boolean does_exist;
+        boolean does_exist = false;
         Login login = null;
 
         try {
@@ -109,12 +109,13 @@ public class Database {
 
             String hql = "FROM Login WHERE login='" + user_login + "'";
             Query query = session.createQuery(hql);
-            login = (Login) query.list().get(0);
-            does_exist = true;
+            if (query.list().size() >= 1) {
+                login = (Login) query.list().get(0);
+                does_exist = true;
+            }
 
             session.close();
         } catch (Exception ex) {
-            does_exist = false;
             System.out.println(ex.getMessage());
             factory.close();
             refresh();
@@ -367,6 +368,23 @@ public class Database {
             factory.close();
             refresh();
             return -1;
+        }
+    }
+    public void addAccount(int currencyid, int ownerid) {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(ACCOUNT_ID) FROM ACCOUNTS").list().get(0)).intValue() + 1;
+            Account account = new Account(id, 0, currencyid, ownerid);
+            session.save(account);
+
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
         }
     }
     public void addClient(String _name, String _surname, String _date, String _gender, String _street,

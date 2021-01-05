@@ -50,4 +50,8 @@ public class Account {
         this.currency_id = currency_id;
         this.owner_id = owner_id;
     }
+    public Account(Integer id, Integer currency_id) {
+        this.id = id;
+        this.currency_id = currency_id;
+    }
 }
