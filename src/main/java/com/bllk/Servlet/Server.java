@@ -130,10 +130,19 @@ public class Server extends HttpServlet {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");
                     List accounts = data.getAccounts(login, password);
-                    if (accounts.size() != 0) {
+                    if (accounts != null) {
                         json = "{\n";
-                        for (Object account : accounts)
-                            json += "\"" + ((Account) account).getID() + "\": \"" + ((Account) account).getValue() + "\",\n";
+                        int iter = 1;
+                        for (Object account: accounts) {
+                            json += "\"" + ((Account) account).getID() + "\": {\n";
+                            json += "\t\"value\": \"" + ((Account) account).getValue() + "\",\n";
+                            json += "\t\"currencyid\": \"" + (((Account) account)).getCurrencyID() + "\",\n";
+                            if (iter == accounts.size())
+                                json += "}\n";
+                            else
+                                json += "},\n";
+                            iter++;
+                        }
                         json += "}";
                         response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     }
@@ -164,7 +173,7 @@ public class Server extends HttpServlet {
                         json = "{\n";
                         int iter = 1;
                         for (Object transaction: transactions) {
-                            json += "\"" + iter + "\": {\n";
+                            json += "\"" + ((TransactionRecord) transaction).getID() + "\": {\n";
                             json += "\t\"senderid\": \"" + ((TransactionRecord) transaction).getSenderID() + "\",\n";
                             json += "\t\"receiverid\": \"" + ((TransactionRecord) transaction).getReceiverID() + "\",\n";
                             json += "\t\"value\": \"" + ((TransactionRecord) transaction).getValue() + "\",\n";
@@ -181,22 +190,6 @@ public class Server extends HttpServlet {
                     }
                     else
                         response.getOutputStream().println("{}");
-                }
-                break;
-            case 3:
-                if (atributes[0].equals("login")) {
-                    Login login = data.getLogin(atributes[1], atributes[2]);
-                    if (login != null) {
-                        client = data.getClient(login.getID());
-                        json = "{\n";
-                        json += "\"id\": \"" + client.getID() + "\",\n";
-                        json += "\"name\": \"" + client.getName() + "\",\n";
-                        json += "\"surname\": \"" + client.getSurname() + "\"\n";
-                        json += "}";
-                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
-                    } else {
-                        response.getOutputStream().println("{}");
-                    }
                 }
             break;
         }
@@ -241,6 +234,16 @@ public class Server extends HttpServlet {
                         int amount = Integer.parseInt(request.getParameter("amount"));
                         int currency = Integer.parseInt(request.getParameter("currencyid"));
                         data.makeTransfer(payerid, targetid, amount, title, currency);
+                    }
+                }
+                if (atributes[0].equals("login") && atributes[1].equals("createaccount")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("password");
+                    int currencyid = Integer.parseInt(request.getParameter("currencyid"));
+                    Login log = data.getLogin(login, password);
+                    if (log != null) {
+                        Client client = data.getClient(log.getID());
+                        data.addAccount(currencyid, client.getID());
                     }
                 }
                 break;

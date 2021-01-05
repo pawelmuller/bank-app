@@ -370,6 +370,23 @@ public class Database {
             return -1;
         }
     }
+    public void addAccount(int currencyid, int ownerid) {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(ACCOUNT_ID) FROM ACCOUNTS").list().get(0)).intValue() + 1;
+            Account account = new Account(id, 0, currencyid, ownerid);
+            session.save(account);
+
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+    }
     public void addClient(String _name, String _surname, String _date, String _gender, String _street,
                           String _num, String _city, String _postcode,
                           String _country_name, String _login, String _password) {

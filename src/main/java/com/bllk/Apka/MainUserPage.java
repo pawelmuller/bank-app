@@ -3,14 +3,14 @@ package com.bllk.Apka;
 import com.bllk.Servlet.mapclasses.Account;
 import com.bllk.Servlet.mapclasses.Client;
 import com.bllk.Servlet.mapclasses.Login;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
 
 public class MainUserPage {
     ClientServerConnection connection;
@@ -33,9 +33,11 @@ public class MainUserPage {
     private JLabel payerBalance;
     private JLabel currencyLabel;
     private JScrollPane historyPanel;
-    private JComboBox comboBox1;
-    private JButton stwórzKontoButton;
+    private JComboBox<String> currenciesComboBox;
+    private JButton createAccountButton;
+    private JLabel doubleAccountWarning;
 
+    List<Integer> user_currencies;
     Account active_payer_account = null;
     Map <String, String> currencies;
 
@@ -48,12 +50,28 @@ public class MainUserPage {
         nameLabel.setText("Witaj " + client.getName() + " " + client.getSurname() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
         currencies = connection.getCurrencies();
+        user_currencies = new ArrayList<>();
 
+        fillCurrenciesComboBox();
         updateAccounts();
         updateTransactionTable();
         sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
         accountSelect.addActionListener(e -> updateMoney());
+        createAccountButton.addActionListener(e -> {
+            for (Map.Entry<String, String> entry : currencies.entrySet()) {
+                if (Objects.equals(currenciesComboBox.getSelectedItem(), entry.getValue())) {
+                    int currency_id = Integer.parseInt(entry.getKey());
+                    if (user_currencies.contains(currency_id)) {
+                        doubleAccountWarning.setVisible(true);
+                    } else {
+                        doubleAccountWarning.setVisible(false);
+                        connection.createAccount(login.getLogin(), login.getPasswordHash(), currency_id);
+                    }
+                }
+            }
+            updateAccounts();
+        });
     }
     void makeTransaction() {
         try {
@@ -129,10 +147,22 @@ public class MainUserPage {
         }
     }
     void updateAccounts() {
-        for (Map.Entry<String,Integer> entry : connection.getUserAccounts(login.getLogin(), login.getPasswordHash()).entrySet())
-            accountSelect.addItem(entry.getKey());
+        accountSelect.removeAllItems();
+        Map<String, Object> accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
+
+        for (Map.Entry<String, Object> account: accounts.entrySet()) {
+            accountSelect.addItem(account.getKey());
+            HashMap accounthash = (HashMap) account.getValue();
+            user_currencies.add(Integer.parseInt((String) accounthash.get("currencyid")));
+        }
 
         tabbedPane1.setEnabledAt(2, accountSelect.getItemCount() != 0);
         updateMoney();
+    }
+    void fillCurrenciesComboBox() {
+        Object[] currencies_sorted = currencies.values().toArray();
+        Arrays.sort(currencies_sorted);
+        for (Object currency: currencies_sorted)
+            currenciesComboBox.addItem((String) currency);
     }
 }

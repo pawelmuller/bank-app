@@ -25,9 +25,10 @@ public class ClientServerConnection {
         Map<String, Object> map = jsonObject.toMap();
         return map;
     }
-    public Map<String, Integer> getUserAccounts(String login, String hashed_password) {
+    public Map<String, Object> getUserAccounts(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/accounts?login=%s&password=%s", login, hashed_password)));
-        return jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
+        Map<String, Object> map = jsonObject.toMap();
+        return map;
     }
     public Client getClient(String login, String hashed_password) {
         JSONObject json_object = new JSONObject(getData(String.format("login?login=%s&password=%s", login, hashed_password)));
@@ -68,6 +69,30 @@ public class ClientServerConnection {
         }
         catch (Exception ex) {
             return false;
+        }
+    }
+    public void createAccount(String login, String hashed_password, int currencyid) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createaccount").openConnection();
+            http_connection.setRequestMethod("POST");
+
+            String post_data = "login=" + login;
+            post_data += "&password=" + hashed_password;
+            post_data += "&currencyid=" + currencyid;
+
+            http_connection.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
+            writer.write(post_data);
+            writer.flush();
+
+            int responseCode = http_connection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
     public void makeTransfer(String login, String hashed_password, int payer_id, int target_id, String title, int amount, int currencyid) {
