@@ -8,9 +8,11 @@ import org.json.JSONObject;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
 
 public class MainUserPage {
     ClientServerConnection connection;
@@ -134,6 +136,12 @@ public class MainUserPage {
         }
         TableModel tableModel = new DefaultTableModel(values.toArray(new Object[][] {}), columns);
         JTable table = new JTable(tableModel);
+
+        table.setBackground(Color.decode("#222222"));
+        table.setForeground(Color.decode("#EEEEEE"));
+        table.getTableHeader().setOpaque(false);
+        table.getTableHeader().setBackground(Color.decode("#FF7F00"));
+        table.setGridColor(Color.decode("#808080"));
 
         table.setDefaultEditor(Object.class, null);
         table.getTableHeader().setReorderingAllowed(false);

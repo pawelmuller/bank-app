@@ -130,6 +130,7 @@
                 </constraints>
                 <properties>
                   <foreground color="-1118482"/>
+                  <labelFor value="cd9c"/>
                   <text value="Wybierz walutę:"/>
                 </properties>
               </component>
@@ -220,6 +221,7 @@
                 </constraints>
                 <properties>
                   <foreground color="-1118482"/>
+                  <labelFor value="63f6f"/>
                   <text value="Na konto:"/>
                 </properties>
               </component>
@@ -229,6 +231,7 @@
                 </constraints>
                 <properties>
                   <foreground color="-1118482"/>
+                  <labelFor value="6135e"/>
                   <text value="Kwota:"/>
                 </properties>
               </component>
@@ -285,6 +288,7 @@
                 </constraints>
                 <properties>
                   <foreground color="-1118482"/>
+                  <labelFor value="d8815"/>
                   <text value="Tytuł przelewu:"/>
                 </properties>
               </component>
@@ -310,6 +314,7 @@
                 </constraints>
                 <properties>
                   <foreground color="-1118482"/>
+                  <labelFor value="6c205"/>
                   <text value="Z konta:"/>
                 </properties>
               </component>
