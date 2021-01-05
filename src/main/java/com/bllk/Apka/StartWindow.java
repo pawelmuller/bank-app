@@ -21,7 +21,7 @@ public class StartWindow {
     private JLabel login_mainErrorLabel;
     private JTabbedPane mainTabbedPane;
     private JLabel logoLabel;
-    private JScrollPane registerTabPane;
+    private JScrollPane registerScrollPane;
     private JTextField register_login;
     private JPasswordField register_password, register_repeatPassword;
     private JTextField register_name, register_surname;
@@ -63,13 +63,13 @@ public class StartWindow {
 
         if (login.isEmpty() || password.isEmpty()) {
             login_mainErrorLabel.setVisible(true);
-            login_mainErrorLabel.setText("No login or password given.");
+            login_mainErrorLabel.setText("Pole loginu i hasła nie może być puste.");
             return;
         }
 
         try {
             login_mainErrorLabel.setVisible(true);
-            login_mainErrorLabel.setText("Checking...");
+            login_mainErrorLabel.setText("Logowanie...");
             String password_salt = connection.getSalt(login);
             String hashed_password = BCrypt.hashpw(password, password_salt);
 
@@ -79,7 +79,7 @@ public class StartWindow {
         catch (Exception ex) {
             System.out.println(ex.getMessage());
             login_mainErrorLabel.setVisible(true);
-            login_mainErrorLabel.setText("Invalid user...");
+            login_mainErrorLabel.setText("Błędny login lub hasło.");
         }
 
         frame.setContentPane(new MainUserPage(frame, startingPanel, connection, client, log).menuPanel);
@@ -95,11 +95,11 @@ public class StartWindow {
             String password_hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
             String date = year + "-" + month + "-" + day;
             connection.createClient(name, surname, date, gender, street, buildingNumber, city, postcode, country, login, password_hash);
-            register_mainErrorLabel.setText("Konto zostało utworzone.\nMożesz się zalogować :)");
+            register_mainErrorLabel.setText("Konto zostało utworzone. Możesz się zalogować :)");
             register_mainErrorLabel.setForeground(Color.green);
         } else {
             register_mainErrorLabel.setForeground(Color.red);
-            register_mainErrorLabel.setText("Formularz został błędnie uzupełniony.\n Sprawdź poprawność danych i spróbuj ponownie.");
+            register_mainErrorLabel.setText("Formularz został błędnie uzupełniony.");
         }
         register_mainErrorLabel.setVisible(true);
     }
