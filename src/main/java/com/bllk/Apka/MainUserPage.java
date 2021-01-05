@@ -25,7 +25,7 @@ public class MainUserPage {
     private JLabel message;
     private JLabel currentBalance;
     private JLabel idLabel;
-    private JPanel contentPanel;
+    private JPanel transactionPanel;
     private JTabbedPane tabbedPane1;
     private JPanel historyPanel2;
     private JTextField titleTextField;
@@ -33,6 +33,8 @@ public class MainUserPage {
     private JLabel payerBalance;
     private JLabel currencyLabel;
     private JScrollPane historyPanel;
+    private JComboBox comboBox1;
+    private JButton stwórzKontoButton;
 
     Account active_payer_account = null;
     Map <String, String> currencies;
@@ -49,27 +51,32 @@ public class MainUserPage {
 
         updateAccounts();
         updateTransactionTable();
-        sendMoneyButton.addActionListener(e -> {
-            try {
-                if (active_payer_account == null) {
-                    message.setText("Transaction failed: You don't have any account.");
-                }
-                else {
-                    int payer_id = active_payer_account.getID();
-                    int target_id = Integer.parseInt(accountNumber.getText());
-                    int currency_id = active_payer_account.getCurrencyID();
-                    int money_value = (int) (Double.parseDouble(amount.getText()) * 100);
-                    String title = titleTextField.getText();
+        sendMoneyButton.addActionListener(e -> makeTransaction());
+        logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
+        accountSelect.addActionListener(e -> updateMoney());
+    }
+    void makeTransaction() {
+        try {
+            if (active_payer_account == null) {
+                message.setText("Transaction failed: You don't have any account.");
+            }
+            else {
+                int payer_id = active_payer_account.getID();
+                int target_id = Integer.parseInt(accountNumber.getText());
+                int currency_id = active_payer_account.getCurrencyID();
+                int money_value = (int) (Double.parseDouble(amount.getText()) * 100);
+                String title = titleTextField.getText();
 
-                    if (active_payer_account.getID() == target_id) {
-                        message.setText("Transaction failed: You can't send money to yourself.");
-                    } else if (money_value > active_payer_account.getValue() || money_value <= 0) {
-                        message.setText("Transaction failed: Invalid amount of money.");
-                    } else if (!connection.checkAccount(Integer.parseInt(accountNumber.getText()))) {
-                        message.setText("Transaction failed: Account don't exists.");
-                    } else if (titleTextField.getText().equals("")) {
-                        message.setText("Transaction failed: Title can't be null.");
-                    } else {
+                if (active_payer_account.getID() == target_id) {
+                    message.setText("Transaction failed: You can't send money to yourself.");
+                } else if (money_value > active_payer_account.getValue() || money_value <= 0) {
+                    message.setText("Transaction failed: Invalid amount of money.");
+                } else if (!connection.checkAccount(Integer.parseInt(accountNumber.getText()))) {
+                    message.setText("Transaction failed: Account don't exists.");
+                } else if (titleTextField.getText().equals("")) {
+                    message.setText("Transaction failed: Title can't be null.");
+                } else {
+                    if (connection.getBasicAccount(target_id).getCurrencyID() != currency_id && currencyChange()) {
                         message.setText(String.format("Sending %.2f %s to Account %d", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
                         connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
                         updateMoney();
@@ -77,12 +84,18 @@ public class MainUserPage {
                     }
                 }
             }
-            catch (Exception ex) {
-                message.setText("Transaction failed: " + ex.getMessage());
-            }
-        });
-        logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
-        accountSelect.addActionListener(e -> updateMoney());
+        }
+        catch (Exception ex) {
+            message.setText("Transaction failed: " + ex.getMessage());
+        }
+    }
+    boolean currencyChange() {
+        int n = JOptionPane.showConfirmDialog(
+                frame,
+                "Konto, na które zamierzasz wysłać przelew, zawiera inną walutę niż wysyłana, czy chcesz przewalutować?",
+                "Przewalutowanie",
+                JOptionPane.YES_NO_OPTION);
+        return n==0;
     }
     void updateTransactionTable() {
         String[] columns = new String[] {
@@ -118,6 +131,8 @@ public class MainUserPage {
     void updateAccounts() {
         for (Map.Entry<String,Integer> entry : connection.getUserAccounts(login.getLogin(), login.getPasswordHash()).entrySet())
             accountSelect.addItem(entry.getKey());
+
+        tabbedPane1.setEnabledAt(2, accountSelect.getItemCount() != 0);
         updateMoney();
     }
 }

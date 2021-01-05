@@ -101,7 +101,7 @@ public class Database {
         return salt;
     }
     public boolean checkLogin(String user_login) {
-        boolean does_exist;
+        boolean does_exist = false;
         Login login = null;
 
         try {
@@ -109,12 +109,13 @@ public class Database {
 
             String hql = "FROM Login WHERE login='" + user_login + "'";
             Query query = session.createQuery(hql);
-            login = (Login) query.list().get(0);
-            does_exist = true;
+            if (query.list().size() >= 1) {
+                login = (Login) query.list().get(0);
+                does_exist = true;
+            }
 
             session.close();
         } catch (Exception ex) {
-            does_exist = false;
             System.out.println(ex.getMessage());
             factory.close();
             refresh();
