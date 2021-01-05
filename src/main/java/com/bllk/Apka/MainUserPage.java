@@ -121,17 +121,16 @@ public class MainUserPage {
         String[] columns = new String[] {
                 "Od", "Do", "Tytuł", "Wartość", "Waluta"
         };
-        Map<String, Object> transactions = connection.getTransactions(login.getLogin(), login.getPasswordHash());
-        List<String[]> values = new ArrayList<String[]>();
+        Map<Integer, JSONObject> transactions = connection.getTransactions(login.getLogin(), login.getPasswordHash());
+        List<String[]> values = new ArrayList<>();
 
-        for (Object transaction: transactions.values()) {
-            HashMap<String, String> transactionhash = (HashMap)transaction;
+        for (JSONObject transaction: transactions.values()) {
             values.add(new String[] {
-                    transactionhash.get("senderid"),
-                    transactionhash.get("receiverid"),
-                    transactionhash.get("title"),
-                    String.format("%.2f", Double.parseDouble(transactionhash.get("value")) / 100.0),
-                    currencies.get(transactionhash.get("currencyid"))
+                    transaction.getString("senderid"),
+                    transaction.getString("receiverid"),
+                    transaction.getString("title"),
+                    String.format("%.2f", transaction.getDouble("value") / 100.0),
+                    currencies.get(transaction.getString("currencyid"))
             });
         }
         TableModel tableModel = new DefaultTableModel(values.toArray(new Object[][] {}), columns);

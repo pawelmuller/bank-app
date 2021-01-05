@@ -20,9 +20,11 @@ public class ClientServerConnection {
         Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
         return new TreeMap<>(map);
     }
-    public Map<String, Object> getTransactions(String login, String hashed_password) {
+    public Map<Integer, JSONObject> getTransactions(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/transactions?login=%s&password=%s", login, hashed_password)));
-        Map<String, Object> map = jsonObject.toMap();
+        TreeMap<Integer, JSONObject> map = new TreeMap<>();
+        for (Map.Entry<String, Object> pair : jsonObject.toMap().entrySet())
+            map.put(Integer.parseInt(pair.getKey()), new JSONObject((HashMap)pair.getValue()));
         return map;
     }
     public Map<String, Object> getUserAccounts(String login, String hashed_password) {
