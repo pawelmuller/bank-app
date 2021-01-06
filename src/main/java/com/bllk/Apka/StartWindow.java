@@ -32,8 +32,7 @@ public class StartWindow {
     private JRadioButton femaleRadioButton, maleRadioButton;
     private JLabel register_loginErrorLabel, register_passwordErrorLabel, register_repeatPasswordErrorLabel;
     private JLabel register_nameErrorLabel, register_surnameErrorLabel, register_genderErrorLabel;
-    private JLabel register_address1ErrorLabel, register_buildingNumberErrorLabel;
-    private JLabel register_address2ErrorLabel, register_postcodeErrorLabel;
+    private JLabel register_address1ErrorLabel, register_address2ErrorLabel;
     private JLabel register_mainErrorLabel;
 
     private String login, password, repeatedPassword;
