@@ -131,7 +131,7 @@ public class MainUserPage {
                 } else if (titleTextField.getText().equals("")) {
                     message.setText("Transaction failed: Title can't be null.");
                 } else {
-                    if (connection.getBasicAccount(target_id).getCurrencyID() != currency_id && currencyChange()) {
+                    if (connection.getBasicAccount(target_id).getCurrencyID() == currency_id || (connection.getBasicAccount(target_id).getCurrencyID() != currency_id && currencyChange())) {
                         message.setText(String.format("Sending %.2f %s to Account %d", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
                         connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
                         updateMoney();
