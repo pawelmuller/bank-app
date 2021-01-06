@@ -9,10 +9,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.util.*;
 import java.util.List;
 
@@ -31,7 +27,6 @@ public class MainUserPage {
     private JLabel idLabel;
     private JPanel transactionPanel;
     private JTabbedPane tabbedPane1;
-    private JPanel historyPanel2;
     private JTextField titleTextField;
     private JComboBox<String> accountSelect;
     private JLabel payerBalance;
@@ -43,6 +38,7 @@ public class MainUserPage {
     private JComboBox<String> contactBox;
     private JTextField accountNumber;
     private JButton addContactButton;
+    private JPanel accountsSummary;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
@@ -60,13 +56,17 @@ public class MainUserPage {
         currencies = connection.getCurrencies();
         user_currencies = new ArrayList<>();
 
+        accountsSummary.setLayout(new BoxLayout(accountsSummary, BoxLayout.Y_AXIS));
+
         fillCurrenciesComboBox();
         updateAccounts();
         updateContacts();
         updateTransactionTable();
+        updateAccountsSummary();
         sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
         accountSelect.addActionListener(e -> updateMoney());
+
         createAccountButton.addActionListener(e -> {
             for (Map.Entry<String, String> entry : currencies.entrySet()) {
                 if (Objects.equals(currenciesComboBox.getSelectedItem(), entry.getValue())) {
@@ -81,6 +81,7 @@ public class MainUserPage {
             }
             updateAccounts();
         });
+
         addContactButton.addActionListener(e -> addContact());
         contactBox.addActionListener(e -> {
             String name = (String) contactBox.getSelectedItem();
@@ -136,6 +137,7 @@ public class MainUserPage {
                         connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
                         updateMoney();
                         updateTransactionTable();
+                        updateAccountsSummary();
                     }
                 }
             }
@@ -211,11 +213,27 @@ public class MainUserPage {
 
         tabbedPane1.setEnabledAt(2, accountSelect.getItemCount() != 0);
         updateMoney();
+        updateAccountsSummary();
     }
     void fillCurrenciesComboBox() {
         Object[] currencies_sorted = currencies.values().toArray();
         Arrays.sort(currencies_sorted);
         for (Object currency: currencies_sorted)
             currenciesComboBox.addItem((String) currency);
+    }
+    void updateAccountsSummary() {
+        accountsSummary.removeAll();
+        Map<String, Object> accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
+
+        for (Map.Entry<String, Object> account: accounts.entrySet()) {
+            HashMap account_hash = (HashMap) account.getValue();
+            String currency_id = (String) account_hash.get("currencyid");
+            String currency_name = currencies.get(currency_id);
+            Integer balance = Integer.parseInt((String) account_hash.get("value"));
+            String formatted_balance = String.format("%.2f", balance/100.0);
+
+            AccountPanel accountPanel = new AccountPanel(account.getKey(), formatted_balance, currency_name);
+            accountsSummary.add(accountPanel);
+        }
     }
 }
