@@ -4,6 +4,8 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 @Table(name="TRANSACTIONS")
@@ -21,6 +23,8 @@ public class TransactionRecord {
     private Integer value;
     @Column(name = "CURRENCY_ID")
     private Integer currencyid;
+    @Column(name = "TRANSACTION_DATE")
+    private Date date;
 
     public TransactionRecord(Integer senderid, Integer receiverid, String title, Integer value, Integer currencyid) {
         this.senderid = senderid;
@@ -75,5 +79,15 @@ public class TransactionRecord {
     }
     public void setCurrencyID(Integer currencyid) {
         this.currencyid = currencyid;
+    }
+    public Date getDate() {
+        return date;
+    }
+    public String getDateFormatted() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+        return formatter.format(date);
+    }
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

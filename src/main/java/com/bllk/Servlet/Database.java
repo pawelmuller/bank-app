@@ -296,14 +296,15 @@ public class Database {
         Integer savings = null;
         try {
             Session session = factory.openSession();
-            Query query = session.createSQLQuery("SELECT calculate_total_savings(CLIENT_ID, 'PLN') FROM CLIENTS C\n" +
+            Query query = session.createSQLQuery("SELECT calculate_total_savings(CLIENT_ID, :currency) FROM CLIENTS C\n" +
                     "JOIN LOGINS L ON (L.LOGIN_ID=C.LOGIN_ID)\n" +
-                    "WHERE L.LOGIN=:param AND L.PASSWORD_HASH=:param2;");
-            query.setParameter("param", login);
-            query.setParameter("param2", hashed_password);
+                    "WHERE L.LOGIN=:login AND L.PASSWORD_HASH=:password");
+            query.setParameter("currency", currencyid);
+            query.setParameter("login", login);
+            query.setParameter("password", hashed_password);
 
             if (query.list().size() >= 1)
-                savings = query.getFirstResult();
+                savings = ((BigDecimal) query.list().get(0)).intValue();
             session.close();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

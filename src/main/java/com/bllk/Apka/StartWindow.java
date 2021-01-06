@@ -49,7 +49,7 @@ public class StartWindow {
         frame.setContentPane(startingPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setMinimumSize(new Dimension(640, 480));
+        frame.setMinimumSize(new Dimension(640, 520));
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

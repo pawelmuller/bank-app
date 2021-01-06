@@ -22,7 +22,7 @@ public class ClientServerConnection {
     }
     public Map<Integer, JSONObject> getTransactions(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/transactions?login=%s&password=%s", login, hashed_password)));
-        TreeMap<Integer, JSONObject> map = new TreeMap<>();
+        TreeMap<Integer, JSONObject> map = new TreeMap<Integer, JSONObject>(Collections.reverseOrder());
         for (Map.Entry<String, Object> pair : jsonObject.toMap().entrySet())
             map.put(Integer.parseInt(pair.getKey()), new JSONObject((HashMap)pair.getValue()));
         return map;
@@ -59,7 +59,7 @@ public class ClientServerConnection {
         JSONObject json_object = new JSONObject(getData(String.format("account/%s", accountid)));
         return new Account(json_object.getInt("id"), json_object.getInt("currency"));
     }
-    public double getTotalSavings(String login, String hashed_password, int currencyid) {
+    public int getTotalSavings(String login, String hashed_password, int currencyid) {
         JSONObject json_object = new JSONObject(getData(String.format("login/totalmoney?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
         return json_object.getInt("value");
     }

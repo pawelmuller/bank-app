@@ -9,8 +9,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class MainUserPage {
     JFrame frame;
     JPanel previousPanel, menuPanel;
     private JLabel logoLabel, nameLabel;
-    private JTextField accountNumber, amount;
+    private JTextField amount;
     private JButton sendMoneyButton, logOutButton;
     private JLabel message;
     private JLabel currentBalance;
@@ -38,6 +36,9 @@ public class MainUserPage {
     private JComboBox<String> currenciesComboBox;
     private JButton createAccountButton;
     private JLabel doubleAccountWarning;
+    private JComboBox comboBox1;
+    private JTextField accountNumber;
+    private JButton dodajKontaktButton;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
@@ -119,7 +120,7 @@ public class MainUserPage {
     }
     void updateTransactionTable() {
         String[] columns = new String[] {
-                "Od", "Do", "Tytuł", "Wartość", "Waluta"
+                "Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"
         };
         Map<Integer, JSONObject> transactions = connection.getTransactions(login.getLogin(), login.getPasswordHash());
         List<String[]> values = new ArrayList<>();
@@ -128,6 +129,7 @@ public class MainUserPage {
             values.add(new String[] {
                     transaction.getString("senderid"),
                     transaction.getString("receiverid"),
+                    transaction.getString("date"),
                     transaction.getString("title"),
                     String.format("%.2f", transaction.getDouble("value") / 100.0),
                     currencies.get(transaction.getString("currencyid"))
@@ -149,8 +151,12 @@ public class MainUserPage {
     void updateMoney() {
         if (accountSelect.getItemCount()>0) {
             active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
-            payerBalance.setText(String.format("%.2f", active_payer_account.getValue() / 100.0));
-            currencyLabel.setText(currencies.get("" + active_payer_account.getCurrencyID()));
+            String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
+            int total_balance = connection.getTotalSavings(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
+
+            currentBalance.setText(String.format("%.2f %s", total_balance/100.0, active_currency_shortcut));
+            payerBalance.setText(String.format("%.2f %s", active_payer_account.getValue() / 100.0, active_currency_shortcut));
+            currencyLabel.setText(active_currency_shortcut);
         }
     }
     void updateAccounts() {

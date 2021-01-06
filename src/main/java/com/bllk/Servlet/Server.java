@@ -157,7 +157,7 @@ public class Server extends HttpServlet {
                     Integer savings = data.getTotalSavings(login, password, currency);
                     if (savings != null) {
                         json = "{\n";
-                        json += "\"value\": \"" + savings + "\",\n";
+                        json += "\"value\": \"" + savings + "\"\n";
                         json += "}";
                         response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     }
@@ -176,6 +176,7 @@ public class Server extends HttpServlet {
                             json += "\"" + ((TransactionRecord) transaction).getID() + "\": {\n";
                             json += "\t\"senderid\": \"" + ((TransactionRecord) transaction).getSenderID() + "\",\n";
                             json += "\t\"receiverid\": \"" + ((TransactionRecord) transaction).getReceiverID() + "\",\n";
+                            json += "\t\"date\": \"" + ((TransactionRecord) transaction).getDateFormatted() + "\",\n";
                             json += "\t\"value\": \"" + ((TransactionRecord) transaction).getValue() + "\",\n";
                             json += "\t\"title\": \"" + ((TransactionRecord) transaction).getTitle() + "\",\n";
                             json += "\t\"currencyid\": \"" + ((TransactionRecord) transaction).getCurrencyID() + "\"\n";
