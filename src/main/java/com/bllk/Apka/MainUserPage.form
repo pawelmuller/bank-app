@@ -238,7 +238,6 @@
                 </constraints>
                 <properties>
                   <focusable value="false"/>
-                  <foreground color="-1118482"/>
                   <text value="Zrób przelew"/>
                 </properties>
               </component>
@@ -362,22 +361,24 @@
                   <text value="Nazwa kontaktu:"/>
                 </properties>
               </component>
-              <component id="824c9" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+              <component id="824c9" class="javax.swing.JComboBox" binding="contactBox">
                 <constraints>
                   <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <background color="-14540254"/>
-                  <enabled value="false"/>
+                  <editable value="true"/>
+                  <enabled value="true"/>
                   <foreground color="-33024"/>
+                  <opaque value="true"/>
+                  <verifyInputWhenFocusTarget value="true"/>
+                  <visible value="true"/>
                 </properties>
               </component>
-              <component id="9d89b" class="javax.swing.JButton" binding="dodajKontaktButton" default-binding="true">
+              <component id="9d89b" class="javax.swing.JButton" binding="addContactButton">
                 <constraints>
                   <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <foreground color="-1118482"/>
                   <text value="Dodaj kontakt"/>
                 </properties>
               </component>

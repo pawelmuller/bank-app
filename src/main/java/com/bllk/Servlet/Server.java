@@ -149,6 +149,27 @@ public class Server extends HttpServlet {
                     else
                         response.getOutputStream().println("{}");
                 }
+                else if (atributes[0].equals("login") && atributes[1].equals("contacts")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("password");
+                    List contacts = data.getContacts(login, password);
+                    if (contacts != null) {
+                        int iter = 1;
+                        json = "{\n";
+                        for (Object contact: contacts) {
+                            json += "\"" + ((Contact) contact).getName() + "\": \"" + ((Contact) contact).getTargetID() + "\"";
+                            if (iter == contacts.size())
+                                json += "\n";
+                            else
+                                json += ",\n";
+                            iter++;
+                        }
+                        json += "}";
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+                    }
+                    else
+                        response.getOutputStream().println("{}");
+                }
                 else if (atributes[0].equals("login") && atributes[1].equals("totalmoney")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");
@@ -222,7 +243,7 @@ public class Server extends HttpServlet {
                     }
                     catch (Exception ignored) {}
                 }
-                break;
+            break;
             case 2:
                 if (atributes[0].equals("login") && atributes[1].equals("transaction")) {
                     String login = request.getParameter("login");
@@ -245,6 +266,17 @@ public class Server extends HttpServlet {
                     if (log != null) {
                         Client client = data.getClient(log.getID());
                         data.addAccount(currencyid, client.getID());
+                    }
+                }
+                if (atributes[0].equals("login") && atributes[1].equals("createcontact")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("passwordhash");
+                    String name = request.getParameter("name");
+                    int accountid = Integer.parseInt(request.getParameter("accountid"));
+                    Login log = data.getLogin(login, password);
+                    if (log != null) {
+                        Client client = data.getClient(log.getID());
+                        data.addContact(client.getID(), accountid, name);
                     }
                 }
                 break;

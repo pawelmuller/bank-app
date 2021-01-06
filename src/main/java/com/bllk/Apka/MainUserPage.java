@@ -9,6 +9,10 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.*;
 import java.util.List;
 
@@ -36,13 +40,14 @@ public class MainUserPage {
     private JComboBox<String> currenciesComboBox;
     private JButton createAccountButton;
     private JLabel doubleAccountWarning;
-    private JComboBox comboBox1;
+    private JComboBox<String> contactBox;
     private JTextField accountNumber;
-    private JButton dodajKontaktButton;
+    private JButton addContactButton;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
     Map <String, String> currencies;
+    Map <String, Integer> contacts;
 
     public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, Client _client, Login _login) {
         frame = _frame;
@@ -57,6 +62,7 @@ public class MainUserPage {
 
         fillCurrenciesComboBox();
         updateAccounts();
+        updateContacts();
         updateTransactionTable();
         sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
@@ -75,6 +81,34 @@ public class MainUserPage {
             }
             updateAccounts();
         });
+        addContactButton.addActionListener(e -> addContact());
+        contactBox.addActionListener(e -> {
+            String name = (String) contactBox.getSelectedItem();
+            if (!name.equals(""))
+                accountNumber.setText(String.valueOf(contacts.get(name)));
+            else
+                accountNumber.setText("");
+        });
+    }
+    void addContact() {
+        try {
+            int accountid = Integer.parseInt(accountNumber.getText());
+            String name = (String) contactBox.getSelectedItem();
+            if (name.equals(""))
+                throw new InputMismatchException("Wrong name");
+            if (!connection.checkAccount(Integer.parseInt(accountNumber.getText())))
+                throw new NumberFormatException();
+            connection.createContact(login.getLogin(), login.getPasswordHash(), name, accountid);
+            message.setText(String.format("Account %d: %s", accountid, name));
+            updateContacts();
+
+        } catch(NumberFormatException ex) {
+            message.setText("Nie można dodać kontaktu: błędny numer konta.");
+        } catch (InputMismatchException ex) {
+            message.setText("Nie można dodać kontaktu: błędna nazwa.");
+        } catch (Exception ex) {
+            message.setText("Nie można dodać kontaktu.");
+        }
     }
     void makeTransaction() {
         try {
@@ -118,10 +152,16 @@ public class MainUserPage {
                 JOptionPane.YES_NO_OPTION);
         return n==0;
     }
+
+    void updateContacts() {
+        contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
+        contactBox.removeAllItems();
+        contactBox.addItem("");
+        for (Map.Entry<String, Integer> contact: contacts.entrySet())
+            contactBox.addItem(contact.getKey());
+    }
     void updateTransactionTable() {
-        String[] columns = new String[] {
-                "Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"
-        };
+        String[] columns = new String[] {"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"};
         Map<Integer, JSONObject> transactions = connection.getTransactions(login.getLogin(), login.getPasswordHash());
         List<String[]> values = new ArrayList<>();
 

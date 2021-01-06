@@ -174,6 +174,23 @@ public class Database {
         }
         return accounts;
     }
+    public List getContacts(String login, String hashed_password) {
+        List accounts = null;
+        try {
+            Session session = factory.openSession();
+            Query query = session.createQuery("SELECT CN FROM Contact CN, Client C, Login L WHERE C.id=CN.ownerid AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
+            query.setParameter("param", login);
+            query.setParameter("param2", hashed_password);
+            accounts = query.list();
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return accounts;
+    }
     public List getTransactions(String login, String hashed_password) {
         List transactions = null;
         try {
@@ -376,8 +393,25 @@ public class Database {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
 
-            int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(ACCOUNT_ID) FROM ACCOUNTS").list().get(0)).intValue() + 1;
+            int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(CONTACT_ID) FROM CONTACTS").list().get(0)).intValue() + 1;
             Account account = new Account(id, 0, currencyid, ownerid);
+            session.save(account);
+
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+    }
+    public void addContact(int ownerid, int accountid, String name) {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(ACCOUNT_ID) FROM ACCOUNTS").list().get(0)).intValue() + 1;
+            Contact account = new Contact(id, ownerid, accountid, name);
             session.save(account);
 
             tx.commit();
