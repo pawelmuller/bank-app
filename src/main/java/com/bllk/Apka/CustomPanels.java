@@ -16,10 +16,33 @@ class AccountPanel extends JPanel {
         JLabel balanceLabel = new JLabel(_balance);
         JLabel currencyLabel = new JLabel(_currency);
 
-        this.add(accountName);
+        accountName.setForeground(Color.decode("#EEEEEE"));
+        accountNumber.setForeground(Color.decode("#EEEEEE"));
+        balanceLabel.setForeground(Color.decode("#EEEEEE"));
+        currencyLabel.setForeground(Color.decode("#EEEEEE"));
+
+        this.setLayout(new FlowLayout());
+
         this.add(accountNumber);
         this.add(balanceLabel);
         this.add(currencyLabel);
+
+        this.setBackground(Color.decode("#222222"));
+        this.setBorder(BorderFactory.createLineBorder(Color.decode("#FF7F00"), 3, true));
+        this.setMaximumSize(new Dimension(200, 50));
+        this.setPreferredSize(new Dimension(150, -1));
+
+        Font font = StartWindow.fonts.adagio_slab;
+        font = font.deriveFont(12f);
+
+        this.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.decode("#FF7F00"), 3, true),
+                _account_name + " (nr " + _account_number + ")",
+                TitledBorder.CENTER,
+                TitledBorder.DEFAULT_POSITION,
+                font,
+                Color.decode("#EEEEEE")
+                ));
     }
 }
 
