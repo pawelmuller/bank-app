@@ -182,7 +182,7 @@ public class MainUserPage {
 
         String system_name = System.getProperty("os.name");
         if (!system_name.startsWith("Windows")) {
-            tabbedPane.setForeground(Color.decode("#FF7F00"));
+            tabbedPane.setForeground(Colors.getOrange());
         }
     }
     void updateContacts() {
@@ -216,11 +216,11 @@ public class MainUserPage {
         TableModel tableModel = new DefaultTableModel(values.toArray(new Object[][] {}), columns);
         JTable table = new JTable(tableModel);
 
-        table.setBackground(Color.decode("#222222"));
-        table.setForeground(Color.decode("#EEEEEE"));
+        table.setBackground(Colors.getDarkGrey());
+        table.setForeground(Colors.getBrightTextColor());
         table.getTableHeader().setOpaque(false);
-        table.getTableHeader().setBackground(Color.decode("#FF7F00"));
-        table.setGridColor(Color.decode("#808080"));
+        table.getTableHeader().setBackground(Colors.getOrange());
+        table.setGridColor(Colors.getLightGrey());
 
         table.setDefaultEditor(Object.class, null);
         table.getTableHeader().setReorderingAllowed(false);

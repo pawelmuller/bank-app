@@ -1,11 +1,8 @@
 package com.bllk.Apka;
 
-import com.bllk.Servlet.mapclasses.Login;
-
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -19,10 +16,10 @@ class AccountPanel extends JPanel {
         JLabel balanceLabel = new JLabel(_balance);
         JLabel currencyLabel = new JLabel(_currency);
 
-        accountName.setForeground(Color.decode("#EEEEEE"));
-        accountNumber.setForeground(Color.decode("#EEEEEE"));
-        balanceLabel.setForeground(Color.decode("#EEEEEE"));
-        currencyLabel.setForeground(Color.decode("#EEEEEE"));
+        accountName.setForeground(Colors.getBrightTextColor());
+        accountNumber.setForeground(Colors.getBrightTextColor());
+        balanceLabel.setForeground(Colors.getBrightTextColor());
+        currencyLabel.setForeground(Colors.getBrightTextColor());
 
         this.setLayout(new FlowLayout());
 
@@ -30,8 +27,8 @@ class AccountPanel extends JPanel {
         this.add(balanceLabel);
         this.add(currencyLabel);
 
-        this.setBackground(Color.decode("#222222"));
-        this.setBorder(BorderFactory.createLineBorder(Color.decode("#FF7F00"), 3, true));
+        this.setBackground(Colors.getLightGrey());
+        this.setBorder(BorderFactory.createLineBorder(Colors.getOrange(), 3, true));
         this.setMaximumSize(new Dimension(200, 50));
         this.setPreferredSize(new Dimension(150, -1));
 
@@ -39,12 +36,12 @@ class AccountPanel extends JPanel {
         font = font.deriveFont(12f);
 
         this.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.decode("#FF7F00"), 3, true),
+                BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
                 _account_name + " (nr " + _account_number + ")",
                 TitledBorder.CENTER,
                 TitledBorder.DEFAULT_POSITION,
                 font,
-                Color.decode("#EEEEEE")
+                Colors.getBrightTextColor()
                 ));
     }
 }

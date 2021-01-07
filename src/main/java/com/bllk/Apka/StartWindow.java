@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
 
 public class StartWindow {
@@ -36,23 +37,11 @@ public class StartWindow {
     private JLabel register_mainErrorLabel;
     private JLabel loginLabel;
     private JLabel passwordLabel;
-    private JLabel register_loginLabel;
-    private JLabel register_passwordLabel;
-    private JLabel register_repearPasswordLabel;
-    private JLabel register_nameLabel;
-    private JLabel register_surnameLabel;
-    private JLabel register_birthDateLabel;
-    private JLabel register_genderLabel;
-    private JLabel register_yearLabel;
-    private JLabel register_monthLabel;
-    private JLabel register_dayLabel;
-    private JLabel register_streetLabel;
-    private JLabel register_numberLabel;
-    private JLabel register_cityLabel;
-    private JLabel register_postcodeLabel;
-    private JLabel register_countryLabel;
-    private JLabel register_loginHeaderLabel;
-    private JLabel register_personalHeaderLabel;
+    private JLabel register_loginLabel, register_passwordLabel, register_repeatPasswordLabel;
+    private JLabel register_nameLabel, register_surnameLabel, register_birthDateLabel, register_genderLabel;
+    private JLabel register_yearLabel, register_monthLabel, register_dayLabel;
+    private JLabel register_streetLabel, register_numberLabel, register_cityLabel, register_postcodeLabel, register_countryLabel;
+    private JLabel register_loginHeaderLabel, register_personalHeaderLabel;
 
     private String login, password, repeatedPassword;
     private String name, surname, gender;
@@ -61,6 +50,8 @@ public class StartWindow {
     private boolean isDataValid;
 
     public static Fonts fonts = new Fonts();
+
+    private static final Integer passwordMinimumLength = 8, passwordMaximumLength = 30;
 
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
@@ -161,54 +152,43 @@ public class StartWindow {
                 }
             }
         });
-        register_yearsComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                year = (Integer) register_yearsComboBox.getSelectedItem();
-                if (year == null)
-                    year = LocalDateTime.now().getYear();
-                register_monthsComboBox.removeAllItems();
-                register_daysComboBox.removeAllItems();
-                fillMonthComboBox(LocalDateTime.now(), year);
-                register_monthsComboBox.setEnabled(true);
-            }
+        register_yearsComboBox.addActionListener(e -> {
+            year = (Integer) register_yearsComboBox.getSelectedItem();
+            if (year == null)
+                year = LocalDateTime.now().getYear();
+            register_monthsComboBox.removeAllItems();
+            register_daysComboBox.removeAllItems();
+            fillMonthComboBox(LocalDateTime.now(), year);
+            register_monthsComboBox.setEnabled(true);
         });
-        register_monthsComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                month = (Integer) register_monthsComboBox.getSelectedItem();
-                if (month == null)
-                    month = 1;
-                register_daysComboBox.removeAllItems();
-                fillDaysComboBox(LocalDateTime.now(), year, month);
-                register_daysComboBox.setEnabled(true);
-            }
+        register_monthsComboBox.addActionListener(e -> {
+            month = (Integer) register_monthsComboBox.getSelectedItem();
+            if (month == null)
+                month = 1;
+            register_daysComboBox.removeAllItems();
+            fillDaysComboBox(LocalDateTime.now(), year, month);
+            register_daysComboBox.setEnabled(true);
         });
-        register_daysComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                day = (Integer) register_daysComboBox.getSelectedItem();
-            }
-        });
+        register_daysComboBox.addActionListener(e -> day = (Integer) register_daysComboBox.getSelectedItem());
 
         // Data validation
         register_login.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                login = getDataFromField(register_login, register_loginErrorLabel, 8, 30);
+                login = getDataFromField(register_login, register_loginErrorLabel, 6, 30);
                 validateLogin();
             }
         });
         register_password.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                password = getPasswordFromField(register_password, register_passwordErrorLabel, 8, 30);
+                password = getPasswordFromField(register_password, register_passwordErrorLabel, passwordMinimumLength, passwordMaximumLength);
             }
         });
         register_repeatPassword.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                repeatedPassword = getPasswordFromField(register_repeatPassword, register_repeatPasswordErrorLabel, 8, 30);
+                repeatedPassword = getPasswordFromField(register_repeatPassword, register_repeatPasswordErrorLabel, passwordMinimumLength, passwordMaximumLength);
                 validatePasswords();
             }
         });
@@ -248,14 +228,10 @@ public class StartWindow {
                 postcode = getDataFromField(register_postcode, register_address2ErrorLabel, 0, 10);
             }
         });
-        register_button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                performRegister();
-            }
-        });
+        register_button.addActionListener(e -> performRegister());
     }
     private void updateFonts() {
+        Colors colors = new Colors();
         Font standard_font = StartWindow.fonts.adagio_slab.deriveFont(14f);
         Font header_font = StartWindow.fonts.adagio_slab.deriveFont(20f);
 
@@ -264,34 +240,32 @@ public class StartWindow {
         mainTabbedPane.setFont(standard_font);
 
         // Login page
-        loginLabel.setFont(standard_font);
-        passwordLabel.setFont(standard_font);
-        loginButton.setFont(standard_font);
-        forgotPasswordButton.setFont(standard_font);
+        for (JLabel label : Arrays.asList(loginLabel, passwordLabel)) {
+            label.setFont(standard_font);
+            label.setForeground(Colors.getBrightTextColor());
+        }
+        for (JButton jButton : Arrays.asList(loginButton, forgotPasswordButton)) {
+            jButton.setFont(standard_font);
+        }
 
         //Register page
-        register_loginHeaderLabel.setFont(header_font);
-        register_loginLabel.setFont(standard_font);
-        register_passwordLabel.setFont(standard_font);
-        register_repearPasswordLabel.setFont(standard_font);
-        register_personalHeaderLabel.setFont(header_font);
-        register_nameLabel.setFont(standard_font);
-        register_surnameLabel.setFont(standard_font);
-        register_genderLabel.setFont(standard_font);
-        maleRadioButton.setFont(standard_font);
-        femaleRadioButton.setFont(standard_font);
-        register_birthDateLabel.setFont(standard_font);
-        register_yearLabel.setFont(standard_font);
-        register_yearsComboBox.setFont(standard_font);
-        register_monthLabel.setFont(standard_font);
-        register_monthsComboBox.setFont(standard_font);
-        register_dayLabel.setFont(standard_font);
-        register_daysComboBox.setFont(standard_font);
-        register_streetLabel.setFont(standard_font);
-        register_numberLabel.setFont(standard_font);
-        register_cityLabel.setFont(standard_font);
-        register_postcodeLabel.setFont(standard_font);
-        register_countryLabel.setFont(standard_font);
+        for (JLabel jLabel : Arrays.asList(register_personalHeaderLabel, register_loginHeaderLabel)) {
+            jLabel.setFont(header_font);
+            jLabel.setForeground(Colors.getBrightTextColor());
+        }
+        for (JLabel jLabel : Arrays.asList(register_loginLabel, register_passwordLabel, register_repeatPasswordLabel, register_nameLabel, register_surnameLabel, register_genderLabel, register_birthDateLabel, register_yearLabel, register_monthLabel, register_dayLabel, register_streetLabel, register_numberLabel, register_cityLabel, register_postcodeLabel, register_countryLabel)) {
+            jLabel.setFont(standard_font);
+            jLabel.setForeground(Colors.getBrightTextColor());
+        }
+        for (JRadioButton jRadioButton : Arrays.asList(maleRadioButton, femaleRadioButton)) {
+            jRadioButton.setFont(standard_font);
+            jRadioButton.setForeground(Colors.getBrightTextColor());
+        }
+        for (JComboBox<Integer> integerJComboBox : Arrays.asList(register_yearsComboBox, register_monthsComboBox, register_daysComboBox)) {
+            integerJComboBox.setFont(standard_font);
+            integerJComboBox.setForeground(Colors.getOrange());
+            integerJComboBox.setBackground(Colors.getLightGrey());
+        }
         register_countriesComboBox.setFont(standard_font);
         register_button.setFont(standard_font);
 
