@@ -47,6 +47,7 @@ public class MainUserPage {
     Account active_payer_account = null;
     Map <String, String> currencies;
     Map <String, Integer> contacts;
+    boolean lock_combobox = false;
 
     public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, Client _client, Login _login) {
         frame = _frame;
@@ -89,19 +90,15 @@ public class MainUserPage {
         });
         addContactButton.addActionListener(e -> {
             addContact();
+            updateContacts();
             updateContactsSummary();
         });
         contactBox.addActionListener(e -> {
-            String name = (String) contactBox.getSelectedItem();
-            Integer accountid = contacts.get(name);
-            if (accountid != null)
-                accountNumber.setText("" + accountid);
-        });
-        contactBox.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                super.focusGained(e);
-                updateContacts();
+            if (!lock_combobox) {
+                String name = (String) contactBox.getSelectedItem();
+                Integer accountid = contacts.get(name);
+                if (accountid != null)
+                    accountNumber.setText("" + accountid);
             }
         });
     }
@@ -186,17 +183,15 @@ public class MainUserPage {
         }
     }
     void updateContacts() {
+        lock_combobox = true;
         contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
-        if (contactBox.getItemCount() == 0)
-            contactBox.addItem("");
-        contactBox.setSelectedIndex(0);
-        int cnt = contactBox.getItemCount();
-        while (cnt > 1) {
-            contactBox.remove(1);
-            cnt--;
-        }
+        String temp = (String) contactBox.getSelectedItem();
+        contactBox.removeAllItems();
+        contactBox.addItem("");
         for (Map.Entry<String, Integer> contact: contacts.entrySet())
             contactBox.addItem(contact.getKey());
+        contactBox.setSelectedItem(temp);
+        lock_combobox = false;
     }
     void updateTransactionTable() {
         String[] columns = new String[] {"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"};
