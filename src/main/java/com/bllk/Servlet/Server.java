@@ -185,6 +185,21 @@ public class Server extends HttpServlet {
                     else
                         response.getOutputStream().println("{}");
                 }
+                else if (atributes[0].equals("login") && atributes[1].equals("totalcredits")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("password");
+                    int currency = Integer.parseInt(request.getParameter("currency"));
+
+                    Integer credits = data.getTotalCredits(login, password, currency);
+                    if (credits != null) {
+                        json = "{\n";
+                        json += "\"value\": \"" + credits + "\"\n";
+                        json += "}";
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+                    }
+                    else
+                        response.getOutputStream().println("{}");
+                }
                 else if (atributes[0].equals("login") && atributes[1].equals("transactions")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");
