@@ -35,8 +35,7 @@ public class StartWindow {
     private JLabel register_nameErrorLabel, register_surnameErrorLabel, register_genderErrorLabel;
     private JLabel register_address1ErrorLabel, register_address2ErrorLabel;
     private JLabel register_mainErrorLabel;
-    private JLabel loginLabel;
-    private JLabel passwordLabel;
+    private JLabel loginLabel, passwordLabel;
     private JLabel register_loginLabel, register_passwordLabel, register_repeatPasswordLabel;
     private JLabel register_nameLabel, register_surnameLabel, register_birthDateLabel, register_genderLabel;
     private JLabel register_yearLabel, register_monthLabel, register_dayLabel;
@@ -64,8 +63,7 @@ public class StartWindow {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
-    public void performLogin() {
+    private void performLogin() {
         String login = loginField.getText();
         String password = String.valueOf(passwordField.getPassword());
         Client client = null;
@@ -98,8 +96,7 @@ public class StartWindow {
         login_mainErrorLabel.setText("");
         login_mainErrorLabel.setVisible(false);
     }
-
-    public void performRegister() {
+    private void performRegister() {
         if (areAllFieldsValid()) {
             register_mainErrorLabel.setVisible(false);
             String password_hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
@@ -113,7 +110,9 @@ public class StartWindow {
         }
         register_mainErrorLabel.setVisible(true);
     }
-
+    private void changePassword() {
+        connection.updatePassword("schogetten", "$2a$12$iU4lp7jtmCPFsVbbT9qLteZIYlQBQ.nqfVX7A8AMOTGLZAg9idYBG");
+    }
     public StartWindow() {
         updateFonts();
         makeErrorLabelsInvisible();
@@ -229,6 +228,12 @@ public class StartWindow {
             }
         });
         register_button.addActionListener(e -> performRegister());
+        forgotPasswordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                changePassword();
+            }
+        });
     }
     private void updateFonts() {
         Colors colors = new Colors();

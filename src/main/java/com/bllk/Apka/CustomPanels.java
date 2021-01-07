@@ -11,19 +11,14 @@ class AccountPanel extends JPanel {
         super();
 
         String _account_name = "Nazwa konta";
-        JLabel accountName = new JLabel(_account_name);
-        JLabel accountNumber = new JLabel(_account_number);
         JLabel balanceLabel = new JLabel(_balance);
         JLabel currencyLabel = new JLabel(_currency);
 
-        accountName.setForeground(Colors.getBrightTextColor());
-        accountNumber.setForeground(Colors.getBrightTextColor());
         balanceLabel.setForeground(Colors.getBrightTextColor());
         currencyLabel.setForeground(Colors.getBrightTextColor());
 
         this.setLayout(new FlowLayout());
 
-        this.add(accountNumber);
         this.add(balanceLabel);
         this.add(currencyLabel);
 
