@@ -279,6 +279,16 @@ public class Server extends HttpServlet {
                         data.addContact(client.getID(), accountid, name);
                     }
                 }
+                if (atributes[0].equals("login") && atributes[1].equals("removecontact")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("passwordhash");
+                    int accountid = Integer.parseInt(request.getParameter("accountid"));
+                    Login log = data.getLogin(login, password);
+                    if (log != null) {
+                        Client client = data.getClient(log.getID());
+                        data.removeContact(client.getID(), accountid);
+                    }
+                }
                 break;
         }
     }

@@ -1,6 +1,9 @@
 package com.bllk.Apka;
 
+import com.bllk.Servlet.mapclasses.Login;
+
 import javax.swing.*;
+import java.awt.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.IOException;
@@ -68,5 +71,27 @@ class Fonts {
             System.out.println("Have not found font file. Using default Veranda.");
         }
         return font;
+    }
+}
+
+class ContactPanel extends JPanel {
+    public ContactPanel(JPanel parent, MainUserPage page, int target_id, String name) {
+        super();
+
+        this.setLayout(new FlowLayout(FlowLayout.LEADING));
+
+        JLabel nameLabel = new JLabel(name);
+        JLabel targetidLabel = new JLabel("" + target_id);
+        JButton deleteButton = new JButton("Usuń");
+
+        deleteButton.addActionListener(e -> {
+            page.connection.removeContact(page.login.getLogin(), page.login.getPasswordHash(), target_id);
+            page.updateContacts();
+            parent.remove(this);
+            parent.updateUI();
+        });
+        this.add(nameLabel);
+        this.add(targetidLabel);
+        this.add(deleteButton);
     }
 }
