@@ -64,9 +64,9 @@ public class MainUserPage {
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         updateFonts();
 
+        updateContacts();
         fillCurrenciesComboBox();
         updateAccounts();
-        updateContacts();
         updateTransactionTable();
         updateAccountsSummary();
         updateContactsSummary();
@@ -110,7 +110,7 @@ public class MainUserPage {
                 if (!connection.checkAccount(Integer.parseInt(accountNumber.getText())))
                     throw new NumberFormatException();
                 connection.createContact(login.getLogin(), login.getPasswordHash(), name, accountid);
-                message.setText(String.format("Account %d: %s", accountid, name));
+                message.setText(String.format("Konto %d: %s", accountid, name));
             }
 
         } catch(NumberFormatException ex) {
@@ -167,6 +167,12 @@ public class MainUserPage {
                 JOptionPane.YES_NO_OPTION);
         return n==0;
     }
+    String getContactIfPossible(int value) {
+        for (Map.Entry<String, Integer> contact:contacts.entrySet())
+            if (contact.getValue() == value)
+                return contact.getKey();
+        return String.valueOf(value);
+    }
 
     private void updateFonts() {
         logoLabel.setFont(StartWindow.fonts.radikal.deriveFont(48f));
@@ -191,6 +197,7 @@ public class MainUserPage {
         for (Map.Entry<String, Integer> contact: contacts.entrySet())
             contactBox.addItem(contact.getKey());
         contactBox.setSelectedItem(temp);
+        updateTransactionTable();
         lock_combobox = false;
     }
     void updateTransactionTable() {
@@ -200,8 +207,8 @@ public class MainUserPage {
 
         for (JSONObject transaction: transactions.values()) {
             values.add(new String[] {
-                    transaction.getString("senderid"),
-                    transaction.getString("receiverid"),
+                    getContactIfPossible(transaction.getInt("senderid")),
+                    getContactIfPossible(transaction.getInt("receiverid")),
                     transaction.getString("date"),
                     transaction.getString("title"),
                     String.format("%.2f", transaction.getDouble("value") / 100.0),
@@ -263,7 +270,7 @@ public class MainUserPage {
             Integer balance = Integer.parseInt((String) account_hash.get("value"));
             String formatted_balance = String.format("%.2f", balance/100.0);
 
-            AccountPanel accountPanel = new AccountPanel(account.getKey(), formatted_balance, currency_name);
+            AccountPanel accountPanel = new AccountPanel(getContactIfPossible(Integer.parseInt(account.getKey())), account.getKey(), formatted_balance, currency_name);
             accountsSummary.add(accountPanel);
         }
     }
