@@ -14,7 +14,7 @@
     <children>
       <tabbedpane id="995af" binding="mainTabbedPane">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="200" height="200"/>
           </grid>
         </constraints>
@@ -61,7 +61,7 @@
                   <background color="-8355712"/>
                 </properties>
               </component>
-              <component id="9f144" class="javax.swing.JLabel">
+              <component id="9f144" class="javax.swing.JLabel" binding="loginLabel">
                 <constraints>
                   <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -70,7 +70,7 @@
                   <text value="Login:"/>
                 </properties>
               </component>
-              <component id="85c4f" class="javax.swing.JLabel">
+              <component id="85c4f" class="javax.swing.JLabel" binding="passwordLabel">
                 <constraints>
                   <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -153,7 +153,7 @@
               <horizontalScrollBarPolicy value="30"/>
               <opaque value="true"/>
               <verticalScrollBarPolicy value="22"/>
-              <visible value="false"/>
+              <visible value="true"/>
               <wheelScrollingEnabled value="true"/>
             </properties>
             <border type="empty"/>
@@ -196,7 +196,7 @@
                       <grid row="0" column="7" row-span="33" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </hspacer>
-                  <component id="68653" class="javax.swing.JLabel">
+                  <component id="68653" class="javax.swing.JLabel" binding="register_loginLabel">
                     <constraints>
                       <grid row="3" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -206,7 +206,7 @@
                       <text value="Login"/>
                     </properties>
                   </component>
-                  <component id="3bb0a" class="javax.swing.JLabel">
+                  <component id="3bb0a" class="javax.swing.JLabel" binding="register_passwordLabel">
                     <constraints>
                       <grid row="6" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -236,7 +236,7 @@
                       <background color="-8355712"/>
                     </properties>
                   </component>
-                  <component id="fbb0d" class="javax.swing.JLabel">
+                  <component id="fbb0d" class="javax.swing.JLabel" binding="register_repearPasswordLabel">
                     <constraints>
                       <grid row="9" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -271,7 +271,7 @@
                       <background color="-8355712"/>
                     </properties>
                   </component>
-                  <component id="14864" class="javax.swing.JLabel">
+                  <component id="14864" class="javax.swing.JLabel" binding="register_nameLabel">
                     <constraints>
                       <grid row="13" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -281,7 +281,7 @@
                       <text value="Imię"/>
                     </properties>
                   </component>
-                  <component id="8b618" class="javax.swing.JLabel">
+                  <component id="8b618" class="javax.swing.JLabel" binding="register_surnameLabel">
                     <constraints>
                       <grid row="16" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -291,7 +291,7 @@
                       <text value="Nazwisko"/>
                     </properties>
                   </component>
-                  <component id="66424" class="javax.swing.JLabel">
+                  <component id="66424" class="javax.swing.JLabel" binding="register_birthDateLabel">
                     <constraints>
                       <grid row="22" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -308,7 +308,9 @@
                       </grid>
                     </constraints>
                     <properties>
+                      <background color="-8355712"/>
                       <editable value="false"/>
+                      <foreground color="-33024"/>
                       <model/>
                       <toolTipText value=""/>
                     </properties>
@@ -320,8 +322,10 @@
                       </grid>
                     </constraints>
                     <properties>
+                      <background color="-8355712"/>
                       <editable value="false"/>
                       <enabled value="false"/>
+                      <foreground color="-33024"/>
                       <model/>
                     </properties>
                   </component>
@@ -332,8 +336,10 @@
                       </grid>
                     </constraints>
                     <properties>
+                      <background color="-8355712"/>
                       <editable value="false"/>
                       <enabled value="false"/>
+                      <foreground color="-33024"/>
                       <model/>
                     </properties>
                   </component>
@@ -342,7 +348,7 @@
                       <grid row="0" column="0" row-span="33" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </hspacer>
-                  <component id="b8333" class="javax.swing.JLabel">
+                  <component id="b8333" class="javax.swing.JLabel" binding="register_yearLabel">
                     <constraints>
                       <grid row="23" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="24" height="33"/>
@@ -353,7 +359,7 @@
                       <text value="Rok"/>
                     </properties>
                   </component>
-                  <component id="80ac1" class="javax.swing.JLabel">
+                  <component id="80ac1" class="javax.swing.JLabel" binding="register_monthLabel">
                     <constraints>
                       <grid row="23" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="47" height="33"/>
@@ -365,7 +371,7 @@
                       <text value="Miesiąc"/>
                     </properties>
                   </component>
-                  <component id="cf9d2" class="javax.swing.JLabel">
+                  <component id="cf9d2" class="javax.swing.JLabel" binding="register_dayLabel">
                     <constraints>
                       <grid row="23" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="35" height="33"/>
@@ -387,7 +393,7 @@
                       <background color="-8355712"/>
                     </properties>
                   </component>
-                  <component id="52b44" class="javax.swing.JLabel">
+                  <component id="52b44" class="javax.swing.JLabel" binding="register_streetLabel">
                     <constraints>
                       <grid row="24" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -407,7 +413,7 @@
                       <background color="-8355712"/>
                     </properties>
                   </component>
-                  <component id="1e6c3" class="javax.swing.JLabel">
+                  <component id="1e6c3" class="javax.swing.JLabel" binding="register_numberLabel">
                     <constraints>
                       <grid row="24" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -427,7 +433,7 @@
                       <background color="-8355712"/>
                     </properties>
                   </component>
-                  <component id="df938" class="javax.swing.JLabel">
+                  <component id="df938" class="javax.swing.JLabel" binding="register_loginHeaderLabel">
                     <constraints>
                       <grid row="2" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -437,7 +443,7 @@
                       <text value="Dane do logowania"/>
                     </properties>
                   </component>
-                  <component id="d5b5c" class="javax.swing.JLabel">
+                  <component id="d5b5c" class="javax.swing.JLabel" binding="register_personalHeaderLabel">
                     <constraints>
                       <grid row="12" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -447,7 +453,7 @@
                       <text value="Dane osobiste"/>
                     </properties>
                   </component>
-                  <component id="96c0c" class="javax.swing.JLabel">
+                  <component id="96c0c" class="javax.swing.JLabel" binding="register_cityLabel">
                     <constraints>
                       <grid row="27" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -467,7 +473,7 @@
                       <background color="-8355712"/>
                     </properties>
                   </component>
-                  <component id="be272" class="javax.swing.JLabel">
+                  <component id="be272" class="javax.swing.JLabel" binding="register_postcodeLabel">
                     <constraints>
                       <grid row="27" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -481,9 +487,12 @@
                     <constraints>
                       <grid row="29" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <background color="-8355712"/>
+                      <foreground color="-33024"/>
+                    </properties>
                   </component>
-                  <component id="aa803" class="javax.swing.JLabel">
+                  <component id="aa803" class="javax.swing.JLabel" binding="register_countryLabel">
                     <constraints>
                       <grid row="27" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -520,7 +529,7 @@
                       <text value="&amp;Kobieta"/>
                     </properties>
                   </component>
-                  <component id="991d4" class="javax.swing.JLabel">
+                  <component id="991d4" class="javax.swing.JLabel" binding="register_genderLabel">
                     <constraints>
                       <grid row="19" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>

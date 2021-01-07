@@ -34,12 +34,33 @@ public class StartWindow {
     private JLabel register_nameErrorLabel, register_surnameErrorLabel, register_genderErrorLabel;
     private JLabel register_address1ErrorLabel, register_address2ErrorLabel;
     private JLabel register_mainErrorLabel;
+    private JLabel loginLabel;
+    private JLabel passwordLabel;
+    private JLabel register_loginLabel;
+    private JLabel register_passwordLabel;
+    private JLabel register_repearPasswordLabel;
+    private JLabel register_nameLabel;
+    private JLabel register_surnameLabel;
+    private JLabel register_birthDateLabel;
+    private JLabel register_genderLabel;
+    private JLabel register_yearLabel;
+    private JLabel register_monthLabel;
+    private JLabel register_dayLabel;
+    private JLabel register_streetLabel;
+    private JLabel register_numberLabel;
+    private JLabel register_cityLabel;
+    private JLabel register_postcodeLabel;
+    private JLabel register_countryLabel;
+    private JLabel register_loginHeaderLabel;
+    private JLabel register_personalHeaderLabel;
 
     private String login, password, repeatedPassword;
     private String name, surname, gender;
     private String street, buildingNumber, city, postcode, country;
     private Integer year, month, day;
     private boolean isDataValid;
+
+    public static Fonts fonts = new Fonts();
 
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
@@ -104,6 +125,7 @@ public class StartWindow {
     }
 
     public StartWindow() {
+        updateFonts();
         makeErrorLabelsInvisible();
 
         loginButton.addActionListener(e -> performLogin());
@@ -234,14 +256,57 @@ public class StartWindow {
             }
         });
     }
+    private void updateFonts() {
+        Font standard_font = StartWindow.fonts.adagio_slab.deriveFont(14f);
+        Font header_font = StartWindow.fonts.adagio_slab.deriveFont(20f);
 
+        // Main elements
+        logoLabel.setFont(StartWindow.fonts.radikal.deriveFont(48f));
+        mainTabbedPane.setFont(standard_font);
+
+        // Login page
+        loginLabel.setFont(standard_font);
+        passwordLabel.setFont(standard_font);
+        loginButton.setFont(standard_font);
+        forgotPasswordButton.setFont(standard_font);
+
+        //Register page
+        register_loginHeaderLabel.setFont(header_font);
+        register_loginLabel.setFont(standard_font);
+        register_passwordLabel.setFont(standard_font);
+        register_repearPasswordLabel.setFont(standard_font);
+        register_personalHeaderLabel.setFont(header_font);
+        register_nameLabel.setFont(standard_font);
+        register_surnameLabel.setFont(standard_font);
+        register_genderLabel.setFont(standard_font);
+        maleRadioButton.setFont(standard_font);
+        femaleRadioButton.setFont(standard_font);
+        register_birthDateLabel.setFont(standard_font);
+        register_yearLabel.setFont(standard_font);
+        register_yearsComboBox.setFont(standard_font);
+        register_monthLabel.setFont(standard_font);
+        register_monthsComboBox.setFont(standard_font);
+        register_dayLabel.setFont(standard_font);
+        register_daysComboBox.setFont(standard_font);
+        register_streetLabel.setFont(standard_font);
+        register_numberLabel.setFont(standard_font);
+        register_cityLabel.setFont(standard_font);
+        register_postcodeLabel.setFont(standard_font);
+        register_countryLabel.setFont(standard_font);
+        register_countriesComboBox.setFont(standard_font);
+        register_button.setFont(standard_font);
+
+        String system_name = System.getProperty("os.name");
+        if (!system_name.startsWith("Windows")) {
+            mainTabbedPane.setForeground(Color.decode("#FF7F00"));
+        }
+    }
     private void fillYearComboBox(LocalDateTime now) {
         int current_year = now.getYear();
 
         for (int i = current_year; i >= current_year - 120; --i)
             register_yearsComboBox.addItem(i);
     }
-
     private void fillMonthComboBox(LocalDateTime now, Integer chosen_year) {
         int month_count = 12;
 
@@ -251,7 +316,6 @@ public class StartWindow {
         for (int i = 1; i <= month_count; ++i)
             register_monthsComboBox.addItem(i);
     }
-
     private void fillDaysComboBox(LocalDateTime now, Integer chosen_year, Integer chosen_month) {
         int day_count = 31;
 
@@ -274,12 +338,10 @@ public class StartWindow {
         for (int i = 1; i <= day_count; ++i)
             register_daysComboBox.addItem(i);
     }
-
     private void fillCountriesComboBox() {
         for (Map.Entry<String,Integer> entry : connection.getCountries().entrySet())
             register_countriesComboBox.addItem(entry.getKey());
     }
-
     private void makeErrorLabelsInvisible() {
         login_mainErrorLabel.setVisible(false);
         register_loginErrorLabel.setVisible(false);
@@ -292,7 +354,6 @@ public class StartWindow {
         register_address2ErrorLabel.setVisible(false);
         register_mainErrorLabel.setVisible(false);
     }
-
     private boolean areAllFieldsValid() {
         login = getDataFromField(register_login, register_loginErrorLabel, 8, 30);
         password = getPasswordFromField(register_password, register_passwordErrorLabel, 8, 30);
@@ -315,7 +376,6 @@ public class StartWindow {
             isDataValid = false;
         return isDataValid;
     }
-
     private String getDataFromField(JTextField field_to_check, JLabel label_to_modify, int min_length, int max_length) {
         String inputData = field_to_check.getText();
         int input_length = inputData.length();
@@ -331,7 +391,6 @@ public class StartWindow {
             return null;
         }
     }
-
     private String getPasswordFromField(JPasswordField password_field, JLabel label_to_modify, int min_length, int max_length) {
         String inputData = String.valueOf(password_field.getPassword());
         int input_length = inputData.length();
@@ -347,7 +406,6 @@ public class StartWindow {
             return null;
         }
     }
-
     private boolean validateDataFromField(JLabel label_to_modify, int length, int min_length, int max_length, String data_name) {
         boolean is_valid;
         if (length == 0) {
@@ -368,7 +426,6 @@ public class StartWindow {
         }
         return is_valid;
     }
-
     private void validateLogin() {
         if (login == null) {
             isDataValid = false;
@@ -383,7 +440,6 @@ public class StartWindow {
             register_loginErrorLabel.setVisible(false);
         }
     }
-
     private void validatePasswords() {
         if (password == null || repeatedPassword == null) {
             isDataValid = false;
@@ -398,7 +454,6 @@ public class StartWindow {
             isDataValid = false;
         }
     }
-
     private String determineGender() {
         if (maleRadioButton.isSelected()) {
             register_genderErrorLabel.setVisible(false);
