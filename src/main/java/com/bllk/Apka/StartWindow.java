@@ -77,7 +77,6 @@ public class StartWindow {
     public void performLogin() {
         String login = loginField.getText();
         String password = String.valueOf(passwordField.getPassword());
-        String salt = null;
         Client client = null;
         Login log = null;
 
