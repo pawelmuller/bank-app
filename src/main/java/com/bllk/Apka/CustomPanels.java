@@ -10,7 +10,7 @@ class AccountPanel extends JPanel {
     public AccountPanel(String _account_name, String _account_number, String _balance, String _currency) {
         super();
 
-        String _account_name = "Nazwa konta";
+
         if (_account_name.equals(_account_number))
             _account_name = "Konto";
         JLabel balanceLabel = new JLabel(_balance);
