@@ -9,8 +9,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.util.*;
 import java.util.List;
 
@@ -42,11 +40,14 @@ public class MainUserPage {
     private JButton addContactButton;
     private JPanel accountsSummary;
     private JPanel contactsSummary;
+    private JPanel creditPanel;
+    private JLabel creditsBalance;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
     Map <String, String> currencies;
     Map <String, Integer> contacts;
+    boolean lock_combobox = false;
 
     public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, Client _client, Login _login) {
         frame = _frame;
@@ -63,12 +64,13 @@ public class MainUserPage {
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         updateFonts();
 
+        updateContacts();
         fillCurrenciesComboBox();
         updateAccounts();
-        updateContacts();
         updateTransactionTable();
         updateAccountsSummary();
         updateContactsSummary();
+        updateCreditsBalance();
 
         sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
@@ -89,19 +91,15 @@ public class MainUserPage {
         });
         addContactButton.addActionListener(e -> {
             addContact();
+            updateContacts();
             updateContactsSummary();
         });
         contactBox.addActionListener(e -> {
-            String name = (String) contactBox.getSelectedItem();
-            Integer accountid = contacts.get(name);
-            if (accountid != null)
-                accountNumber.setText("" + accountid);
-        });
-        contactBox.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                super.focusGained(e);
-                updateContacts();
+            if (!lock_combobox) {
+                String name = (String) contactBox.getSelectedItem();
+                Integer accountid = contacts.get(name);
+                if (accountid != null)
+                    accountNumber.setText("" + accountid);
             }
         });
     }
@@ -113,7 +111,7 @@ public class MainUserPage {
                 if (!connection.checkAccount(Integer.parseInt(accountNumber.getText())))
                     throw new NumberFormatException();
                 connection.createContact(login.getLogin(), login.getPasswordHash(), name, accountid);
-                message.setText(String.format("Account %d: %s", accountid, name));
+                message.setText(String.format("Konto %d: %s", accountid, name));
             }
 
         } catch(NumberFormatException ex) {
@@ -170,6 +168,12 @@ public class MainUserPage {
                 JOptionPane.YES_NO_OPTION);
         return n==0;
     }
+    String getContactIfPossible(int value) {
+        for (Map.Entry<String, Integer> contact:contacts.entrySet())
+            if (contact.getValue() == value)
+                return contact.getKey();
+        return String.valueOf(value);
+    }
 
     private void updateFonts() {
         logoLabel.setFont(StartWindow.fonts.radikal.deriveFont(48f));
@@ -186,17 +190,16 @@ public class MainUserPage {
         }
     }
     public void updateContacts() {
+        lock_combobox = true;
         contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
-        if (contactBox.getItemCount() == 0)
-            contactBox.addItem("");
-        contactBox.setSelectedIndex(0);
-        int cnt = contactBox.getItemCount();
-        while (cnt > 1) {
-            contactBox.remove(1);
-            cnt--;
-        }
+        String temp = (String) contactBox.getSelectedItem();
+        contactBox.removeAllItems();
+        contactBox.addItem("");
         for (Map.Entry<String, Integer> contact: contacts.entrySet())
             contactBox.addItem(contact.getKey());
+        contactBox.setSelectedItem(temp);
+        updateTransactionTable();
+        lock_combobox = false;
     }
     private void updateTransactionTable() {
         String[] columns = new String[] {"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"};
@@ -205,8 +208,8 @@ public class MainUserPage {
 
         for (JSONObject transaction: transactions.values()) {
             values.add(new String[] {
-                    transaction.getString("senderid"),
-                    transaction.getString("receiverid"),
+                    getContactIfPossible(transaction.getInt("senderid")),
+                    getContactIfPossible(transaction.getInt("receiverid")),
                     transaction.getString("date"),
                     transaction.getString("title"),
                     String.format("%.2f", transaction.getDouble("value") / 100.0),
@@ -268,7 +271,7 @@ public class MainUserPage {
             Integer balance = Integer.parseInt((String) account_hash.get("value"));
             String formatted_balance = String.format("%.2f", balance/100.0);
 
-            AccountPanel accountPanel = new AccountPanel(account.getKey(), formatted_balance, currency_name);
+            AccountPanel accountPanel = new AccountPanel(getContactIfPossible(Integer.parseInt(account.getKey())), account.getKey(), formatted_balance, currency_name);
             accountsSummary.add(accountPanel);
         }
     }
@@ -279,6 +282,18 @@ public class MainUserPage {
         for (Map.Entry<String, Integer> contact: contacts.entrySet()) {
             ContactPanel contactPanel = new ContactPanel(contactsSummary, this, contact.getValue(), contact.getKey());
             contactsSummary.add(contactPanel);
+        }
+    }
+
+    // -----------------------------------------------
+
+    void updateCreditsBalance() {
+        if (accountSelect.getItemCount() > 0) {
+            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
+            String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
+            int credits_total = connection.getTotalCredits(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
+
+            creditsBalance.setText(String.format("%.2f %s", credits_total / 100.0, active_currency_shortcut));
         }
     }
 }

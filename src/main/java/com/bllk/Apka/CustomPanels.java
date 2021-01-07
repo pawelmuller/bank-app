@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 class AccountPanel extends JPanel {
-    public AccountPanel(String _account_number, String _balance, String _currency) {
+    public AccountPanel(String _account_name, String _account_number, String _balance, String _currency) {
         super();
 
         String _account_name = "Nazwa konta";
+        if (_account_name.equals(_account_number))
+            _account_name = "Konto";
         JLabel balanceLabel = new JLabel(_balance);
         JLabel currencyLabel = new JLabel(_currency);
 

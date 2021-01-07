@@ -12,24 +12,25 @@ import java.util.stream.Collectors;
 public class ClientServerConnection {
     public Map<String, String> getCurrencies() {
         JSONObject jsonObject = new JSONObject(getData("currencies"));
-        Map<String, String> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
+        Map<String, String> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (String) e.getValue()));
         return map;
     }
+
     public Map<String, Integer> getCountries() {
         JSONObject jsonObject = new JSONObject(getData("countries"));
-        Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
+        Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String) e.getValue())));
         return new TreeMap<>(map);
     }
     public Map<Integer, JSONObject> getTransactions(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/transactions?login=%s&password=%s", login, hashed_password)));
         TreeMap<Integer, JSONObject> map = new TreeMap<>(Collections.reverseOrder());
         for (Map.Entry<String, Object> pair : jsonObject.toMap().entrySet())
-            map.put(Integer.parseInt(pair.getKey()), new JSONObject((HashMap)pair.getValue()));
+            map.put(Integer.parseInt(pair.getKey()), new JSONObject((HashMap) pair.getValue()));
         return map;
     }
     public Map<String, Integer> getContacts(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/contacts?login=%s&password=%s", login, hashed_password)));
-        Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String)e.getValue())));
+        Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String) e.getValue())));
         return new TreeMap<>(map);
     }
     public Map<String, Object> getUserAccounts(String login, String hashed_password) {
@@ -60,6 +61,10 @@ public class ClientServerConnection {
         JSONObject json_object = new JSONObject(getData(String.format("login/totalmoney?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
         return json_object.getInt("value");
     }
+    public int getTotalCredits(String login, String hashed_password, int currencyid) {
+        JSONObject json_object = new JSONObject(getData(String.format("login/totalcredits?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
+        return json_object.getInt("value");
+    }
 
     public boolean checkLogin(String login) {
         JSONObject json_object = new JSONObject(getData(String.format("checklogin/%s", login)));
@@ -74,8 +79,7 @@ public class ClientServerConnection {
         try {
             int id = json_object.getInt("id");
             return true;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return false;
         }
     }
@@ -99,8 +103,7 @@ public class ClientServerConnection {
                 System.out.println("POST was successful.");
             else if (responseCode == 401)
                 throw new Exception("Wrong password");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
@@ -127,8 +130,7 @@ public class ClientServerConnection {
                 System.out.println("POST was successful.");
             else
                 throw new Exception("Something went wrong: " + response_code);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
@@ -159,8 +161,7 @@ public class ClientServerConnection {
                 System.out.println("POST was successful.");
             else if (responseCode == 401)
                 throw new Exception("Wrong password");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
@@ -207,8 +208,7 @@ public class ClientServerConnection {
                 System.out.println("POST was successful.");
             else if (responseCode == 401)
                 throw new Exception("Wrong password");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
@@ -237,28 +237,28 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
-    public String getData(String url) {
-    try {
-        HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/" + url).openConnection();
-        System.out.println("http://localhost:8080/" + url);
-        http_connection.setRequestMethod("GET");
 
-        int response_code = http_connection.getResponseCode();
-        if (response_code == 200) {
-            StringBuilder response = new StringBuilder();
-            Scanner scanner = new Scanner(http_connection.getInputStream());
-            while (scanner.hasNextLine()) {
-                response.append(scanner.nextLine());
-                response.append("\n");
-            }
-            scanner.close();
-            return response.toString();
+    public String getData(String url) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/" + url).openConnection();
+            System.out.println("http://localhost:8080/" + url);
+            http_connection.setRequestMethod("GET");
+
+            int response_code = http_connection.getResponseCode();
+            if (response_code == 200) {
+                StringBuilder response = new StringBuilder();
+                Scanner scanner = new Scanner(http_connection.getInputStream());
+                while (scanner.hasNextLine()) {
+                    response.append(scanner.nextLine());
+                    response.append("\n");
+                }
+                scanner.close();
+                return response.toString();
+            } else throw new Exception("Invalid response code");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return "";
         }
-        else throw new Exception("Invalid response code");
     }
-    catch (Exception ex) {
-        System.out.println(ex.getMessage());
-        return "";
-    }
-}
+
 }
