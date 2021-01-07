@@ -42,6 +42,8 @@ public class MainUserPage {
     private JButton addContactButton;
     private JPanel accountsSummary;
     private JPanel contactsSummary;
+    private JPanel creditPanel;
+    private JLabel creditsBalance;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
@@ -70,6 +72,7 @@ public class MainUserPage {
         updateTransactionTable();
         updateAccountsSummary();
         updateContactsSummary();
+        updateCreditsBalance();
 
         sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
@@ -281,6 +284,18 @@ public class MainUserPage {
         for (Map.Entry<String, Integer> contact: contacts.entrySet()) {
             ContactPanel contactPanel = new ContactPanel(contactsSummary, this, contact.getValue(), contact.getKey());
             contactsSummary.add(contactPanel);
+        }
+    }
+
+    // -----------------------------------------------
+
+    void updateCreditsBalance() {
+        if (accountSelect.getItemCount() > 0) {
+            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
+            String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
+            int credits_total = connection.getTotalCredits(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
+
+            creditsBalance.setText(String.format("%.2f %s", credits_total / 100.0, active_currency_shortcut));
         }
     }
 }
