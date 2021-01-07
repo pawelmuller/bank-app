@@ -331,6 +331,28 @@ public class Database {
         return savings;
     }
 
+    public void updatePassword(String _login, String _hashed_password) {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            Query query = session.createQuery("FROM Login WHERE login=:login");
+            query.setParameter("login", _login);
+
+            if (query.list().size() >= 1) {
+                Login login = (Login) query.list().get(0);
+                login.setPasswordHash(_hashed_password);
+                session.update(login);
+            }
+
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+    }
     public void makeTransfer(int payerid, int targetid, int amount, String title, int currencyid) {
         try {
             Session session = factory.openSession();

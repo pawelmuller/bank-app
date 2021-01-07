@@ -164,6 +164,29 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
+    public void updatePassword(String login, String hashed_password) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/updatepassword").openConnection();
+            http_connection.setRequestMethod("POST");
+
+            String postData = "login=" + login;
+            postData += "&passwordhash=" + hashed_password;
+
+            http_connection.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(http_connection.getOutputStream());
+            wr.write(postData);
+            wr.flush();
+
+            int response_code = http_connection.getResponseCode();
+            if (response_code == 200)
+                System.out.println("POST was successful.");
+            else
+                throw new Exception("Something went wrong: " + response_code);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
     public void createContact(String login, String hashed_password, String name, int accountid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createcontact").openConnection();

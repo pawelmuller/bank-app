@@ -243,6 +243,14 @@ public class Server extends HttpServlet {
                     }
                     catch (Exception ignored) {}
                 }
+                else if (atributes[0].equals("updatepassword")) {
+                    try {
+                        String login = request.getParameter("login");
+                        String new_password_hash = request.getParameter("passwordhash");
+                        data.updatePassword(login, new_password_hash);
+                    }
+                    catch (Exception ignored) {}
+                }
             break;
             case 2:
                 if (atributes[0].equals("login") && atributes[1].equals("transaction")) {
