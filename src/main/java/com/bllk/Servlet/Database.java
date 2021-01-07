@@ -330,6 +330,7 @@ public class Database {
         }
         return savings;
     }
+
     public void makeTransfer(int payerid, int targetid, int amount, String title, int currencyid) {
         try {
             Session session = factory.openSession();
@@ -410,9 +411,21 @@ public class Database {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
 
-            int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(ACCOUNT_ID) FROM ACCOUNTS").list().get(0)).intValue() + 1;
-            Contact account = new Contact(id, ownerid, accountid, name);
-            session.save(account);
+            Query query = session.createQuery("FROM Contact WHERE ownerid=:ownerid AND targetid=:accountid");
+            query.setParameter("ownerid", ownerid);
+            query.setParameter("accountid", accountid);
+
+            if (query.list().size() >= 1) {
+                Contact contact = (Contact) query.list().get(0);
+                contact.setName(name);
+                session.update(contact);
+            }
+            else {
+                int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(CONTACT_ID) FROM CONTACTS").list().get(0)).intValue() + 1;
+                System.out.println(id);
+                Contact account = new Contact(id, ownerid, accountid, name);
+                session.save(account);
+            }
 
             tx.commit();
             session.close();
@@ -445,6 +458,29 @@ public class Database {
             query.registerStoredProcedureParameter("p_login",         String.class, ParameterMode.IN).setParameter("p_login",         _login       );
             query.registerStoredProcedureParameter("p_password_hash", String.class, ParameterMode.IN).setParameter("p_password_hash", _password    );
             query.execute();
+
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+    }
+
+    public void removeContact(int ownerid, int accountid) {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            Query query = session.createQuery("FROM Contact WHERE ownerid=:ownerid AND targetid=:accountid");
+            query.setParameter("ownerid", ownerid);
+            query.setParameter("accountid", accountid);
+
+            if (query.list().size() >= 1) {
+                Contact contact = (Contact) query.list().get(0);
+                session.delete(contact);
+            }
 
             tx.commit();
             session.close();

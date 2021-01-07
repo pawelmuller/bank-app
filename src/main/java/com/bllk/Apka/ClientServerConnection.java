@@ -48,14 +48,6 @@ public class ClientServerConnection {
         JSONObject json_object = new JSONObject(getData(String.format("getsalt/%s", login)));
         return json_object.getString("salt");
     }
-    public boolean checkLogin(String login) {
-        JSONObject json_object = new JSONObject(getData(String.format("checklogin/%s", login)));
-        String result = json_object.getString("bool");
-        if (result.equals("true"))
-            return true;
-        else
-            return false;
-    }
     public Account getAccount(String login, String hashed_password, int accountid) {
         JSONObject json_object = new JSONObject(getData(String.format("account/%s?login=%s&password=%s", accountid, login, hashed_password)));
         return new Account(json_object.getInt("id"), json_object.getInt("value"), json_object.getInt("currency"), json_object.getInt("ownerid"));
@@ -68,6 +60,15 @@ public class ClientServerConnection {
         JSONObject json_object = new JSONObject(getData(String.format("login/totalmoney?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
         return json_object.getInt("value");
     }
+
+    public boolean checkLogin(String login) {
+        JSONObject json_object = new JSONObject(getData(String.format("checklogin/%s", login)));
+        String result = json_object.getString("bool");
+        if (result.equals("true"))
+            return true;
+        else
+            return false;
+    }
     public boolean checkAccount(int accoundid) {
         JSONObject json_object = new JSONObject(getData(String.format("account/%d", accoundid)));
         try {
@@ -78,6 +79,7 @@ public class ClientServerConnection {
             return false;
         }
     }
+
     public void createAccount(String login, String hashed_password, int currencyid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createaccount").openConnection();
@@ -169,6 +171,31 @@ public class ClientServerConnection {
 
             String post_data = "name=" + name;
             post_data += "&accountid=" + accountid;
+            post_data += "&login=" + login;
+            post_data += "&passwordhash=" + hashed_password;
+
+            http_connection.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
+            writer.write(post_data);
+            writer.flush();
+
+            int responseCode = http_connection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void removeContact(String login, String hashed_password, int accountid) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/removecontact").openConnection();
+            http_connection.setRequestMethod("POST");
+
+            String post_data = "accountid=" + accountid;
             post_data += "&login=" + login;
             post_data += "&passwordhash=" + hashed_password;
 

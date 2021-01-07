@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.*;
 import java.util.List;
 
@@ -39,6 +41,7 @@ public class MainUserPage {
     private JTextField accountNumber;
     private JButton addContactButton;
     private JPanel accountsSummary;
+    private JPanel contactsSummary;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
@@ -57,6 +60,7 @@ public class MainUserPage {
         user_currencies = new ArrayList<>();
 
         accountsSummary.setLayout(new BoxLayout(accountsSummary, BoxLayout.Y_AXIS));
+        contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         updateFonts();
 
         fillCurrenciesComboBox();
@@ -64,10 +68,11 @@ public class MainUserPage {
         updateContacts();
         updateTransactionTable();
         updateAccountsSummary();
+        updateContactsSummary();
+
         sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
         accountSelect.addActionListener(e -> updateMoney());
-
         createAccountButton.addActionListener(e -> {
             for (Map.Entry<String, String> entry : currencies.entrySet()) {
                 if (Objects.equals(currenciesComboBox.getSelectedItem(), entry.getValue())) {
@@ -82,40 +87,50 @@ public class MainUserPage {
             }
             updateAccounts();
         });
-
-        addContactButton.addActionListener(e -> addContact());
+        addContactButton.addActionListener(e -> {
+            addContact();
+            updateContactsSummary();
+        });
         contactBox.addActionListener(e -> {
             String name = (String) contactBox.getSelectedItem();
-            if (!name.equals(""))
-                accountNumber.setText(String.valueOf(contacts.get(name)));
-            else
-                accountNumber.setText("");
+            Integer accountid = contacts.get(name);
+            if (accountid != null)
+                accountNumber.setText("" + accountid);
+        });
+        contactBox.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusGained(e);
+                updateContacts();
+            }
         });
     }
     void addContact() {
         try {
             int accountid = Integer.parseInt(accountNumber.getText());
             String name = (String) contactBox.getSelectedItem();
-            if (name.equals(""))
-                throw new InputMismatchException("Wrong name");
-            if (!connection.checkAccount(Integer.parseInt(accountNumber.getText())))
-                throw new NumberFormatException();
-            connection.createContact(login.getLogin(), login.getPasswordHash(), name, accountid);
-            message.setText(String.format("Account %d: %s", accountid, name));
-            updateContacts();
+            if (!name.equals("")) {
+                if (!connection.checkAccount(Integer.parseInt(accountNumber.getText())))
+                    throw new NumberFormatException();
+                connection.createContact(login.getLogin(), login.getPasswordHash(), name, accountid);
+                message.setText(String.format("Account %d: %s", accountid, name));
+            }
 
         } catch(NumberFormatException ex) {
             message.setText("Nie można dodać kontaktu: błędny numer konta.");
+            System.out.println(ex.getMessage());
         } catch (InputMismatchException ex) {
             message.setText("Nie można dodać kontaktu: błędna nazwa.");
+            System.out.println(ex.getMessage());
         } catch (Exception ex) {
             message.setText("Nie można dodać kontaktu.");
+            System.out.println(ex.getMessage());
         }
     }
     void makeTransaction() {
         try {
             if (active_payer_account == null) {
-                message.setText("Transaction failed: You don't have any account.");
+                message.setText("Błąd tranzakcji: Nie posiadasz żadnego konta.");
             }
             else {
                 int payer_id = active_payer_account.getID();
@@ -125,16 +140,16 @@ public class MainUserPage {
                 String title = titleTextField.getText();
 
                 if (active_payer_account.getID() == target_id) {
-                    message.setText("Transaction failed: You can't send money to yourself.");
+                    message.setText("Błąd tranzakcji: Konto docelowe jest takie samo jak początkowe.");
                 } else if (money_value > active_payer_account.getValue() || money_value <= 0) {
-                    message.setText("Transaction failed: Invalid amount of money.");
+                    message.setText("Błąd tranzakcji: Błędna kwota przelewu.");
                 } else if (!connection.checkAccount(Integer.parseInt(accountNumber.getText()))) {
-                    message.setText("Transaction failed: Account don't exists.");
+                    message.setText("Błąd tranzakcji: Konto docelowe nie istnieje.");
                 } else if (titleTextField.getText().equals("")) {
-                    message.setText("Transaction failed: Title can't be null.");
+                    message.setText("Błąd tranzakcji: Tutuł nie może być pusty.");
                 } else {
                     if (connection.getBasicAccount(target_id).getCurrencyID() == currency_id || (connection.getBasicAccount(target_id).getCurrencyID() != currency_id && currencyChange())) {
-                        message.setText(String.format("Sending %.2f %s to Account %d", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
+                        message.setText(String.format("Przesłano %.2f %s na konto %d.", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
                         connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
                         updateMoney();
                         updateTransactionTable();
@@ -144,7 +159,7 @@ public class MainUserPage {
             }
         }
         catch (Exception ex) {
-            message.setText("Transaction failed: " + ex.getMessage());
+            message.setText("Błąd tranzakcji: " + ex.getMessage());
         }
     }
     boolean currencyChange() {
@@ -155,6 +170,7 @@ public class MainUserPage {
                 JOptionPane.YES_NO_OPTION);
         return n==0;
     }
+
     private void updateFonts() {
         logoLabel.setFont(StartWindow.fonts.radikal.deriveFont(48f));
         Font standard_font = StartWindow.fonts.adagio_slab.deriveFont(12f);
@@ -171,8 +187,14 @@ public class MainUserPage {
     }
     void updateContacts() {
         contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
-        contactBox.removeAllItems();
-        contactBox.addItem("");
+        if (contactBox.getItemCount() == 0)
+            contactBox.addItem("");
+        contactBox.setSelectedIndex(0);
+        int cnt = contactBox.getItemCount();
+        while (cnt > 1) {
+            contactBox.remove(1);
+            cnt--;
+        }
         for (Map.Entry<String, Integer> contact: contacts.entrySet())
             contactBox.addItem(contact.getKey());
     }
@@ -248,6 +270,15 @@ public class MainUserPage {
 
             AccountPanel accountPanel = new AccountPanel(account.getKey(), formatted_balance, currency_name);
             accountsSummary.add(accountPanel);
+        }
+    }
+    void updateContactsSummary() {
+        contactsSummary.removeAll();
+        Map<String, Integer> contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
+
+        for (Map.Entry<String, Integer> contact: contacts.entrySet()) {
+            ContactPanel contactPanel = new ContactPanel(contactsSummary, this, contact.getValue(), contact.getKey());
+            contactsSummary.add(contactPanel);
         }
     }
 }
