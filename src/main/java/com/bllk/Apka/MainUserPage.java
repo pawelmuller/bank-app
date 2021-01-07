@@ -26,7 +26,7 @@ public class MainUserPage {
     private JLabel currentBalance;
     private JLabel idLabel;
     private JPanel transactionPanel;
-    private JTabbedPane tabbedPane1;
+    private JTabbedPane tabbedPane;
     private JTextField titleTextField;
     private JComboBox<String> accountSelect;
     private JLabel payerBalance;
@@ -51,12 +51,13 @@ public class MainUserPage {
         connection = _connection;
         client = _client;
         login = _login;
-        nameLabel.setText("Witaj " + client.getName() + " " + client.getSurname() + "!");
+        nameLabel.setText("Witaj " + client.getName() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
         currencies = connection.getCurrencies();
         user_currencies = new ArrayList<>();
 
         accountsSummary.setLayout(new BoxLayout(accountsSummary, BoxLayout.Y_AXIS));
+        updateFonts();
 
         fillCurrenciesComboBox();
         updateAccounts();
@@ -154,7 +155,20 @@ public class MainUserPage {
                 JOptionPane.YES_NO_OPTION);
         return n==0;
     }
+    private void updateFonts() {
+        logoLabel.setFont(StartWindow.fonts.radikal.deriveFont(48f));
+        Font standard_font = StartWindow.fonts.adagio_slab.deriveFont(12f);
+        Font header_font = StartWindow.fonts.adagio_slab.deriveFont(20f);
 
+        tabbedPane.setFont(standard_font);
+        nameLabel.setFont(header_font);
+
+
+        String system_name = System.getProperty("os.name");
+        if (!system_name.startsWith("Windows")) {
+            tabbedPane.setForeground(Color.decode("#FF7F00"));
+        }
+    }
     void updateContacts() {
         contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
         contactBox.removeAllItems();
@@ -211,7 +225,7 @@ public class MainUserPage {
             user_currencies.add(Integer.parseInt((String) accounthash.get("currencyid")));
         }
 
-        tabbedPane1.setEnabledAt(2, accountSelect.getItemCount() != 0);
+        tabbedPane.setEnabledAt(2, accountSelect.getItemCount() != 0);
         updateMoney();
         updateAccountsSummary();
     }

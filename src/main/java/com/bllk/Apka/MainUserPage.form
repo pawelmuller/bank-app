@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.bllk.Apka.MainUserPage">
-  <grid id="27dc6" binding="menuPanel" layout-manager="GridLayoutManager" row-count="3" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="menuPanel" layout-manager="GridLayoutManager" row-count="3" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
       <xy x="20" y="20" width="640" height="663"/>
@@ -25,50 +25,38 @@
       </component>
       <component id="534e4" class="javax.swing.JLabel" binding="nameLabel">
         <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="2" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Adagio_Slab" size="22" style="1"/>
           <foreground color="-1118482"/>
-          <text value="Witaj IMIĘ NAZWISKO!"/>
+          <text value="witaj IMIĘ!"/>
         </properties>
       </component>
       <component id="a13e2" class="javax.swing.JButton" binding="logOutButton">
         <constraints>
-          <grid row="0" column="3" row-span="2" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Wyloguj się"/>
         </properties>
       </component>
-      <hspacer id="e5007">
+      <tabbedpane id="e5cca" binding="tabbedPane">
         <constraints>
-          <grid row="0" column="2" row-span="2" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </hspacer>
-      <component id="2b79d" class="javax.swing.JLabel" binding="idLabel">
-        <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <foreground color="-1118482"/>
-          <text value="Numer klienta: X"/>
-        </properties>
-      </component>
-      <tabbedpane id="e5cca" binding="tabbedPane1" default-binding="true">
-        <constraints>
-          <grid row="2" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="2" column="0" row-span="1" col-span="6" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="200" height="200"/>
           </grid>
         </constraints>
         <properties>
           <background color="-15166977"/>
+          <font name="Adagio_Slab" size="14"/>
           <foreground color="-14540254"/>
           <opaque value="false"/>
           <tabLayoutPolicy value="0"/>
         </properties>
         <border type="none"/>
         <children>
-          <grid id="167d2" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="167d2" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Start"/>
@@ -78,9 +66,9 @@
             </properties>
             <border type="none"/>
             <children>
-              <grid id="beea2" binding="accountsSummary" layout-manager="GridBagLayout">
+              <grid id="beea2" binding="accountsSummary" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <background color="-14540254"/>
@@ -91,7 +79,7 @@
               <grid id="d1a63" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <background color="-14540254"/>
@@ -99,6 +87,16 @@
                 <border type="none"/>
                 <children/>
               </grid>
+              <component id="f9389" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Adagio_Slab" size="22" style="1"/>
+                  <foreground color="-1118482"/>
+                  <text value="Podsumowanie konta:"/>
+                </properties>
+              </component>
             </children>
           </grid>
           <grid id="90b6a" layout-manager="GridLayoutManager" row-count="8" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -422,8 +420,44 @@
               </vspacer>
             </children>
           </grid>
+          <grid id="6a9ba" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Ustawienia"/>
+            </constraints>
+            <properties>
+              <background color="-14540254"/>
+            </properties>
+            <border type="none"/>
+            <children/>
+          </grid>
         </children>
       </tabbedpane>
+      <component id="2b79d" class="javax.swing.JLabel" binding="idLabel">
+        <constraints>
+          <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Adagio_Slab" size="10"/>
+          <foreground color="-1118482"/>
+          <text value="Numer klienta: X"/>
+        </properties>
+      </component>
+      <hspacer id="f7993">
+        <constraints>
+          <grid row="0" column="3" row-span="2" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <hspacer id="9c373">
+        <constraints>
+          <grid row="0" column="1" row-span="2" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <hspacer id="61df1">
+        <constraints>
+          <grid row="0" column="4" row-span="2" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
     </children>
   </grid>
 </form>
