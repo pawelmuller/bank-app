@@ -185,7 +185,7 @@ public class MainUserPage {
             tabbedPane.setForeground(Colors.getOrange());
         }
     }
-    void updateContacts() {
+    public void updateContacts() {
         contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
         if (contactBox.getItemCount() == 0)
             contactBox.addItem("");
@@ -198,7 +198,7 @@ public class MainUserPage {
         for (Map.Entry<String, Integer> contact: contacts.entrySet())
             contactBox.addItem(contact.getKey());
     }
-    void updateTransactionTable() {
+    private void updateTransactionTable() {
         String[] columns = new String[] {"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"};
         Map<Integer, JSONObject> transactions = connection.getTransactions(login.getLogin(), login.getPasswordHash());
         List<String[]> values = new ArrayList<>();
@@ -226,7 +226,7 @@ public class MainUserPage {
         table.getTableHeader().setReorderingAllowed(false);
         historyPanel.getViewport().add(table);
     }
-    void updateMoney() {
+    private void updateMoney() {
         if (accountSelect.getItemCount()>0) {
             active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
             String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
@@ -237,7 +237,7 @@ public class MainUserPage {
             currencyLabel.setText(active_currency_shortcut);
         }
     }
-    void updateAccounts() {
+    private void updateAccounts() {
         accountSelect.removeAllItems();
         Map<String, Object> accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
@@ -251,13 +251,13 @@ public class MainUserPage {
         updateMoney();
         updateAccountsSummary();
     }
-    void fillCurrenciesComboBox() {
+    private void fillCurrenciesComboBox() {
         Object[] currencies_sorted = currencies.values().toArray();
         Arrays.sort(currencies_sorted);
         for (Object currency: currencies_sorted)
             currenciesComboBox.addItem((String) currency);
     }
-    void updateAccountsSummary() {
+    private void updateAccountsSummary() {
         accountsSummary.removeAll();
         Map<String, Object> accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
@@ -272,7 +272,7 @@ public class MainUserPage {
             accountsSummary.add(accountPanel);
         }
     }
-    void updateContactsSummary() {
+    private void updateContactsSummary() {
         contactsSummary.removeAll();
         Map<String, Integer> contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
 
