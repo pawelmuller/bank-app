@@ -210,6 +210,25 @@ public class Database {
         }
         return transactions;
     }
+    public List getInvestments(String login, String hashed_password) {
+        List investments = null;
+        try {
+            Session session = factory.openSession();
+            Query query = session.createQuery("SELECT I FROM Investment I, Client C, Login L WHERE I.ownerid=C.id AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
+            query.setParameter("param", login);
+            query.setParameter("param2", hashed_password);
+
+            if (query.list().size() >= 1)
+                investments = query.list();
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return investments;
+    }
     public Login getLogin(String login, String hashed_password) {
         Login result = null;
 
@@ -532,4 +551,5 @@ public class Database {
             refresh();
         }
     }
+
 }

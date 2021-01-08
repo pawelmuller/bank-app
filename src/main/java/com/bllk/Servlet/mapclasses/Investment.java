@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -12,6 +13,8 @@ public class Investment {
     @Id
     @Column(name = "INVESTMENT_ID")
     Integer id;
+    @Column(name = "OWNER_ID")
+    Integer ownerid;
     @Column(name = "NAME")
     String name;
     @Column(name = "VALUE")
@@ -29,9 +32,10 @@ public class Investment {
     @Column(name = "CURRENCY_ID")
     Integer currencyid;
 
-    public Investment(Integer id, String name, Integer value, Double profit, Double yearprofit, Integer capperiod, Date datecreated, Date dateend, Integer currencyid) {
+    public Investment(Integer id, String name, Integer ownerid, Integer value, Double profit, Double yearprofit, Integer capperiod, Date datecreated, Date dateend, Integer currencyid) {
         this.id = id;
         this.name = name;
+        this.ownerid = ownerid;
         this.value = value;
         this.profit = profit;
         this.yearprofit = yearprofit;
@@ -40,7 +44,6 @@ public class Investment {
         this.dateend = dateend;
         this.currencyid = currencyid;
     }
-
     public Investment() {}
 
     public Integer getID() {
@@ -48,6 +51,12 @@ public class Investment {
     }
     public void setID(Integer id) {
         this.id = id;
+    }
+    public Integer getOwnerID() {
+        return ownerid;
+    }
+    public void setOwnerID(Integer ownerid) {
+        this.ownerid = ownerid;
     }
     public String getName() {
         return name;
@@ -71,18 +80,27 @@ public class Investment {
     public void setYearProfit(Double yearprofit) {
         this.yearprofit = yearprofit;
     }
-    public Integer getCapperiod() { return capperiod; }
-    public void setCapperiod(Integer capperiod) { this.capperiod = capperiod; }
-    public Date getDatecreated() {
+    public Integer getCapPeriod() { return capperiod; }
+    public void setCapPeriod(Integer capperiod) { this.capperiod = capperiod; }
+    public Date getDateCreated() {
         return datecreated;
     }
-    public void setDatecreated(Date datecreated) {
+    public String getDateCreatedFormatted() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+        return formatter.format(datecreated);
+    }
+    public void setDateCreated(Date datecreated) {
         this.datecreated = datecreated;
     }
-    public Date getDateend() {
+    public Date getDateEnd() {
         return dateend;
     }
-    public void setDateend(Date dateend) {
+    public String getDateEndedFormatted() {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+        return formatter.format(dateend);
+    }
+    public void setDateEnd(Date dateend) {
         this.dateend = dateend;
     }
     public Integer getCurrencyID() {

@@ -42,6 +42,7 @@ public class MainUserPage {
     private JPanel contactsSummary;
     private JPanel creditPanel;
     private JLabel creditsBalance;
+    private JPanel investmentsSummary;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
@@ -71,6 +72,7 @@ public class MainUserPage {
         updateAccountsSummary();
         updateContactsSummary();
         updateCreditsBalance();
+        updateInvestmentsSummary();
 
         sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
@@ -284,10 +286,16 @@ public class MainUserPage {
             contactsSummary.add(contactPanel);
         }
     }
+    private void updateInvestmentsSummary() {
+        investmentsSummary.removeAll();
+        Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
 
-    // -----------------------------------------------
-
-    void updateCreditsBalance() {
+        for (JSONObject investment: investments.values()) {
+            InvestmentPanel investmentPanel = new InvestmentPanel(investmentsSummary, this, investment);
+            accountsSummary.add(investmentPanel);
+        }
+    }
+    private void updateCreditsBalance() {
         if (accountSelect.getItemCount() > 0) {
             active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
             String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());

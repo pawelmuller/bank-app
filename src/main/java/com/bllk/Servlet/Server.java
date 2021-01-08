@@ -13,7 +13,7 @@ import java.util.List;
 public class Server extends HttpServlet {
     private Database data;
 
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config) {
         data = new Database();
     }
 
@@ -36,7 +36,7 @@ public class Server extends HttpServlet {
                         for (Object country: countries)
                             json += "\"" + ((Country) country).getName() + "\": \"" + ((Country) country).getId() + "\",\n";
                         json += "}";
-                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));;
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
                     } else
                         response.getOutputStream().println("{}");
                 }
@@ -162,6 +162,38 @@ public class Server extends HttpServlet {
                                 json += "\n";
                             else
                                 json += ",\n";
+                            iter++;
+                        }
+                        json += "}";
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+                    }
+                    else
+                        response.getOutputStream().println("{}");
+                }
+                else if (atributes[0].equals("login") && atributes[1].equals("investments")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("password");
+                    List investments = data.getInvestments(login, password);
+                    if (investments != null) {
+                        int iter = 1;
+                        json = "{\n";
+                        for (Object inv: investments) {
+                            Investment investment = (Investment) inv;
+                            json += "\"" + investment.getID() + "\": {\n";
+                            json += "\t\"ownerid\": \"" + investment.getOwnerID() + "\",\n";
+                            json += "\t\"name\": \"" + investment.getName() + "\",\n";
+                            json += "\t\"value\": \"" + investment.getValue() + "\",\n";
+                            json += "\t\"profit\": \"" + investment.getProfit() + "\",\n";
+                            json += "\t\"yearprofit\": \"" + investment.getYearProfit() + "\",\n";
+                            json += "\t\"capperiod\": \"" + investment.getCapPeriod() + "\",\n";
+                            json += "\t\"datecreated\": \"" + investment.getDateCreatedFormatted() + "\",\n";
+                            if (investment.getDateEnd() != null)
+                                json += "\t\"dateended\": \"" + investment.getDateEndedFormatted() + "\",\n";
+                            json += "\t\"currencyid\": \"" + investment.getCurrencyID() + "\"\n";
+                            if (iter == investments.size())
+                                json += "}\n";
+                            else
+                                json += "},\n";
                             iter++;
                         }
                         json += "}";

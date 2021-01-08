@@ -1,5 +1,9 @@
 package com.bllk.Apka;
 
+import com.bllk.Servlet.mapclasses.Investment;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.TitledBorder;
@@ -113,5 +117,36 @@ class ContactPanel extends JPanel {
         this.add(nameLabel);
         this.add(targetidLabel);
         this.add(deleteButton);
+    }
+}
+
+class InvestmentPanel extends JPanel {
+    public InvestmentPanel(JPanel parent, MainUserPage page, JSONObject inv) {
+        super();
+
+        this.setLayout(new FlowLayout(FlowLayout.LEADING));
+
+        JLabel nameLabel = new JLabel(inv.getString("name"));
+        JLabel valueLabel = new JLabel("" + inv.getDouble("value") /100);
+        JLabel currencyLabel = new JLabel(page.currencies.get(inv.getString("currencyid")));
+        JLabel profitLabel = new JLabel(inv.getString("profit"));
+        JLabel yearprofit = new JLabel(inv.getString("yearprofit"));
+        JLabel capperiod = new JLabel(inv.getString("capperiod"));
+        JLabel datecreated = new JLabel(inv.getString("datecreated"));
+
+        this.add(nameLabel);
+        this.add(valueLabel);
+        this.add(currencyLabel);
+        this.add(profitLabel);
+        this.add(yearprofit);
+        this.add(capperiod);
+        this.add(datecreated);
+
+        if (inv.has("dateended")) {
+            JLabel dateendedLabel = new JLabel(inv.getString("dateended"));
+            this.add(dateendedLabel);
+        }
+
+
     }
 }
