@@ -5,7 +5,6 @@ import com.bllk.Servlet.mapclasses.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
 import java.util.List;
@@ -265,7 +264,7 @@ public class Server extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         String requestUrl = request.getRequestURI();
