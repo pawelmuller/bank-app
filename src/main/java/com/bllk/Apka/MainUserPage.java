@@ -43,6 +43,7 @@ public class MainUserPage {
     private JPanel creditPanel;
     private JLabel creditsBalance;
     private JPanel investmentsSummary;
+    private JButton createInvestmentButton;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
