@@ -20,6 +20,11 @@ public class ClientServerConnection {
         Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String) e.getValue())));
         return new TreeMap<>(map);
     }
+    public Map<String, Integer> getContacts(String login, String hashed_password) {
+        JSONObject jsonObject = new JSONObject(getData(String.format("login/contacts?login=%s&password=%s", login, hashed_password)));
+        Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String) e.getValue())));
+        return new TreeMap<>(map);
+    }
     public Map<Integer, JSONObject> getTransactions(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/transactions?login=%s&password=%s", login, hashed_password)));
         TreeMap<Integer, JSONObject> map = new TreeMap<>(Collections.reverseOrder());
@@ -27,21 +32,18 @@ public class ClientServerConnection {
             map.put(Integer.parseInt(pair.getKey()), new JSONObject((HashMap) pair.getValue()));
         return map;
     }
-    public Map<String, Integer> getContacts(String login, String hashed_password) {
-        JSONObject jsonObject = new JSONObject(getData(String.format("login/contacts?login=%s&password=%s", login, hashed_password)));
-        Map<String, Integer> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Integer.parseInt((String) e.getValue())));
-        return new TreeMap<>(map);
-    }
     public Map<Integer, JSONObject> getInvestments(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/investments?login=%s&password=%s", login, hashed_password)));
-        TreeMap<Integer, JSONObject> map = new TreeMap<>(Collections.reverseOrder());
+        TreeMap<Integer, JSONObject> map = new TreeMap<>();
         for (Map.Entry<String, Object> pair : jsonObject.toMap().entrySet())
-            map.put(Integer.parseInt(pair.getKey()), new JSONObject((HashMap) pair.getValue()));
+            map.put(Integer.parseInt(pair.getKey()), jsonObject.getJSONObject(pair.getKey()));
         return map;
     }
-    public Map<String, Object> getUserAccounts(String login, String hashed_password) {
+    public Map<Integer, JSONObject> getUserAccounts(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/accounts?login=%s&password=%s", login, hashed_password)));
-        Map<String, Object> map = jsonObject.toMap();
+        TreeMap<Integer, JSONObject> map = new TreeMap<>();
+        for (Map.Entry<String, Object> pair : jsonObject.toMap().entrySet())
+            map.put(Integer.parseInt(pair.getKey()), jsonObject.getJSONObject(pair.getKey()));
         return map;
     }
     public Client getClient(String login, String hashed_password) {

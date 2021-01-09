@@ -49,6 +49,7 @@ public class MainUserPage {
     Account active_payer_account = null;
     Map <String, String> currencies;
     Map <String, Integer> contacts;
+    Map <Integer, JSONObject> accounts;
     boolean lock_combobox = false;
 
     public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, Client _client, Login _login) {
@@ -106,7 +107,35 @@ public class MainUserPage {
                     accountNumber.setText("" + accountid);
             }
         });
+        createInvestmentButton.addActionListener(e -> addInvestmentDialog());
     }
+    void addInvestmentDialog() {
+        JTextField name = new JTextField();
+        JComboBox<String> accountBox = new JComboBox<>();
+        for (Map.Entry<Integer, JSONObject> account: accounts.entrySet())
+            accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getDouble("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
+        JTextField value = new JTextField();
+
+        Object[] message = {
+                "Nazwa:", name,
+                "Z konta:", accountBox,
+                "Kwota początkowa", value,
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            // Do creating
+        }
+    }
+    boolean currencyChangeWarning() {
+        int n = JOptionPane.showConfirmDialog(
+                frame,
+                "Konto, na które zamierzasz wysłać przelew, zawiera inną walutę niż wysyłana, czy chcesz przewalutować?",
+                "Przewalutowanie",
+                JOptionPane.YES_NO_OPTION);
+        return n==0;
+    }
+
     void addContact() {
         try {
             int accountid = Integer.parseInt(accountNumber.getText());
@@ -150,7 +179,7 @@ public class MainUserPage {
                 } else if (titleTextField.getText().equals("")) {
                     message.setText("Błąd tranzakcji: Tutuł nie może być pusty.");
                 } else {
-                    if (connection.getBasicAccount(target_id).getCurrencyID() == currency_id || (connection.getBasicAccount(target_id).getCurrencyID() != currency_id && currencyChange())) {
+                    if (connection.getBasicAccount(target_id).getCurrencyID() == currency_id || (connection.getBasicAccount(target_id).getCurrencyID() != currency_id && currencyChangeWarning())) {
                         message.setText(String.format("Przesłano %.2f %s na konto %d.", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
                         connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
                         updateMoney();
@@ -164,14 +193,7 @@ public class MainUserPage {
             message.setText("Błąd tranzakcji: " + ex.getMessage());
         }
     }
-    boolean currencyChange() {
-        int n = JOptionPane.showConfirmDialog(
-                frame,
-                "Konto, na które zamierzasz wysłać przelew, zawiera inną walutę niż wysyłana, czy chcesz przewalutować?",
-                "Przewalutowanie",
-                JOptionPane.YES_NO_OPTION);
-        return n==0;
-    }
+
     String getContactIfPossible(int value) {
         for (Map.Entry<String, Integer> contact:contacts.entrySet())
             if (contact.getValue() == value)
@@ -246,12 +268,11 @@ public class MainUserPage {
     }
     private void updateAccounts() {
         accountSelect.removeAllItems();
-        Map<String, Object> accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
+        accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
-        for (Map.Entry<String, Object> account: accounts.entrySet()) {
-            accountSelect.addItem(account.getKey());
-            HashMap accounthash = (HashMap) account.getValue();
-            user_currencies.add(Integer.parseInt((String) accounthash.get("currencyid")));
+        for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
+            accountSelect.addItem("" + account.getKey());
+            user_currencies.add(account.getValue().getInt("currencyid"));
         }
 
         tabbedPane.setEnabledAt(2, accountSelect.getItemCount() != 0);
@@ -266,16 +287,14 @@ public class MainUserPage {
     }
     private void updateAccountsSummary() {
         accountsSummary.removeAll();
-        Map<String, Object> accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
-        for (Map.Entry<String, Object> account: accounts.entrySet()) {
-            HashMap account_hash = (HashMap) account.getValue();
-            String currency_id = (String) account_hash.get("currencyid");
+        for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
+            String currency_id = (String) account.getValue().getString("currencyid");
             String currency_name = currencies.get(currency_id);
-            Integer balance = Integer.parseInt((String) account_hash.get("value"));
+            Integer balance = account.getValue().getInt("value");
             String formatted_balance = String.format("%.2f", balance/100.0);
 
-            AccountPanel accountPanel = new AccountPanel(getContactIfPossible(Integer.parseInt(account.getKey())), account.getKey(), formatted_balance, currency_name);
+            AccountPanel accountPanel = new AccountPanel(getContactIfPossible(account.getKey()), "" + account.getKey(), formatted_balance, currency_name);
             accountsSummary.add(accountPanel);
         }
     }
