@@ -54,8 +54,10 @@ public class StartWindow {
 
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
-        startingPanel = new StartWindow().mainPanel;
         connection = new ClientServerConnection();
+        if (!connection.checkConnection())
+            System.exit(-1);
+        startingPanel = new StartWindow().mainPanel;
         frame.setContentPane(startingPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();

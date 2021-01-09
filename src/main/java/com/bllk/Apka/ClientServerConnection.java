@@ -10,6 +10,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClientServerConnection {
+    public boolean checkConnection() {
+        String a = getData("");
+        return (!a.equals("Connection refused: connect"));
+    }
+
     public Map<String, String> getCurrencies() {
         JSONObject jsonObject = new JSONObject(getData("currencies"));
         Map<String, String> map = jsonObject.toMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (String) e.getValue()));
@@ -265,8 +270,7 @@ public class ClientServerConnection {
             } else throw new Exception("Invalid response code");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            return "";
+            return ex.getMessage();
         }
     }
-
 }
