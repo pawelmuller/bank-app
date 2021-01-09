@@ -63,6 +63,7 @@ public class MainUserPage {
 
         accountsSummary.setLayout(new BoxLayout(accountsSummary, BoxLayout.Y_AXIS));
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
+        investmentsSummary.setLayout(new BoxLayout(investmentsSummary, BoxLayout.Y_AXIS));
         updateFonts();
 
         updateContacts();
@@ -292,7 +293,7 @@ public class MainUserPage {
 
         for (JSONObject investment: investments.values()) {
             InvestmentPanel investmentPanel = new InvestmentPanel(investmentsSummary, this, investment);
-            accountsSummary.add(investmentPanel);
+            investmentsSummary.add(investmentPanel);
         }
     }
     private void updateCreditsBalance() {
