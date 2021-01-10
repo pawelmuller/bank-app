@@ -112,8 +112,11 @@ public class MainUserPage {
     void addInvestmentDialog() {
         JTextField name = new JTextField();
         JComboBox<String> accountBox = new JComboBox<>();
-        for (Map.Entry<Integer, JSONObject> account: accounts.entrySet())
+        List<Integer> currencies_to_select = new ArrayList<>();
+        for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
             accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getDouble("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
+            currencies_to_select.add(account.getValue().getInt("currencyid"));
+        }
         JTextField value = new JTextField();
         JTextField profitrate = new JTextField();
         JTextField yearprofitrate = new JTextField();
@@ -123,14 +126,24 @@ public class MainUserPage {
                 "Nazwa:", name,
                 "Z konta:", accountBox,
                 "Kwota początkowa", value,
-                "profitrate", profitrate,
-                "yearprofitrate", yearprofitrate,
-                "capperoid", capperoid,
+                "Oprocentowanie", profitrate,
+                "Oprocentowanie roczne", yearprofitrate,
+                "Okres kapitalizacji", capperoid,
         };
 
         int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            // Do creating
+            connection.createInvestment(
+                    login.getLogin(),
+                    login.getPasswordHash(),
+                    name.getText(),
+                    Integer.parseInt(value.getText()) * 100,
+                    Double.parseDouble(profitrate.getText()),
+                    Double.parseDouble(yearprofitrate.getText()),
+                    Integer.parseInt(capperoid.getText()),
+                    currencies_to_select.get(accountBox.getSelectedIndex())
+            );
+            updateInvestmentsSummary();
         }
     }
     boolean currencyChangeWarning() {
@@ -295,9 +308,9 @@ public class MainUserPage {
         accountsSummary.removeAll();
 
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
-            String currency_id = (String) account.getValue().getString("currencyid");
+            String currency_id = account.getValue().getString("currencyid");
             String currency_name = currencies.get(currency_id);
-            Integer balance = account.getValue().getInt("value");
+            int balance = account.getValue().getInt("value");
             String formatted_balance = String.format("%.2f", balance/100.0);
 
             AccountPanel accountPanel = new AccountPanel(getContactIfPossible(account.getKey()), "" + account.getKey(), formatted_balance, currency_name);
@@ -321,6 +334,7 @@ public class MainUserPage {
             InvestmentPanel investmentPanel = new InvestmentPanel(investmentsSummary, this, investment);
             investmentsSummary.add(investmentPanel);
         }
+        investmentsSummary.updateUI();
     }
     private void updateCreditsBalance() {
         if (accountSelect.getItemCount() > 0) {

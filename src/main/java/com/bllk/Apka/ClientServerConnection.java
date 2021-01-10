@@ -97,29 +97,6 @@ public class ClientServerConnection {
         }
     }
 
-    public void createAccount(String login, String hashed_password, int currencyid) {
-        try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createaccount").openConnection();
-            http_connection.setRequestMethod("POST");
-
-            String post_data = "login=" + login;
-            post_data += "&password=" + hashed_password;
-            post_data += "&currencyid=" + currencyid;
-
-            http_connection.setDoOutput(true);
-            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
-            writer.write(post_data);
-            writer.flush();
-
-            int responseCode = http_connection.getResponseCode();
-            if (responseCode == 200)
-                System.out.println("POST was successful.");
-            else if (responseCode == 401)
-                throw new Exception("Wrong password");
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
     public void makeTransfer(String login, String hashed_password, int payer_id, int target_id, String title, int amount, int currencyid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/transaction").openConnection();
@@ -147,6 +124,29 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
+    public void createAccount(String login, String hashed_password, int currencyid) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createaccount").openConnection();
+            http_connection.setRequestMethod("POST");
+
+            String post_data = "login=" + login;
+            post_data += "&password=" + hashed_password;
+            post_data += "&currencyid=" + currencyid;
+
+            http_connection.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
+            writer.write(post_data);
+            writer.flush();
+
+            int responseCode = http_connection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
     public void createClient(String name, String surname, String date, String gender, String street, String num, String city, String postcode, String country, String login, String hashed_password) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/createclient").openConnection();
@@ -161,6 +161,58 @@ public class ClientServerConnection {
             post_data += "&city=" + city;
             post_data += "&postcode=" + postcode;
             post_data += "&country=" + country;
+            post_data += "&login=" + login;
+            post_data += "&passwordhash=" + hashed_password;
+
+            http_connection.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
+            writer.write(post_data);
+            writer.flush();
+
+            int responseCode = http_connection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    public void createInvestment(String login, String hashed_password, String name, int value, double profrate, double yearprofrate, int capperoid, int currencyid) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createinvestment").openConnection();
+            http_connection.setRequestMethod("POST");
+
+            String post_data = "login=" + login;
+            post_data += "&passwordhash=" + hashed_password;
+            post_data += "&name=" + name;
+            post_data += "&value=" + value;
+            post_data += "&profrate=" + profrate;
+            post_data += "&yearprofrate=" + yearprofrate;
+            post_data += "&capperoid=" + capperoid;
+            post_data += "&currencyid=" + currencyid;
+            System.out.println(post_data);
+            http_connection.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
+            writer.write(post_data);
+            writer.flush();
+
+            int responseCode = http_connection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    public void createContact(String login, String hashed_password, String name, int accountid) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createcontact").openConnection();
+            http_connection.setRequestMethod("POST");
+
+            String post_data = "name=" + name;
+            post_data += "&accountid=" + accountid;
             post_data += "&login=" + login;
             post_data += "&passwordhash=" + hashed_password;
 
@@ -198,30 +250,6 @@ public class ClientServerConnection {
                 throw new Exception("Something went wrong: " + response_code);
         }
         catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-    public void createContact(String login, String hashed_password, String name, int accountid) {
-        try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createcontact").openConnection();
-            http_connection.setRequestMethod("POST");
-
-            String post_data = "name=" + name;
-            post_data += "&accountid=" + accountid;
-            post_data += "&login=" + login;
-            post_data += "&passwordhash=" + hashed_password;
-
-            http_connection.setDoOutput(true);
-            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
-            writer.write(post_data);
-            writer.flush();
-
-            int responseCode = http_connection.getResponseCode();
-            if (responseCode == 200)
-                System.out.println("POST was successful.");
-            else if (responseCode == 401)
-                throw new Exception("Wrong password");
-        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }

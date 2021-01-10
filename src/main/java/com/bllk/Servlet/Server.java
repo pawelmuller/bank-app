@@ -333,6 +333,22 @@ public class Server extends HttpServlet {
                         data.addContact(client.getID(), accountid, name);
                     }
                 }
+                if (atributes[0].equals("login") && atributes[1].equals("createinvestment")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("passwordhash");
+                    String name = request.getParameter("name");
+                    int value = Integer.parseInt(request.getParameter("value"));
+                    double profrate = Double.parseDouble(request.getParameter("profrate"));
+                    double yearprofrate = Double.parseDouble(request.getParameter("yearprofrate"));
+                    int capperoid = Integer.parseInt(request.getParameter("capperoid"));
+                    int currencyid = Integer.parseInt(request.getParameter("currencyid"));
+                    Login log = data.getLogin(login, password);
+                    if (log != null) {
+                        Client client = data.getClient(log.getID());
+                        System.out.println("readed");
+                        data.addInvestment(client.getID(), name, value, profrate, yearprofrate, capperoid, currencyid);
+                    }
+                }
                 if (atributes[0].equals("login") && atributes[1].equals("removecontact")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("passwordhash");

@@ -44,6 +44,16 @@ public class Investment {
         this.dateend = dateend;
         this.currencyid = currencyid;
     }
+    public Investment(Integer id, String name, Integer ownerid, Integer value, Double profit, Double yearprofit, Integer capperiod, Integer currencyid) {
+        this.id = id;
+        this.name = name;
+        this.ownerid = ownerid;
+        this.value = value;
+        this.profit = profit;
+        this.yearprofit = yearprofit;
+        this.capperiod = capperiod;
+        this.currencyid = currencyid;
+    }
     public Investment() {}
 
     public Integer getID() {
@@ -96,7 +106,6 @@ public class Investment {
         return dateend;
     }
     public String getDateEndedFormatted() {
-
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
         return formatter.format(dateend);
     }
