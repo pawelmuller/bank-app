@@ -115,11 +115,17 @@ public class MainUserPage {
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet())
             accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getDouble("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
         JTextField value = new JTextField();
+        JTextField profitrate = new JTextField();
+        JTextField yearprofitrate = new JTextField();
+        JTextField capperoid = new JTextField();
 
         Object[] message = {
                 "Nazwa:", name,
                 "Z konta:", accountBox,
                 "Kwota początkowa", value,
+                "profitrate", profitrate,
+                "yearprofitrate", yearprofitrate,
+                "capperoid", capperoid,
         };
 
         int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);

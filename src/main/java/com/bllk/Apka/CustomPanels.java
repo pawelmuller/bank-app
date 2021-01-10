@@ -131,18 +131,43 @@ class InvestmentPanel extends JPanel {
         JLabel datecreated = new JLabel(inv.getString("datecreated"));
         JButton endbutton = new JButton("Zamknij lokatę");
 
+        this.setBackground(Colors.getLightGrey());
+        nameLabel.setForeground(Colors.getBrightTextColor());
+        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        valueLabel.setForeground(Colors.getBrightTextColor());
+        currencyLabel.setForeground(Colors.getBrightTextColor());
+        profitLabel.setForeground(Colors.getBrightTextColor());
+        yearprofit.setForeground(Colors.getBrightTextColor());
+        capperiod.setForeground(Colors.getBrightTextColor());
+        datecreated.setForeground(Colors.getBrightTextColor());
+        datecreated.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBorder(BorderFactory.createLineBorder(Colors.getOrange(), 3, true));
+        this.setMaximumSize(new Dimension(200, 200));
+        this.setPreferredSize(new Dimension(150, -1));
+
         this.add(nameLabel);
-        this.add(valueLabel);
-        this.add(currencyLabel);
-        this.add(profitLabel);
-        this.add(yearprofit);
-        this.add(capperiod);
+        JPanel p1 = new JPanel();
+        p1.setBackground(Colors.getLightGrey());
+        p1.add(valueLabel);
+        p1.add(currencyLabel);
+        this.add(p1);
+        JPanel p2 = new JPanel();
+        p2.setBackground(Colors.getLightGrey());
+        p2.add(profitLabel);
+        p2.add(yearprofit);
+        p2.add(capperiod);
+        this.add(p2);
         this.add(datecreated);
 
         if (inv.has("dateended")) {
             JLabel dateendedLabel = new JLabel(inv.getString("dateended"));
+            dateendedLabel.setForeground(Colors.getBrightTextColor());
+            dateendedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             this.add(dateendedLabel);
         }
+        endbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(endbutton);
     }
 }
