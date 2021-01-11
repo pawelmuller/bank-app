@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.bllk.Apka.StartWindow">
   <grid id="403fb" binding="mainPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="0" left="0" bottom="0" right="0"/>
+    <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
       <xy x="20" y="20" width="690" height="1059"/>
     </constraints>
@@ -644,43 +644,16 @@
           </scrollpane>
         </children>
       </tabbedpane>
-      <grid id="b5754" binding="headerPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+      <component id="1a66c" class="javax.swing.JLabel" binding="logoLabel">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="-1" height="80"/>
-            <maximum-size width="-1" height="80"/>
-          </grid>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <background color="-14540254"/>
-          <foreground color="-14540254"/>
-          <opaque value="true"/>
+          <font name="Radikal WUT" size="48"/>
+          <foreground color="-33024"/>
+          <text value="BLLK"/>
         </properties>
-        <border type="none"/>
-        <children>
-          <component id="1a66c" class="javax.swing.JLabel" binding="logoLabel">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font name="Radikal WUT" size="48"/>
-              <foreground color="-33024"/>
-              <text value="BLLK"/>
-            </properties>
-          </component>
-          <hspacer id="64a7e">
-            <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
-          <hspacer id="db4e3">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
-        </children>
-      </grid>
+      </component>
     </children>
   </grid>
   <buttonGroups>

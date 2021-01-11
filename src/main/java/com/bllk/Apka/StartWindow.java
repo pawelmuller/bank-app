@@ -15,7 +15,7 @@ public class StartWindow {
     private static ClientServerConnection connection;
 
     static JPanel startingPanel;
-    private JPanel mainPanel, headerPanel, loginTab, registerTab;
+    private JPanel mainPanel, loginTab, registerTab;
     private JTextField loginField;
     private JPasswordField passwordField;
     private JButton loginButton, forgotPasswordButton;
@@ -61,7 +61,7 @@ public class StartWindow {
         frame.setContentPane(startingPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setMinimumSize(new Dimension(640, 520));
+        frame.setMinimumSize(new Dimension(1024, 720));
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

@@ -44,6 +44,7 @@ public class MainUserPage {
     private JLabel creditsBalance;
     private JPanel investmentsSummary;
     private JButton createInvestmentButton;
+    private JTabbedPane financialProductsTabbedPane;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
