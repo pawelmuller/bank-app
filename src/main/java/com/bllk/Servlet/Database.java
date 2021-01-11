@@ -496,22 +496,30 @@ public class Database {
             refresh();
         }
     }
-    public void addInvestment(int ownerid, String name, int value, double profrate, double yearprofrate, int capperoid, int currencyid) {
+    public void addInvestment(int ownerid, String name, int value, double profrate, double yearprofrate, int capperoid, int accountid) {
         try {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
 
-            Query query = session.createSQLQuery("SELECT MAX(INVESTMENT_ID) FROM INVESTMENTS");
             int id;
+            Query query = session.createQuery("FROM Account WHERE id=:accountid");
+            query.setParameter("accountid", accountid);
 
-            if (query.list().size() >= 1)
-                id = ((BigDecimal) query.list().get(0)).intValue() + 1;
-            else
-                id = 1;
+            if (query.list().size() >= 1) {
+                Account account = (Account) query.list().get(0);
+                account.setValue(account.getValue()-value);
+                session.update(account);
 
-            Investment investment = new Investment(id, name, ownerid, value, profrate, yearprofrate, capperoid, currencyid);
-            session.save(investment);
+                query = session.createSQLQuery("SELECT MAX(INVESTMENT_ID) FROM INVESTMENTS");
 
+                if (query.list().size() >= 1)
+                    id = ((BigDecimal) query.list().get(0)).intValue() + 1;
+                else
+                    id = 1;
+
+                Investment investment = new Investment(id, name, ownerid, value, profrate, yearprofrate, capperoid, account.getCurrencyID());
+                session.save(investment);
+            }
             tx.commit();
             session.close();
         } catch (Exception ex) {

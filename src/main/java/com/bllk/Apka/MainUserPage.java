@@ -112,10 +112,10 @@ public class MainUserPage {
     void addInvestmentDialog() {
         JTextField name = new JTextField();
         JComboBox<String> accountBox = new JComboBox<>();
-        List<Integer> currencies_to_select = new ArrayList<>();
+        List<Integer> accounts_to_select = new ArrayList<>();
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
             accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getDouble("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
-            currencies_to_select.add(account.getValue().getInt("currencyid"));
+            accounts_to_select.add(account.getKey());
         }
         JTextField value = new JTextField();
         JTextField profitrate = new JTextField();
@@ -137,13 +137,14 @@ public class MainUserPage {
                     login.getLogin(),
                     login.getPasswordHash(),
                     name.getText(),
-                    Integer.parseInt(value.getText()) * 100,
+                    (int)(Double.parseDouble(value.getText()) * 100),
                     Double.parseDouble(profitrate.getText()),
                     Double.parseDouble(yearprofitrate.getText()),
                     Integer.parseInt(capperoid.getText()),
-                    currencies_to_select.get(accountBox.getSelectedIndex())
+                    accounts_to_select.get(accountBox.getSelectedIndex())
             );
             updateInvestmentsSummary();
+            updateAccounts();
         }
     }
     boolean currencyChangeWarning() {

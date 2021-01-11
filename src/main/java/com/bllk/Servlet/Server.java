@@ -22,7 +22,6 @@ public class Server extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         String requestUrl = request.getRequestURI();
         String[] atributes = requestUrl.substring(1).split("/");
-//        System.out.println(requestUrl);
         Client client;
         String json;
 
@@ -341,12 +340,12 @@ public class Server extends HttpServlet {
                     double profrate = Double.parseDouble(request.getParameter("profrate"));
                     double yearprofrate = Double.parseDouble(request.getParameter("yearprofrate"));
                     int capperoid = Integer.parseInt(request.getParameter("capperoid"));
-                    int currencyid = Integer.parseInt(request.getParameter("currencyid"));
+                    int accountid = Integer.parseInt(request.getParameter("accountid"));
                     Login log = data.getLogin(login, password);
                     if (log != null) {
                         Client client = data.getClient(log.getID());
                         System.out.println("readed");
-                        data.addInvestment(client.getID(), name, value, profrate, yearprofrate, capperoid, currencyid);
+                        data.addInvestment(client.getID(), name, value, profrate, yearprofrate, capperoid, accountid);
                     }
                 }
                 if (atributes[0].equals("login") && atributes[1].equals("removecontact")) {

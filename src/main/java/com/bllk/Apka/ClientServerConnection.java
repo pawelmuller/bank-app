@@ -178,7 +178,7 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
-    public void createInvestment(String login, String hashed_password, String name, int value, double profrate, double yearprofrate, int capperoid, int currencyid) {
+    public void createInvestment(String login, String hashed_password, String name, int value, double profrate, double yearprofrate, int capperoid, int accountid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createinvestment").openConnection();
             http_connection.setRequestMethod("POST");
@@ -190,7 +190,7 @@ public class ClientServerConnection {
             post_data += "&profrate=" + profrate;
             post_data += "&yearprofrate=" + yearprofrate;
             post_data += "&capperoid=" + capperoid;
-            post_data += "&currencyid=" + currencyid;
+            post_data += "&accountid=" + accountid;
 
             http_connection.setDoOutput(true);
             OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
