@@ -326,12 +326,12 @@ public class MainUserPage {
             contactsSummary.add(contactPanel);
         }
     }
-    private void updateInvestmentsSummary() {
+    public void updateInvestmentsSummary() {
         investmentsSummary.removeAll();
         Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
 
-        for (JSONObject investment: investments.values()) {
-            InvestmentPanel investmentPanel = new InvestmentPanel(investmentsSummary, this, investment);
+        for (Map.Entry<Integer, JSONObject> investment: investments.entrySet()) {
+            InvestmentPanel investmentPanel = new InvestmentPanel(investmentsSummary, this, investment.getKey(), investment.getValue());
             investmentsSummary.add(investmentPanel);
         }
         investmentsSummary.updateUI();

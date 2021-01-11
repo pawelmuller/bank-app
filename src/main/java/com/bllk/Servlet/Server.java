@@ -359,6 +359,16 @@ public class Server extends HttpServlet {
                         data.removeContact(client.getID(), accountid);
                     }
                 }
+                if (atributes[0].equals("login") && atributes[1].equals("removeinvestment")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("passwordhash");
+                    int investmentid = Integer.parseInt(request.getParameter("investmentid"));
+                    Login log = data.getLogin(login, password);
+                    if (log != null) {
+                        Client client = data.getClient(log.getID());
+                        data.removeInvestment(client.getID(), investmentid);
+                    }
+                }
                 break;
         }
     }

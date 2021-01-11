@@ -191,7 +191,7 @@ public class ClientServerConnection {
             post_data += "&yearprofrate=" + yearprofrate;
             post_data += "&capperoid=" + capperoid;
             post_data += "&currencyid=" + currencyid;
-            System.out.println(post_data);
+
             http_connection.setDoOutput(true);
             OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
             writer.write(post_data);
@@ -260,6 +260,30 @@ public class ClientServerConnection {
             http_connection.setRequestMethod("POST");
 
             String post_data = "accountid=" + accountid;
+            post_data += "&login=" + login;
+            post_data += "&passwordhash=" + hashed_password;
+
+            http_connection.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
+            writer.write(post_data);
+            writer.flush();
+
+            int responseCode = http_connection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    public void removeInvestment(String login, String hashed_password, int investmentid) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/removeinvestment").openConnection();
+            http_connection.setRequestMethod("POST");
+
+            String post_data = "investmentid=" + investmentid;
             post_data += "&login=" + login;
             post_data += "&passwordhash=" + hashed_password;
 

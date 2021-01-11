@@ -521,9 +521,8 @@ public class Database {
         }
 
     }
-    public void addClient(String _name, String _surname, String _date, String _gender, String _street,
-                          String _num, String _city, String _postcode,
-                          String _country_name, String _login, String _password) {
+    public void addClient(String _name, String _surname, String _date, String _gender, String _street, String _num, String _city,
+                          String _postcode, String _country_name, String _login, String _password) {
 
         try {
             Session session = factory.openSession();
@@ -566,6 +565,28 @@ public class Database {
             if (query.list().size() >= 1) {
                 Contact contact = (Contact) query.list().get(0);
                 session.delete(contact);
+            }
+
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+    }
+    public void removeInvestment(int ownerid, int investmentid) {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            Query query = session.createQuery("FROM Investment WHERE ownerid=:ownerid AND id=:investmentid");
+            query.setParameter("ownerid", ownerid);
+            query.setParameter("investmentid", investmentid);
+
+            if (query.list().size() >= 1) {
+                Investment investment = (Investment) query.list().get(0);
+                session.delete(investment);
             }
 
             tx.commit();

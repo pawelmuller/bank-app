@@ -119,7 +119,7 @@ class ContactPanel extends JPanel {
 }
 
 class InvestmentPanel extends JPanel {
-    public InvestmentPanel(JPanel parent, MainUserPage page, JSONObject inv) {
+    public InvestmentPanel(JPanel parent, MainUserPage page, int _id, JSONObject inv) {
         super();
 
         JLabel nameLabel = new JLabel(inv.getString("name"));
@@ -160,6 +160,11 @@ class InvestmentPanel extends JPanel {
         p2.add(capperiod);
         this.add(p2);
         this.add(datecreated);
+
+        endbutton.addActionListener(e -> {
+            page.connection.removeInvestment(page.login.getLogin(), page.login.getPasswordHash(), _id);
+            page.updateInvestmentsSummary();
+        });
 
         if (inv.has("dateended")) {
             JLabel dateendedLabel = new JLabel(inv.getString("dateended"));
