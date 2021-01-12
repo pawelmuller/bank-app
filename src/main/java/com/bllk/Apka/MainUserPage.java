@@ -45,6 +45,7 @@ public class MainUserPage {
     private JPanel investmentsSummary;
     private JButton createInvestmentButton;
     private JTabbedPane financialProductsTabbedPane;
+    private JLabel accountsSummaryLabel;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
@@ -64,7 +65,7 @@ public class MainUserPage {
         currencies = connection.getCurrencies();
         user_currencies = new ArrayList<>();
 
-        accountsSummary.setLayout(new BoxLayout(accountsSummary, BoxLayout.Y_AXIS));
+        accountsSummary.setLayout(new GridBagLayout());
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         investmentsSummary.setLayout(new BoxLayout(investmentsSummary, BoxLayout.Y_AXIS));
         updateFontsAndColors();
@@ -318,6 +319,14 @@ public class MainUserPage {
     }
     private void updateAccountsSummary() {
         accountsSummary.removeAll();
+        int column = 0, row = 0, counter = 0, accounts_count = accounts.size();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(10,10,10,10);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridwidth = 1;
 
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
             String currency_id = account.getValue().getString("currencyid");
@@ -326,7 +335,18 @@ public class MainUserPage {
             String formatted_balance = String.format("%.2f", balance/100.0);
 
             AccountPanel accountPanel = new AccountPanel(getContactIfPossible(account.getKey()), "" + account.getKey(), formatted_balance, currency_name);
-            accountsSummary.add(accountPanel);
+
+            c.gridx = column++;
+            c.gridy = row;
+            if (column % 3 == 0) {
+                column = 0;
+                row++;
+            }
+            if (accounts_count % 3 == 1 && ++counter == accounts_count) {
+                c.gridx = 1;
+            }
+
+            accountsSummary.add(accountPanel, c);
         }
     }
     private void updateContactsSummary() {

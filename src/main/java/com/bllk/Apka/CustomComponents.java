@@ -92,9 +92,8 @@ class AccountPanel extends JPanel {
 
         this.setLayout(new FlowLayout());
         this.setBackground(Colors.getLightGrey());
-        this.setBorder(BorderFactory.createLineBorder(Colors.getOrange(), 3, true));
-        this.setMaximumSize(new Dimension(200, 50));
-        this.setPreferredSize(new Dimension(150, -1));
+        this.setPreferredSize(new Dimension(150, 50));
+        this.setMinimumSize(new Dimension(150, 50));
 
         this.add(balanceLabel);
         this.add(currencyLabel);
