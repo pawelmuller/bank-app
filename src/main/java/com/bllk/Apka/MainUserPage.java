@@ -336,6 +336,7 @@ public class MainUserPage {
         for (Map.Entry<String, Integer> contact: contacts.entrySet()) {
             ContactPanel contactPanel = new ContactPanel(contactsSummary, this, contact.getValue(), contact.getKey());
             contactsSummary.add(contactPanel);
+            contactsSummary.add(new JSeparator());
         }
     }
     public void updateInvestmentsSummary() {

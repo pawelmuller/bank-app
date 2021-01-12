@@ -91,17 +91,13 @@ class AccountPanel extends JPanel {
         currencyLabel.setFont(Fonts.getStandardFont());
 
         this.setLayout(new FlowLayout());
-
-        this.add(balanceLabel);
-        this.add(currencyLabel);
-
         this.setBackground(Colors.getLightGrey());
         this.setBorder(BorderFactory.createLineBorder(Colors.getOrange(), 3, true));
         this.setMaximumSize(new Dimension(200, 50));
         this.setPreferredSize(new Dimension(150, -1));
 
-        Font font = StartWindow.fonts.adagio_slab;
-        font = font.deriveFont(12f);
+        this.add(balanceLabel);
+        this.add(currencyLabel);
 
         this.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
@@ -120,11 +116,20 @@ class ContactPanel extends JPanel {
     public ContactPanel(JPanel parent, MainUserPage page, int target_id, String name) {
         super();
 
-        this.setLayout(new FlowLayout(FlowLayout.LEADING));
+        this.setLayout(new FlowLayout());
+        this.setBackground(Colors.getLightGrey());
+        this.setBorder(BorderFactory.createLineBorder(Colors.getOrange(), 3, true));
 
         JLabel nameLabel = new JLabel(name);
         JLabel targetidLabel = new JLabel("" + target_id);
         JButton deleteButton = new JButton("Usuń");
+
+        nameLabel.setForeground(Colors.getBrightTextColor());
+        targetidLabel.setForeground(Colors.getBrightTextColor());
+
+        nameLabel.setFont(Fonts.getStandardFont());
+        targetidLabel.setFont(Fonts.getStandardFont());
+        deleteButton.setFont(Fonts.getStandardFont());
 
         deleteButton.addActionListener(e -> {
             page.connection.removeContact(page.login.getLogin(), page.login.getPasswordHash(), target_id);
