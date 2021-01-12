@@ -61,6 +61,7 @@ public class MainUserPage {
     private JPanel depositPanel;
 
     List<Integer> user_currencies;
+    List<Integer> accountBoxUnformatted;
     Account active_payer_account = null;
     Map <String, String> currencies;
     Map <String, Integer> contacts;
@@ -77,6 +78,7 @@ public class MainUserPage {
         idLabel.setText("Numer klienta: " + client.getID());
         currencies = connection.getCurrencies();
         user_currencies = new ArrayList<>();
+        accountBoxUnformatted = new ArrayList<>();
 
         accountsSummary.setLayout(new GridBagLayout());
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
@@ -303,12 +305,6 @@ public class MainUserPage {
         historyPane.setFont(standard_font);
         historyPane.getViewport().setBackground(Colors.getDarkGrey());
 
-        // Financial products
-
-
-
-
-
         String system_name = System.getProperty("os.name");
         if (!system_name.startsWith("Windows")) {
             tabbedPane.setForeground(Colors.getOrange());
@@ -359,22 +355,29 @@ public class MainUserPage {
         historyPane.getViewport().add(table);
     }
     public void updateMoney() {
-        if (transfer_accountSelectBox.getItemCount()>0) {
-            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) transfer_accountSelectBox.getSelectedItem()));
-            String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
-            int total_balance = connection.getTotalSavings(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
+        if (transfer_accountSelectBox.getItemCount() > 0) {
+            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
+            if (transfer_accountSelectBox.getItemCount() > 0) {
+                active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
+                String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
+                int total_balance = connection.getTotalSavings(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
 
-            transfer_currentBalance.setText(String.format("%.2f %s", total_balance/100.0, active_currency_shortcut));
-            transfer_payerBalance.setText(String.format("%.2f %s", active_payer_account.getValue() / 100.0, active_currency_shortcut));
-            transfer_currencyLabel.setText(active_currency_shortcut);
+                transfer_currentBalance.setText(String.format("%.2f %s", total_balance / 100.0, active_currency_shortcut));
+                transfer_payerBalance.setText(String.format("%.2f %s", active_payer_account.getValue() / 100.0, active_currency_shortcut));
+                transfer_currencyLabel.setText(active_currency_shortcut);
+            }
         }
     }
-    void updateAccounts() {
+    public void updateAccounts() {
         transfer_accountSelectBox.removeAllItems();
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
-            transfer_accountSelectBox.addItem("" + account.getKey());
+            transfer_accountSelectBox.addItem(String.format("%s (%s)",
+                    getContactIfPossible(account.getKey()),
+                    currencies.get(account.getValue().getString("currencyid")))
+            );
+            accountBoxUnformatted.add(account.getKey());
             user_currencies.add(account.getValue().getInt("currencyid"));
         }
 
@@ -442,7 +445,7 @@ public class MainUserPage {
     }
     private void updateCreditsBalance() {
         if (transfer_accountSelectBox.getItemCount() > 0) {
-            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) transfer_accountSelectBox.getSelectedItem()));
+            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
             String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
             int credits_total = connection.getTotalCredits(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
 
