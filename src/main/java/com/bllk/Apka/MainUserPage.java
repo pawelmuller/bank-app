@@ -6,6 +6,7 @@ import com.bllk.Servlet.mapclasses.Login;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
@@ -20,24 +21,24 @@ public class MainUserPage {
     JFrame frame;
     JPanel previousPanel, menuPanel;
     private JLabel logoLabel, nameLabel;
-    private JTextField amount;
-    private JButton sendMoneyButton, logOutButton;
-    private JLabel message;
-    private JLabel currentBalance;
+    private JTextField transfer_amount;
+    private JButton transfer_sendMoneyButton, logOutButton;
+    private JLabel transfer_message;
+    private JLabel transfer_currentBalance;
     private JLabel idLabel;
     private JPanel transactionPanel;
     private JTabbedPane tabbedPane;
-    private JTextField titleTextField;
-    private JComboBox<String> accountSelect;
-    private JLabel payerBalance;
-    private JLabel currencyLabel;
-    private JScrollPane historyPanel;
+    private JTextField transfer_title;
+    private JComboBox<String> transfer_accountSelectBox;
+    private JLabel transfer_payerBalance;
+    private JLabel transfer_currencyLabel;
+    private JScrollPane historyPane;
     private JComboBox<String> currenciesComboBox;
     private JButton createAccountButton;
     private JLabel doubleAccountWarning;
-    private JComboBox<String> contactBox;
-    private JTextField accountNumber;
-    private JButton addContactButton;
+    private JComboBox<String> transfer_contactBox;
+    private JTextField transfer_accountNumber;
+    private JButton transfer_addContactButton;
     private JPanel accountsSummary;
     private JPanel contactsSummary;
     private JPanel creditPanel;
@@ -46,6 +47,18 @@ public class MainUserPage {
     private JButton createInvestmentButton;
     private JTabbedPane financialProductsTabbedPane;
     private JLabel accountsSummaryLabel;
+    private JLabel transfer_currentBalanceLabel;
+    private JLabel transfer_titleLabel;
+    private JLabel transfer_fromLabel;
+    private JLabel transfer_contactNameLabel;
+    private JLabel transfer_toLabel;
+    private JLabel transfer_valueLabel;
+    private JPanel financialProductsPanel;
+    private JPanel transactionHistoryPanel;
+    private JPanel accountsPanel;
+    private JPanel contactsPanel;
+    private JPanel settingsPanel;
+    private JPanel depositPanel;
 
     List<Integer> user_currencies;
     Account active_payer_account = null;
@@ -79,9 +92,9 @@ public class MainUserPage {
         updateCreditsBalance();
         updateInvestmentsSummary();
 
-        sendMoneyButton.addActionListener(e -> makeTransaction());
+        transfer_sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
-        accountSelect.addActionListener(e -> updateMoney());
+        transfer_accountSelectBox.addActionListener(e -> updateMoney());
         createAccountButton.addActionListener(e -> {
             for (Map.Entry<String, String> entry : currencies.entrySet()) {
                 if (Objects.equals(currenciesComboBox.getSelectedItem(), entry.getValue())) {
@@ -96,17 +109,17 @@ public class MainUserPage {
             }
             updateAccounts();
         });
-        addContactButton.addActionListener(e -> {
+        transfer_addContactButton.addActionListener(e -> {
             addContact();
             updateContacts();
             updateContactsSummary();
         });
-        contactBox.addActionListener(e -> {
+        transfer_contactBox.addActionListener(e -> {
             if (!lock_combobox) {
-                String name = (String) contactBox.getSelectedItem();
+                String name = (String) transfer_contactBox.getSelectedItem();
                 Integer accountid = contacts.get(name);
                 if (accountid != null)
-                    accountNumber.setText("" + accountid);
+                    transfer_accountNumber.setText("" + accountid);
             }
         });
         createInvestmentButton.addActionListener(e -> addInvestmentDialog());
@@ -160,49 +173,49 @@ public class MainUserPage {
 
     void addContact() {
         try {
-            int accountid = Integer.parseInt(accountNumber.getText());
-            String name = (String) contactBox.getSelectedItem();
+            int accountid = Integer.parseInt(transfer_accountNumber.getText());
+            String name = (String) transfer_contactBox.getSelectedItem();
             if (!name.equals("")) {
-                if (!connection.checkAccount(Integer.parseInt(accountNumber.getText())))
+                if (!connection.checkAccount(Integer.parseInt(transfer_accountNumber.getText())))
                     throw new NumberFormatException();
                 connection.createContact(login.getLogin(), login.getPasswordHash(), name, accountid);
-                message.setText(String.format("Konto %d: %s", accountid, name));
+                transfer_message.setText(String.format("Konto %d: %s", accountid, name));
             }
 
         } catch(NumberFormatException ex) {
-            message.setText("Nie można dodać kontaktu: błędny numer konta.");
+            transfer_message.setText("Nie można dodać kontaktu: błędny numer konta.");
             System.out.println(ex.getMessage());
         } catch (InputMismatchException ex) {
-            message.setText("Nie można dodać kontaktu: błędna nazwa.");
+            transfer_message.setText("Nie można dodać kontaktu: błędna nazwa.");
             System.out.println(ex.getMessage());
         } catch (Exception ex) {
-            message.setText("Nie można dodać kontaktu.");
+            transfer_message.setText("Nie można dodać kontaktu.");
             System.out.println(ex.getMessage());
         }
     }
     void makeTransaction() {
         try {
             if (active_payer_account == null) {
-                message.setText("Błąd transakcji: Nie posiadasz żadnego konta.");
+                transfer_message.setText("Błąd transakcji: Nie posiadasz żadnego konta.");
             }
             else {
                 int payer_id = active_payer_account.getID();
-                int target_id = Integer.parseInt(accountNumber.getText());
+                int target_id = Integer.parseInt(transfer_accountNumber.getText());
                 int currency_id = active_payer_account.getCurrencyID();
-                int money_value = (int) (Double.parseDouble(amount.getText()) * 100);
-                String title = titleTextField.getText();
+                int money_value = (int) (Double.parseDouble(transfer_amount.getText()) * 100);
+                String title = transfer_title.getText();
 
                 if (active_payer_account.getID() == target_id) {
-                    message.setText("Błąd transakcji: Konto docelowe jest takie samo jak początkowe.");
+                    transfer_message.setText("Błąd transakcji: Konto docelowe jest takie samo jak początkowe.");
                 } else if (money_value > active_payer_account.getValue() || money_value <= 0) {
-                    message.setText("Błąd transakcji: Błędna kwota przelewu.");
-                } else if (!connection.checkAccount(Integer.parseInt(accountNumber.getText()))) {
-                    message.setText("Błąd transakcji: Konto docelowe nie istnieje.");
-                } else if (titleTextField.getText().equals("")) {
-                    message.setText("Błąd transakcji: Tytuł nie może być pusty.");
+                    transfer_message.setText("Błąd transakcji: Błędna kwota przelewu.");
+                } else if (!connection.checkAccount(Integer.parseInt(transfer_accountNumber.getText()))) {
+                    transfer_message.setText("Błąd transakcji: Konto docelowe nie istnieje.");
+                } else if (transfer_title.getText().equals("")) {
+                    transfer_message.setText("Błąd transakcji: Tytuł nie może być pusty.");
                 } else {
                     if (connection.getBasicAccount(target_id).getCurrencyID() == currency_id || (connection.getBasicAccount(target_id).getCurrencyID() != currency_id && currencyChangeWarning())) {
-                        message.setText(String.format("Przesłano %.2f %s na konto %d.", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
+                        transfer_message.setText(String.format("Przesłano %.2f %s na konto %d.", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
                         connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payer_id, target_id, title, money_value, currency_id);
                         updateMoney();
                         updateTransactionTable();
@@ -212,7 +225,7 @@ public class MainUserPage {
             }
         }
         catch (Exception ex) {
-            message.setText("Błąd transakcji: " + ex.getMessage());
+            transfer_message.setText("Błąd transakcji: " + ex.getMessage());
         }
     }
 
@@ -231,31 +244,86 @@ public class MainUserPage {
         Font header_font = Fonts.getHeaderFont();
         Font logo_font = Fonts.getLogoFont();
 
+
+        // Main elements
         logoLabel.setFont(logo_font);
-
-        tabbedPane.setFont(standard_font);
-        financialProductsTabbedPane.setFont(standard_font);
-        nameLabel.setFont(header_font);
-
         logoLabel.setForeground(Colors.getOrange());
 
-        idLabel.setForeground(Colors.getBrightTextColor());
-        nameLabel.setForeground(Colors.getBrightTextColor());
+        nameLabel.setFont(header_font);
+
+        logOutButton.setFont(standard_font);
+
+        for (JLabel jLabel : Arrays.asList(idLabel, nameLabel)) {
+            jLabel.setForeground(Colors.getBrightTextColor());
+        }
+
+        for (JTabbedPane jTabbedPane : Arrays.asList(tabbedPane, financialProductsTabbedPane)) {
+            jTabbedPane.setFont(standard_font);
+            jTabbedPane.setForeground(Colors.getDarkGrey());
+            jTabbedPane.setBackground(Colors.getBlue());
+        }
+
+        for (JPanel jPanel : Arrays.asList(accountsPanel, transactionPanel, transactionHistoryPanel,
+                financialProductsPanel, contactsPanel, settingsPanel, creditPanel, depositPanel)) {
+            jPanel.setFont(standard_font);
+            jPanel.setForeground(Colors.getBrightTextColor());
+            jPanel.setBackground(Colors.getDarkGrey());
+        }
+
+        // Accounts
+        accountsSummaryLabel.setFont(Fonts.getHeaderFont());
+
+        accountsSummaryLabel.setForeground(Colors.getBrightTextColor());
+        accountsSummary.setForeground(Colors.getBrightTextColor());
+
+        accountsSummary.setBackground(Colors.getDarkGrey());
+
+        // Transfers
+        for (JLabel jLabel : Arrays.asList(transfer_contactNameLabel, transfer_currencyLabel, transfer_currentBalance,
+                transfer_currentBalanceLabel, transfer_fromLabel, transfer_message, transfer_payerBalance,
+                transfer_titleLabel, transfer_toLabel, transfer_valueLabel)) {
+            jLabel.setForeground(Colors.getBrightTextColor());
+            jLabel.setFont(standard_font);
+        }
+        for (JTextField jTextField : Arrays.asList(transfer_accountNumber, transfer_amount, transfer_title)) {
+            jTextField.setForeground(Colors.getBrightTextColor());
+            jTextField.setBackground(Colors.getLightGrey());
+            jTextField.setFont(standard_font);
+        }
+        for (JComboBox<String> jComboBox : Arrays.asList(transfer_contactBox, transfer_accountSelectBox)) {
+            jComboBox.setForeground(Colors.getOrange());
+            jComboBox.setBackground(Colors.getGrey());
+            jComboBox.setFont(standard_font);
+        }
+        for (JButton jButton : Arrays.asList(transfer_addContactButton, transfer_sendMoneyButton)) {
+            jButton.setFont(standard_font);
+        }
+
+        // Transfer history
+        historyPane.setFont(standard_font);
+        historyPane.getViewport().setBackground(Colors.getDarkGrey());
+
+        // Financial products
+
+
+
+
 
         String system_name = System.getProperty("os.name");
         if (!system_name.startsWith("Windows")) {
             tabbedPane.setForeground(Colors.getOrange());
+            financialProductsTabbedPane.setForeground(Colors.getOrange());
         }
     }
     public void updateContacts() {
         lock_combobox = true;
         contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
-        String temp = (String) contactBox.getSelectedItem();
-        contactBox.removeAllItems();
-        contactBox.addItem("");
+        String temp = (String) transfer_contactBox.getSelectedItem();
+        transfer_contactBox.removeAllItems();
+        transfer_contactBox.addItem("");
         for (Map.Entry<String, Integer> contact: contacts.entrySet())
-            contactBox.addItem(contact.getKey());
-        contactBox.setSelectedItem(temp);
+            transfer_contactBox.addItem(contact.getKey());
+        transfer_contactBox.setSelectedItem(temp);
         updateTransactionTable();
         lock_combobox = false;
     }
@@ -277,37 +345,40 @@ public class MainUserPage {
         TableModel tableModel = new DefaultTableModel(values.toArray(new Object[][] {}), columns);
         JTable table = new JTable(tableModel);
 
+        table.setFont(Fonts.getStandardFont());
         table.setBackground(Colors.getDarkGrey());
         table.setForeground(Colors.getBrightTextColor());
         table.getTableHeader().setOpaque(false);
+        table.getTableHeader().setFont(Fonts.getSmallHeaderFont());
         table.getTableHeader().setBackground(Colors.getOrange());
-        table.setGridColor(Colors.getLightGrey());
+        table.setGridColor(Colors.getGrey());
+        ((DefaultTableCellRenderer)table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
         table.setDefaultEditor(Object.class, null);
         table.getTableHeader().setReorderingAllowed(false);
-        historyPanel.getViewport().add(table);
+        historyPane.getViewport().add(table);
     }
     public void updateMoney() {
-        if (accountSelect.getItemCount()>0) {
-            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
+        if (transfer_accountSelectBox.getItemCount()>0) {
+            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) transfer_accountSelectBox.getSelectedItem()));
             String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
             int total_balance = connection.getTotalSavings(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
 
-            currentBalance.setText(String.format("%.2f %s", total_balance/100.0, active_currency_shortcut));
-            payerBalance.setText(String.format("%.2f %s", active_payer_account.getValue() / 100.0, active_currency_shortcut));
-            currencyLabel.setText(active_currency_shortcut);
+            transfer_currentBalance.setText(String.format("%.2f %s", total_balance/100.0, active_currency_shortcut));
+            transfer_payerBalance.setText(String.format("%.2f %s", active_payer_account.getValue() / 100.0, active_currency_shortcut));
+            transfer_currencyLabel.setText(active_currency_shortcut);
         }
     }
     void updateAccounts() {
-        accountSelect.removeAllItems();
+        transfer_accountSelectBox.removeAllItems();
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
-            accountSelect.addItem("" + account.getKey());
+            transfer_accountSelectBox.addItem("" + account.getKey());
             user_currencies.add(account.getValue().getInt("currencyid"));
         }
 
-        tabbedPane.setEnabledAt(2, accountSelect.getItemCount() != 0);
+        tabbedPane.setEnabledAt(2, transfer_accountSelectBox.getItemCount() != 0);
         updateMoney();
         updateAccountsSummary();
     }
@@ -370,8 +441,8 @@ public class MainUserPage {
         investmentsSummary.updateUI();
     }
     private void updateCreditsBalance() {
-        if (accountSelect.getItemCount() > 0) {
-            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
+        if (transfer_accountSelectBox.getItemCount() > 0) {
+            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) transfer_accountSelectBox.getSelectedItem()));
             String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
             int credits_total = connection.getTotalCredits(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
 
