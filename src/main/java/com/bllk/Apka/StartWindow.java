@@ -15,14 +15,13 @@ public class StartWindow {
     private static ClientServerConnection connection;
 
     static JPanel startingPanel;
-    private JPanel mainPanel, loginTab, registerTab;
+    private JPanel mainPanel;
     private JTextField loginField;
     private JPasswordField passwordField;
     private JButton loginButton, forgotPasswordButton;
     private JLabel login_mainErrorLabel;
     private JTabbedPane mainTabbedPane;
     private JLabel logoLabel;
-    private JScrollPane registerScrollPane;
     private JTextField register_login;
     private JPasswordField register_password, register_repeatPassword;
     private JTextField register_name, register_surname;
@@ -41,6 +40,7 @@ public class StartWindow {
     private JLabel register_yearLabel, register_monthLabel, register_dayLabel;
     private JLabel register_streetLabel, register_numberLabel, register_cityLabel, register_postcodeLabel, register_countryLabel;
     private JLabel register_loginHeaderLabel, register_personalHeaderLabel;
+    private JPanel registerTab;
 
     private String login, password, repeatedPassword;
     private String name, surname, gender;
@@ -230,12 +230,7 @@ public class StartWindow {
             }
         });
         register_button.addActionListener(e -> performRegister());
-        forgotPasswordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changePassword();
-            }
-        });
+        forgotPasswordButton.addActionListener(e -> changePassword());
     }
     private void updateFonts() {
         Colors colors = new Colors();

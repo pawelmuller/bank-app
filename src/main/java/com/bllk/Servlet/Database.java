@@ -62,8 +62,8 @@ public class Database {
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM Client WHERE login_id=" + loginid;
-            Query query = session.createQuery(hql);
+            Query query = session.createQuery("FROM Client WHERE login_id=:loginid");
+            query.setParameter("loginid", loginid);
             List list = query.list();
 
             if (list.size() >= 1)
@@ -78,17 +78,18 @@ public class Database {
         return client;
     }
     public String getSalt(String user_login) {
-        String salt = null, hash = null;
-        Login login = null;
+        String salt = null;
 
         try {
             Session session = factory.openSession();
 
-            String hql = "FROM Login WHERE login='" + user_login + "'";
-            Query query = session.createQuery(hql);
-            login = (Login) query.list().get(0);
-            hash = login.getPasswordHash();
-            salt = hash.substring(0, 29);
+            Query query = session.createQuery("FROM Login WHERE login=:login");
+            query.setParameter("login", user_login);
+            if (query.list().size() >= 1) {
+                Login login = (Login) query.list().get(0);
+                String hash = login.getPasswordHash();
+                salt = hash.substring(0, 29);
+            }
 
             session.close();
         } catch (Exception ex) {
@@ -100,17 +101,14 @@ public class Database {
     }
     public boolean checkLogin(String user_login) {
         boolean does_exist = false;
-        Login login = null;
 
         try {
             Session session = factory.openSession();
 
             String hql = "FROM Login WHERE login='" + user_login + "'";
             Query query = session.createQuery(hql);
-            if (query.list().size() >= 1) {
-                login = (Login) query.list().get(0);
+            if (query.list().size() >= 1)
                 does_exist = true;
-            }
 
             session.close();
         } catch (Exception ex) {
@@ -480,8 +478,12 @@ public class Database {
                 session.update(contact);
             }
             else {
-                int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(CONTACT_ID) FROM CONTACTS").list().get(0)).intValue() + 1;
-                System.out.println(id);
+                int id = 1;
+                query = session.createSQLQuery("SELECT MAX(CONTACT_ID) FROM CONTACTS");
+                BigDecimal idbig = ((BigDecimal) query.list().get(0));
+                if (idbig != null)
+                    id = idbig.intValue() + 1;
+
                 Contact account = new Contact(id, ownerid, accountid, name);
                 session.save(account);
             }
@@ -509,7 +511,6 @@ public class Database {
                 session.update(account);
 
                 query = session.createSQLQuery("SELECT MAX(INVESTMENT_ID) FROM INVESTMENTS");
-
                 BigDecimal idbig = ((BigDecimal) query.list().get(0));
                 if (idbig != null)
                     id = idbig.intValue() + 1;

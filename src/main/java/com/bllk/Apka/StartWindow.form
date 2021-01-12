@@ -26,7 +26,7 @@
         </properties>
         <border type="empty"/>
         <children>
-          <grid id="6fc78" binding="loginTab" layout-manager="GridLayoutManager" row-count="10" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="6fc78" layout-manager="GridLayoutManager" row-count="10" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Logowanie"/>
@@ -149,7 +149,7 @@
               </hspacer>
             </children>
           </grid>
-          <scrollpane id="9291" binding="registerScrollPane">
+          <scrollpane id="9291">
             <constraints>
               <tabbedpane title="Rejestracja"/>
             </constraints>
