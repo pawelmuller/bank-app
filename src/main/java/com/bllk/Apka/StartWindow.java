@@ -256,7 +256,10 @@ public class StartWindow {
             jLabel.setFont(header_font);
             jLabel.setForeground(Colors.getBrightTextColor());
         }
-        for (JLabel jLabel : Arrays.asList(register_loginLabel, register_passwordLabel, register_repeatPasswordLabel, register_nameLabel, register_surnameLabel, register_genderLabel, register_birthDateLabel, register_yearLabel, register_monthLabel, register_dayLabel, register_streetLabel, register_numberLabel, register_cityLabel, register_postcodeLabel, register_countryLabel)) {
+        for (JLabel jLabel : Arrays.asList(register_loginLabel, register_passwordLabel, register_repeatPasswordLabel,
+                register_nameLabel, register_surnameLabel, register_genderLabel, register_birthDateLabel,
+                register_yearLabel, register_monthLabel, register_dayLabel, register_streetLabel, register_numberLabel,
+                register_cityLabel, register_postcodeLabel, register_countryLabel)) {
             jLabel.setFont(standard_font);
             jLabel.setForeground(Colors.getBrightTextColor());
         }
@@ -267,7 +270,7 @@ public class StartWindow {
         for (JComboBox<Integer> integerJComboBox : Arrays.asList(register_yearsComboBox, register_monthsComboBox, register_daysComboBox)) {
             integerJComboBox.setFont(standard_font);
             integerJComboBox.setForeground(Colors.getOrange());
-            integerJComboBox.setBackground(Colors.getLightGrey());
+            integerJComboBox.setBackground(Colors.getGrey());
         }
         register_countriesComboBox.setFont(standard_font);
         register_button.setFont(standard_font);
