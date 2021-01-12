@@ -53,7 +53,7 @@ class Fonts {
     }
     private Font loadFont(String font_name) {
         String path = "/fonts/" + font_name;
-        Font font = new Font("Veranda", Font.PLAIN, 12);
+        Font font = new Font("Veranda", Font.PLAIN, 14);
         try {
             InputStream stream = Fonts.class.getResourceAsStream(path);
             font = Font.createFont(Font.TRUETYPE_FONT, stream);
@@ -64,6 +64,9 @@ class Fonts {
     }
     public static Font getStandardFont() {
         return adagio_slab.deriveFont(14f);
+    }
+    public static Font getSmallHeaderFont() {
+        return adagio_slab.deriveFont(16f);
     }
     public static Font getHeaderFont() {
         return adagio_slab.deriveFont(20f);
