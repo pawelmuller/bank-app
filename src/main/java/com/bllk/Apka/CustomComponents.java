@@ -123,8 +123,15 @@ class ContactPanel extends JPanel {
         super();
 
         this.setLayout(new FlowLayout());
-        this.setBackground(Colors.getLightGrey());
-        this.setBorder(BorderFactory.createLineBorder(Colors.getOrange(), 3, true));
+        this.setBackground(Colors.getGrey());
+        this.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
+                name + " (nr " + target_id + ")",
+                TitledBorder.CENTER,
+                TitledBorder.DEFAULT_POSITION,
+                Fonts.getStandardFont(),
+                Colors.getBrightTextColor()
+        ));
 
         JLabel nameLabel = new JLabel(name);
         JLabel targetidLabel = new JLabel("" + target_id);
