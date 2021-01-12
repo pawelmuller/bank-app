@@ -116,7 +116,7 @@ public class StartWindow {
         connection.updatePassword("schogetten", "$2a$12$iU4lp7jtmCPFsVbbT9qLteZIYlQBQ.nqfVX7A8AMOTGLZAg9idYBG");
     }
     public StartWindow() {
-        updateFonts();
+        updateFontsAndColors();
         makeErrorLabelsInvisible();
 
         loginButton.addActionListener(e -> performLogin());
@@ -232,7 +232,7 @@ public class StartWindow {
         register_button.addActionListener(e -> performRegister());
         forgotPasswordButton.addActionListener(e -> changePassword());
     }
-    private void updateFonts() {
+    private void updateFontsAndColors() {
         Colors colors = new Colors();
         Font standard_font = StartWindow.fonts.adagio_slab.deriveFont(14f);
         Font header_font = StartWindow.fonts.adagio_slab.deriveFont(20f);

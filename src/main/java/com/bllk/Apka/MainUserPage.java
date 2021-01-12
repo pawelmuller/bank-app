@@ -67,7 +67,7 @@ public class MainUserPage {
         accountsSummary.setLayout(new BoxLayout(accountsSummary, BoxLayout.Y_AXIS));
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         investmentsSummary.setLayout(new BoxLayout(investmentsSummary, BoxLayout.Y_AXIS));
-        updateFonts();
+        updateFontsAndColors();
 
         updateContacts();
         fillCurrenciesComboBox();
@@ -222,7 +222,8 @@ public class MainUserPage {
         return String.valueOf(value);
     }
 
-    private void updateFonts() {
+    private void updateFontsAndColors() {
+        Colors colors = new Colors();
         logoLabel.setFont(StartWindow.fonts.radikal.deriveFont(48f));
         Font standard_font = StartWindow.fonts.adagio_slab.deriveFont(12f);
         Font header_font = StartWindow.fonts.adagio_slab.deriveFont(20f);
