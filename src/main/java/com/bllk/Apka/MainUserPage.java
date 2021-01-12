@@ -28,7 +28,7 @@ public class MainUserPage {
     private JPanel transactionPanel;
     private JTabbedPane tabbedPane;
     private JTextField titleTextField;
-    private JComboBox<String> accountSelect;
+    private JComboBox<String> accountBox;
     private JLabel payerBalance;
     private JLabel currencyLabel;
     private JScrollPane historyPanel;
@@ -48,6 +48,7 @@ public class MainUserPage {
     private JLabel accountsSummaryLabel;
 
     List<Integer> user_currencies;
+    List<Integer> accountBoxUnformatted;
     Account active_payer_account = null;
     Map <String, String> currencies;
     Map <String, Integer> contacts;
@@ -64,6 +65,7 @@ public class MainUserPage {
         idLabel.setText("Numer klienta: " + client.getID());
         currencies = connection.getCurrencies();
         user_currencies = new ArrayList<>();
+        accountBoxUnformatted = new ArrayList<>();
 
         accountsSummary.setLayout(new GridBagLayout());
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
@@ -81,7 +83,7 @@ public class MainUserPage {
 
         sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
-        accountSelect.addActionListener(e -> updateMoney());
+        accountBox.addActionListener(e -> updateMoney());
         createAccountButton.addActionListener(e -> {
             for (Map.Entry<String, String> entry : currencies.entrySet()) {
                 if (Objects.equals(currenciesComboBox.getSelectedItem(), entry.getValue())) {
@@ -288,8 +290,8 @@ public class MainUserPage {
         historyPanel.getViewport().add(table);
     }
     public void updateMoney() {
-        if (accountSelect.getItemCount()>0) {
-            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
+        if (accountBox.getItemCount()>0) {
+            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(accountBox.getSelectedIndex()));
             String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
             int total_balance = connection.getTotalSavings(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
 
@@ -298,16 +300,20 @@ public class MainUserPage {
             currencyLabel.setText(active_currency_shortcut);
         }
     }
-    void updateAccounts() {
-        accountSelect.removeAllItems();
+    public void updateAccounts() {
+        accountBox.removeAllItems();
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
-            accountSelect.addItem("" + account.getKey());
+            accountBox.addItem(String.format("%s (%s)",
+                    getContactIfPossible(account.getKey()),
+                    currencies.get(account.getValue().getString("currencyid")))
+            );
+            accountBoxUnformatted.add(account.getKey());
             user_currencies.add(account.getValue().getInt("currencyid"));
         }
 
-        tabbedPane.setEnabledAt(2, accountSelect.getItemCount() != 0);
+        tabbedPane.setEnabledAt(2, accountBox.getItemCount() != 0);
         updateMoney();
         updateAccountsSummary();
     }
@@ -370,8 +376,8 @@ public class MainUserPage {
         investmentsSummary.updateUI();
     }
     private void updateCreditsBalance() {
-        if (accountSelect.getItemCount() > 0) {
-            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
+        if (accountBox.getItemCount() > 0) {
+            active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(accountBox.getSelectedIndex()));
             String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
             int credits_total = connection.getTotalCredits(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
 
