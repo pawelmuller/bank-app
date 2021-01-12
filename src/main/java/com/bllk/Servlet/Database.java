@@ -14,8 +14,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Database {
     private static SessionFactory factory;
@@ -501,7 +499,7 @@ public class Database {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
 
-            int id;
+            int id = 1;
             Query query = session.createQuery("FROM Account WHERE id=:accountid");
             query.setParameter("accountid", accountid);
 
@@ -512,10 +510,9 @@ public class Database {
 
                 query = session.createSQLQuery("SELECT MAX(INVESTMENT_ID) FROM INVESTMENTS");
 
-                if (query.list().size() >= 1)
-                    id = ((BigDecimal) query.list().get(0)).intValue() + 1;
-                else
-                    id = 1;
+                BigDecimal idbig = ((BigDecimal) query.list().get(0));
+                if (idbig != null)
+                    id = idbig.intValue() + 1;
 
                 Investment investment = new Investment(id, name, ownerid, value, profrate, yearprofrate, capperoid, account.getCurrencyID());
                 session.save(investment);
@@ -527,7 +524,6 @@ public class Database {
             factory.close();
             refresh();
         }
-
     }
     public void addClient(String _name, String _surname, String _date, String _gender, String _street, String _num, String _city,
                           String _postcode, String _country_name, String _login, String _password) {
@@ -583,7 +579,7 @@ public class Database {
             refresh();
         }
     }
-    public void removeInvestment(int ownerid, int investmentid) {
+    public void removeInvestment(int ownerid, int investmentid, int accountid) {
         try {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
@@ -594,7 +590,16 @@ public class Database {
 
             if (query.list().size() >= 1) {
                 Investment investment = (Investment) query.list().get(0);
-                session.delete(investment);
+
+                query = session.createQuery("FROM Account WHERE id=:accountid");
+                query.setParameter("accountid", accountid);
+
+                if (query.list().size() >= 1) {
+                    Account account = (Account) query.list().get(0);
+                    account.setValue(account.getValue() + investment.getValue());
+                    session.update(account);
+                    session.delete(investment);
+                }
             }
 
             tx.commit();

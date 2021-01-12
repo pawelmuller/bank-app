@@ -276,7 +276,7 @@ public class MainUserPage {
         table.getTableHeader().setReorderingAllowed(false);
         historyPanel.getViewport().add(table);
     }
-    private void updateMoney() {
+    public void updateMoney() {
         if (accountSelect.getItemCount()>0) {
             active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), Integer.parseInt((String) accountSelect.getSelectedItem()));
             String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
@@ -287,7 +287,7 @@ public class MainUserPage {
             currencyLabel.setText(active_currency_shortcut);
         }
     }
-    private void updateAccounts() {
+    void updateAccounts() {
         accountSelect.removeAllItems();
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 

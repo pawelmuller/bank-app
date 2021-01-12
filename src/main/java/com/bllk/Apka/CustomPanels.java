@@ -7,6 +7,9 @@ import java.awt.*;
 import javax.swing.border.TitledBorder;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 class AccountPanel extends JPanel {
     public AccountPanel(String _account_name, String _account_number, String _balance, String _currency) {
@@ -119,11 +122,16 @@ class ContactPanel extends JPanel {
 }
 
 class InvestmentPanel extends JPanel {
-    public InvestmentPanel(JPanel parent, MainUserPage page, int _id, JSONObject inv) {
+    MainUserPage page;
+    JSONObject inv;
+
+    public InvestmentPanel(JPanel parent, MainUserPage _page, int _id, JSONObject _inv) {
         super();
+        page = _page;
+        inv = _inv;
 
         JLabel nameLabel = new JLabel(inv.getString("name"));
-        JLabel valueLabel = new JLabel("" + inv.getDouble("value") /100);
+        JLabel valueLabel = new JLabel("" + inv.getDouble("value") / 100);
         JLabel currencyLabel = new JLabel(page.currencies.get(inv.getString("currencyid")));
         JLabel profitLabel = new JLabel(inv.getString("profit"));
         JLabel yearprofit = new JLabel(inv.getString("yearprofit"));
@@ -162,8 +170,11 @@ class InvestmentPanel extends JPanel {
         this.add(datecreated);
 
         endbutton.addActionListener(e -> {
-            page.connection.removeInvestment(page.login.getLogin(), page.login.getPasswordHash(), _id);
+            int accountid = removeInvestmentDialog();
+            System.out.println(accountid);
+            page.connection.removeInvestment(page.login.getLogin(), page.login.getPasswordHash(), _id, accountid);
             page.updateInvestmentsSummary();
+            page.updateAccounts();
         });
 
         if (inv.has("dateended")) {
@@ -174,5 +185,25 @@ class InvestmentPanel extends JPanel {
         }
         endbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(endbutton);
+    }
+    int removeInvestmentDialog() {
+        JComboBox<String> accountBox = new JComboBox<>();
+        List<Integer> accounts_to_select = new ArrayList<>();
+        for (Map.Entry<Integer, JSONObject> account : page.accounts.entrySet()) {
+            if (account.getValue().getInt("currencyid") == inv.getInt("currencyid")) {
+                accountBox.addItem(String.format("%s (%.2f %s)", page.getContactIfPossible(account.getKey()), account.getValue().getDouble("value") / 100, page.currencies.get(account.getValue().getString("currencyid"))));
+                accounts_to_select.add(account.getKey());
+            }
+        }
+
+        Object[] message = {
+                "Na konto:", accountBox,
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            return accounts_to_select.get(accountBox.getSelectedIndex());
+        }
+        return -1;
     }
 }

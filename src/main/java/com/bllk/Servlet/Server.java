@@ -362,10 +362,11 @@ public class Server extends HttpServlet {
                     String login = request.getParameter("login");
                     String password = request.getParameter("passwordhash");
                     int investmentid = Integer.parseInt(request.getParameter("investmentid"));
+                    int accountid = Integer.parseInt(request.getParameter("accountid"));
                     Login log = data.getLogin(login, password);
                     if (log != null) {
                         Client client = data.getClient(log.getID());
-                        data.removeInvestment(client.getID(), investmentid);
+                        data.removeInvestment(client.getID(), investmentid, accountid);
                     }
                 }
                 break;
