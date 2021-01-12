@@ -11,6 +11,69 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+class Colors {
+    private static Color bright_text_color, orange, blue, dark_grey, light_grey;
+    public Colors() {
+        bright_text_color = Color.decode("#EEEEEE");
+        blue = Color.decode("#1891FF");
+        orange = Color.decode("#FF7F00");
+        dark_grey = Color.decode("#222222");
+        light_grey = Color.decode("#333333");
+    }
+    public static Color getBrightTextColor() {
+        return bright_text_color;
+    }
+    public static Color getOrange() {
+        return orange;
+    }
+    public static Color getBlue() {
+        return blue;
+    }
+    public static Color getDarkGrey() {
+        return dark_grey;
+    }
+    public static Color getLightGrey() {
+        return light_grey;
+    }
+}
+
+class Fonts {
+    private static Font radikal, adagio_slab;
+
+    public Fonts() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        radikal = loadFont("radikalwut-bold.otf");
+        adagio_slab = loadFont("adagio_slab-regular.otf");
+        ge.registerFont(radikal);
+        ge.registerFont(adagio_slab);
+    }
+    private Font loadFont(String font_name) {
+        String path = "/fonts/" + font_name;
+        Font font = new Font("Veranda", Font.PLAIN, 12);
+        try {
+            InputStream stream = Fonts.class.getResourceAsStream(path);
+            font = Font.createFont(Font.TRUETYPE_FONT, stream);
+        } catch (IOException | FontFormatException e) {
+            System.out.println("Have not found font file. Using default Veranda.");
+        }
+        return font;
+    }
+    public static Font getStandardFont() {
+        return adagio_slab.deriveFont(14f);
+    }
+    public static Font getHeaderFont() {
+        return adagio_slab.deriveFont(20f);
+    }
+    public static Font getLogoFont() {
+        return radikal.deriveFont(48f);
+    }
+}
+
+
+
+
+
+
 class AccountPanel extends JPanel {
     public AccountPanel(String _account_name, String _account_number, String _balance, String _currency) {
         super();
@@ -48,56 +111,7 @@ class AccountPanel extends JPanel {
     }
 }
 
-class Colors {
-    private static Color bright_text_color, orange, blue, dark_grey, light_grey;
-    public Colors() {
-        bright_text_color = Color.decode("#EEEEEE");
-        blue = Color.decode("#1891FF");
-        orange = Color.decode("#FF7F00");
-        dark_grey = Color.decode("#222222");
-        light_grey = Color.decode("#333333");
-    }
-    public static Color getBrightTextColor() {
-        return bright_text_color;
-    }
-    public static Color getOrange() {
-        return orange;
-    }
-    public static Color getBlue() {
-        return blue;
-    }
-    public static Color getDarkGrey() {
-        return dark_grey;
-    }
-    public static Color getLightGrey() {
-        return light_grey;
-    }
-}
 
-class Fonts {
-    public Font radikal;
-    public Font adagio_slab;
-
-    public Fonts() {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        radikal = loadFont("radikalwut-bold.otf");
-        adagio_slab = loadFont("adagio_slab-regular.otf");
-        ge.registerFont(radikal);
-        ge.registerFont(adagio_slab);
-    }
-
-    private Font loadFont(String font_name) {
-        String path = "/fonts/" + font_name;
-        Font font = new Font("Veranda", Font.PLAIN, 12);
-        try {
-            InputStream stream = Fonts.class.getResourceAsStream(path);
-            font = Font.createFont(Font.TRUETYPE_FONT, stream);
-        } catch (IOException | FontFormatException e) {
-            System.out.println("Have not found font file. Using default Veranda.");
-        }
-        return font;
-    }
-}
 
 class ContactPanel extends JPanel {
     public ContactPanel(JPanel parent, MainUserPage page, int target_id, String name) {
