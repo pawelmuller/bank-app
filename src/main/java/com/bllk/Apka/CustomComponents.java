@@ -98,7 +98,7 @@ class AccountPanel extends JPanel {
         currencyLabel.setFont(Fonts.getStandardFont());
 
         this.setLayout(new FlowLayout());
-        this.setBackground(Colors.getLightGrey());
+        this.setBackground(Colors.getGrey());
         this.setPreferredSize(new Dimension(150, 50));
         this.setMinimumSize(new Dimension(150, 50));
 
