@@ -48,8 +48,6 @@ public class StartWindow {
     private Integer year, month, day;
     private boolean isDataValid;
 
-    public static Fonts fonts = new Fonts();
-
     private static final Integer passwordMinimumLength = 8, passwordMaximumLength = 30;
 
     public static void main(String[] args) {
@@ -234,11 +232,14 @@ public class StartWindow {
     }
     private void updateFontsAndColors() {
         Colors colors = new Colors();
-        Font standard_font = StartWindow.fonts.adagio_slab.deriveFont(14f);
-        Font header_font = StartWindow.fonts.adagio_slab.deriveFont(20f);
+        Fonts fonts = new Fonts();
+
+        Font standard_font = Fonts.getStandardFont();
+        Font header_font = Fonts.getHeaderFont();
+        Font logo_font = Fonts.getLogoFont();
 
         // Main elements
-        logoLabel.setFont(StartWindow.fonts.radikal.deriveFont(48f));
+        logoLabel.setFont(logo_font);
         mainTabbedPane.setFont(standard_font);
 
         // Login page

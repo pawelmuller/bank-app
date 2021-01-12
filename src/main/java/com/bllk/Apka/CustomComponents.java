@@ -87,6 +87,9 @@ class AccountPanel extends JPanel {
         balanceLabel.setForeground(Colors.getBrightTextColor());
         currencyLabel.setForeground(Colors.getBrightTextColor());
 
+        balanceLabel.setFont(Fonts.getStandardFont());
+        currencyLabel.setFont(Fonts.getStandardFont());
+
         this.setLayout(new FlowLayout());
 
         this.add(balanceLabel);
@@ -105,7 +108,7 @@ class AccountPanel extends JPanel {
                 _account_name + " (nr " + _account_number + ")",
                 TitledBorder.CENTER,
                 TitledBorder.DEFAULT_POSITION,
-                font,
+                Fonts.getStandardFont(),
                 Colors.getBrightTextColor()
                 ));
     }

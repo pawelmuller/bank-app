@@ -224,13 +224,22 @@ public class MainUserPage {
 
     private void updateFontsAndColors() {
         Colors colors = new Colors();
-        logoLabel.setFont(StartWindow.fonts.radikal.deriveFont(48f));
-        Font standard_font = StartWindow.fonts.adagio_slab.deriveFont(12f);
-        Font header_font = StartWindow.fonts.adagio_slab.deriveFont(20f);
+        Fonts fonts = new Fonts();
+
+        Font standard_font = Fonts.getStandardFont();
+        Font header_font = Fonts.getHeaderFont();
+        Font logo_font = Fonts.getLogoFont();
+
+        logoLabel.setFont(logo_font);
 
         tabbedPane.setFont(standard_font);
+        financialProductsTabbedPane.setFont(standard_font);
         nameLabel.setFont(header_font);
 
+        logoLabel.setForeground(Colors.getOrange());
+
+        idLabel.setForeground(Colors.getBrightTextColor());
+        nameLabel.setForeground(Colors.getBrightTextColor());
 
         String system_name = System.getProperty("os.name");
         if (!system_name.startsWith("Windows")) {
