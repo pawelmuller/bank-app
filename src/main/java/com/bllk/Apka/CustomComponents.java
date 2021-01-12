@@ -8,6 +8,7 @@ import javax.swing.border.TitledBorder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -174,17 +175,16 @@ class InvestmentPanel extends JPanel {
         JLabel datecreated = new JLabel(inv.getString("datecreated"));
         JButton endbutton = new JButton("Zamknij lokatę");
 
-        this.setBackground(Colors.getLightGrey());
-        nameLabel.setForeground(Colors.getBrightTextColor());
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        valueLabel.setForeground(Colors.getBrightTextColor());
-        currencyLabel.setForeground(Colors.getBrightTextColor());
-        profitLabel.setForeground(Colors.getBrightTextColor());
-        yearprofit.setForeground(Colors.getBrightTextColor());
-        capperiod.setForeground(Colors.getBrightTextColor());
-        datecreated.setForeground(Colors.getBrightTextColor());
+
+        for (JLabel jLabel : Arrays.asList(nameLabel, yearprofit, capperiod, datecreated, valueLabel, currencyLabel, profitLabel)) {
+            jLabel.setForeground(Colors.getBrightTextColor());
+            jLabel.setFont(Fonts.getStandardFont());
+        }
+        endbutton.setFont(Fonts.getStandardFont());
         datecreated.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        this.setBackground(Colors.getGrey());
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBorder(BorderFactory.createLineBorder(Colors.getOrange(), 3, true));
         this.setMaximumSize(new Dimension(200, 200));
@@ -192,12 +192,12 @@ class InvestmentPanel extends JPanel {
 
         this.add(nameLabel);
         JPanel p1 = new JPanel();
-        p1.setBackground(Colors.getLightGrey());
+        p1.setBackground(Colors.getGrey());
         p1.add(valueLabel);
         p1.add(currencyLabel);
         this.add(p1);
         JPanel p2 = new JPanel();
-        p2.setBackground(Colors.getLightGrey());
+        p2.setBackground(Colors.getGrey());
         p2.add(profitLabel);
         p2.add(yearprofit);
         p2.add(capperiod);
