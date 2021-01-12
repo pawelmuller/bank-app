@@ -451,7 +451,7 @@ public class Database {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
 
-            int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(CONTACT_ID) FROM CONTACTS").list().get(0)).intValue() + 1;
+            int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(ACCOUNT_ID) FROM ACCOUNTS").list().get(0)).intValue() + 1;
             Account account = new Account(id, 0, currencyid, ownerid);
             session.save(account);
 
