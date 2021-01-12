@@ -182,7 +182,7 @@ public class MainUserPage {
     void makeTransaction() {
         try {
             if (active_payer_account == null) {
-                message.setText("Błąd tranzakcji: Nie posiadasz żadnego konta.");
+                message.setText("Błąd transakcji: Nie posiadasz żadnego konta.");
             }
             else {
                 int payer_id = active_payer_account.getID();
@@ -192,13 +192,13 @@ public class MainUserPage {
                 String title = titleTextField.getText();
 
                 if (active_payer_account.getID() == target_id) {
-                    message.setText("Błąd tranzakcji: Konto docelowe jest takie samo jak początkowe.");
+                    message.setText("Błąd transakcji: Konto docelowe jest takie samo jak początkowe.");
                 } else if (money_value > active_payer_account.getValue() || money_value <= 0) {
-                    message.setText("Błąd tranzakcji: Błędna kwota przelewu.");
+                    message.setText("Błąd transakcji: Błędna kwota przelewu.");
                 } else if (!connection.checkAccount(Integer.parseInt(accountNumber.getText()))) {
-                    message.setText("Błąd tranzakcji: Konto docelowe nie istnieje.");
+                    message.setText("Błąd transakcji: Konto docelowe nie istnieje.");
                 } else if (titleTextField.getText().equals("")) {
-                    message.setText("Błąd tranzakcji: Tutuł nie może być pusty.");
+                    message.setText("Błąd transakcji: Tytuł nie może być pusty.");
                 } else {
                     if (connection.getBasicAccount(target_id).getCurrencyID() == currency_id || (connection.getBasicAccount(target_id).getCurrencyID() != currency_id && currencyChangeWarning())) {
                         message.setText(String.format("Przesłano %.2f %s na konto %d.", money_value / 100.0, currencies.get("" + active_payer_account.getCurrencyID()), target_id));
@@ -211,7 +211,7 @@ public class MainUserPage {
             }
         }
         catch (Exception ex) {
-            message.setText("Błąd tranzakcji: " + ex.getMessage());
+            message.setText("Błąd transakcji: " + ex.getMessage());
         }
     }
 
