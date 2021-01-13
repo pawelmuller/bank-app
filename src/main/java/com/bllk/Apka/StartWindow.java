@@ -240,6 +240,8 @@ public class StartWindow {
 
         // Main elements
         logoLabel.setFont(logo_font);
+        registerTab.setFont(standard_font);
+        registerTab.setBackground(Colors.getDarkGrey());
         mainTabbedPane.setFont(standard_font);
 
         // Login page
