@@ -279,7 +279,7 @@ public class MainUserPage {
             if (!name.equals("")) {
                 if (!connection.checkAccount(Integer.parseInt(transfer_accountNumber.getText())))
                     throw new NumberFormatException();
-                connection.createContact(login.getLogin(), login.getPasswordHash(), name, accountid);
+                connection.createOrUpdateContact(login.getLogin(), login.getPasswordHash(), name, accountid);
                 transfer_message.setText(String.format("Konto %d: %s", accountid, name));
             }
 
@@ -490,7 +490,7 @@ public class MainUserPage {
         for (Object currency: currencies_sorted)
             currenciesComboBox.addItem((String) currency);
     }
-    private void updateAccountsSummary() {
+    public void updateAccountsSummary() {
         accountsSummary.removeAll();
         int column = 0, row = 1, counter = 1, accounts_count = accounts.size();
 
@@ -524,7 +524,7 @@ public class MainUserPage {
             String formatted_balance = String.format("%.2f", balance/100.0);
 
             AccountPanel accountPanel = new AccountPanel(getContactIfPossible(account.getKey()),
-                    "" + account.getKey(), formatted_balance, currency_name, connection);
+                    "" + account.getKey(), formatted_balance, currency_name, this);
 
             if (counter == accounts_count - 1) {
                 if (accounts_count % 3 == 2) column = 1;

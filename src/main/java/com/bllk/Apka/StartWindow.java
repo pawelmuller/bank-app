@@ -2,15 +2,12 @@ package com.bllk.Apka;
 
 import com.bllk.Servlet.mapclasses.Client;
 import com.bllk.Servlet.mapclasses.Login;
-import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public class StartWindow {
@@ -132,22 +129,31 @@ public class StartWindow {
             int password_length = new_password_string.length(); //, login_length = typed_login.length();
 
             if (typed_login.isEmpty() || new_password_string.isEmpty() || new_passwordRepeat_string.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Pole loginu i hasła nie może być puste. Proszę spróbować ponownie.");
+                JOptionPane.showMessageDialog(frame,
+                        "Pole loginu i hasła nie może być puste. Proszę spróbować ponownie.",
+                        "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             } else {
                 if (!connection.checkLogin(typed_login)) {
-                    JOptionPane.showMessageDialog(frame, "Nie istnieje konto o podanym loginie. Proszę spróbować ponownie.");
+                    JOptionPane.showMessageDialog(frame,
+                            "Nie istnieje konto o podanym loginie. Proszę spróbować ponownie.",
+                            "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                 } else {
                     if (password_length > passwordMinimumLength && password_length < passwordMaximumLength) {
                         if (new_password_string.equals(new_passwordRepeat_string)) {
                             hashed_password = BCrypt.hashpw(new_password_string, BCrypt.gensalt(12));
                             connection.updatePassword(login.getText(), hashed_password);
-                            JOptionPane.showMessageDialog(frame, "Zmiana hasła powiodła się.");
+                            JOptionPane.showMessageDialog(frame, "Zmiana hasła powiodła się.",
+                                    "Sukces", JOptionPane.INFORMATION_MESSAGE);
                         } else {
-                            JOptionPane.showMessageDialog(frame, "Wprowadzone hasła są różne. Proszę spróbować ponownie.");
+                            JOptionPane.showMessageDialog(frame,
+                                    "Wprowadzone hasła są różne. Proszę spróbować ponownie.",
+                                    "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                     else {
-                        JOptionPane.showMessageDialog(frame, "Hasło powinno mieć długość pomiędzy " + passwordMinimumLength + ", a " + passwordMaximumLength + " znaków. Proszę spróbować ponownie.");
+                        JOptionPane.showMessageDialog(frame,
+                                "Hasło powinno mieć długość pomiędzy " + passwordMinimumLength + ", a " + passwordMaximumLength + " znaków. Proszę spróbować ponownie.",
+                                "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
