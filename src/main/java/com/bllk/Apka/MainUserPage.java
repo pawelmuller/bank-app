@@ -95,7 +95,10 @@ public class MainUserPage {
         updateInvestmentsSummary();
 
         transfer_sendMoneyButton.addActionListener(e -> makeTransaction());
-        logOutButton.addActionListener(e -> frame.setContentPane(previousPanel));
+        logOutButton.addActionListener(e -> {
+            previousPanel.setSize(currentPanel.getSize());
+            frame.setContentPane(previousPanel);
+        });
         transfer_accountSelectBox.addActionListener(e -> updateMoney());
         createAccountButton.addActionListener(e -> {
             for (Map.Entry<String, String> entry : currencies.entrySet()) {
