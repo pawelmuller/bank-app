@@ -19,7 +19,7 @@ public class MainUserPage {
     Login login;
 
     JFrame frame;
-    JPanel previousPanel, menuPanel;
+    JPanel previousPanel, currentPanel;
     private JLabel logoLabel, nameLabel;
     private JTextField transfer_amount;
     private JButton transfer_sendMoneyButton, logOutButton;

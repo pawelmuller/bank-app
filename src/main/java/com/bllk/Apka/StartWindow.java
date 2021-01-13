@@ -90,7 +90,7 @@ public class StartWindow {
             login_mainErrorLabel.setText("Błędny login lub hasło.");
         }
 
-        frame.setContentPane(new MainUserPage(frame, startingPanel, connection, client, log).menuPanel);
+        frame.setContentPane(new MainUserPage(frame, startingPanel, connection, client, log).currentPanel);
         loginField.setText("");
         passwordField.setText("");
         login_mainErrorLabel.setText("");
