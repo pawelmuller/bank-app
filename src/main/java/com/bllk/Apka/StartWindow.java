@@ -2,12 +2,15 @@ package com.bllk.Apka;
 
 import com.bllk.Servlet.mapclasses.Client;
 import com.bllk.Servlet.mapclasses.Login;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class StartWindow {
@@ -111,7 +114,44 @@ public class StartWindow {
         register_mainErrorLabel.setVisible(true);
     }
     private void changePassword() {
-        connection.updatePassword("schogetten", "$2a$12$iU4lp7jtmCPFsVbbT9qLteZIYlQBQ.nqfVX7A8AMOTGLZAg9idYBG");
+        JTextField login = new JTextField();
+        JPasswordField new_password = new JPasswordField(), new_passwordRepeat = new JPasswordField();
+
+        Object[] message = {
+                "Nazwa użytkownika:", login,
+                "Nowe hasło:", new_password,
+                "Powtórz hasło", new_passwordRepeat
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message, "Resetowanie hasła", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String new_password_string = String.valueOf(new_password.getPassword());
+            String new_passwordRepeat_string = String.valueOf(new_passwordRepeat.getPassword());
+            String typed_login = login.getText();
+            String hashed_password;
+            int password_length = new_password_string.length(); //, login_length = typed_login.length();
+
+            if (typed_login.isEmpty() || new_password_string.isEmpty() || new_passwordRepeat_string.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Pole loginu i hasła nie może być puste. Proszę spróbować ponownie.");
+            } else {
+                if (!connection.checkLogin(typed_login)) {
+                    JOptionPane.showMessageDialog(frame, "Nie istnieje konto o podanym loginie. Proszę spróbować ponownie.");
+                } else {
+                    if (password_length > passwordMinimumLength && password_length < passwordMaximumLength) {
+                        if (new_password_string.equals(new_passwordRepeat_string)) {
+                            hashed_password = BCrypt.hashpw(new_password_string, BCrypt.gensalt(12));
+                            connection.updatePassword(login.getText(), hashed_password);
+                            JOptionPane.showMessageDialog(frame, "Zmiana hasła powiodła się.");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Wprowadzone hasła są różne. Proszę spróbować ponownie.");
+                        }
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(frame, "Hasło powinno mieć długość pomiędzy " + passwordMinimumLength + ", a " + passwordMaximumLength + " znaków. Proszę spróbować ponownie.");
+                    }
+                }
+            }
+        }
     }
     public StartWindow() {
         updateFontsAndColors();
