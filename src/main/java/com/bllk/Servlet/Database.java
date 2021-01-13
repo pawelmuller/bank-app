@@ -225,6 +225,25 @@ public class Database {
         }
         return investments;
     }
+    public List getCredits(String login, String hashed_password) {
+        List credits = null;
+        try {
+            Session session = factory.openSession();
+            Query query = session.createQuery("SELECT Cr FROM Credit Cr, Client C, Login L WHERE Cr.ownerid=C.id AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2");
+            query.setParameter("param", login);
+            query.setParameter("param2", hashed_password);
+
+            if (query.list().size() >= 1)
+                credits = query.list();
+
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+        return credits;
+    }
     public Login getLogin(String login, String hashed_password) {
         Login result = null;
 
@@ -611,4 +630,86 @@ public class Database {
             refresh();
         }
     }
+    public void updateRemainingCredit(int ownerid, int creditid, int accountid)
+    {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            Query query = session.createQuery("FROM Credit WHERE ownerid=:ownerid AND id=:creditid");
+            query.setParameter("ownerid", ownerid);
+            query.setParameter("creditid", creditid);
+
+            if (query.list().size() >= 1) {
+                Credit credit = (Credit) query.list().get(0);
+
+                query = session.createQuery("FROM Account WHERE id=:accountid");
+                query.setParameter("accountid", accountid);
+
+                if (query.list().size() >= 1) {
+                    Account account = (Account) query.list().get(0);
+                    account.setValue(account.getValue() - credit.getMonthly());
+                    credit.setRemaining(credit.getRemaining() - credit.getMonthly());
+                    session.update(account);
+                    session.update(credit);
+                }
+            }
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+    }
+
+    public void addCredit(Integer ownerid, String name, int value, double interest, double commission, int months, int accountid) {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            int id = 1;
+            Query query = session.createQuery("FROM Account WHERE id=:accountid");
+            query.setParameter("accountid", accountid);
+
+            if (query.list().size() >= 1) {
+                Account account = (Account) query.list().get(0);
+                account.setValue(account.getValue()+value);
+                session.update(account);
+
+                int currencyid = account.getCurrencyID();
+
+                query = session.createSQLQuery("SELECT MAX(CREDIT_ID) FROM CREDITS");
+                BigDecimal idbig = ((BigDecimal) query.list().get(0));
+                if (idbig != null)
+                    id = idbig.intValue() + 1;
+
+                Credit credit = new Credit(id, ownerid, name, value, currencyid, interest, commission, months);
+                session.save(credit);
+            }
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+    }
 }
+
+
+/*
+        ░░░░░░░░██████╗░██████╗░░█████╗░░░░░░░░░██╗░░░░░░░░████████╗██████╗░░█████╗░██████╗░██╗░░░░░░░
+        ░░░░░░░██╔════╝░██╔══██╗██╔══██╗░░░░░░░░██║░░░░░░░░╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗██║░░░░░░░
+        ░░░░░░░██║░░██╗░██████╔╝███████║░░░░░░░░██║░░░░░░░░░░░██║░░░██████╔╝███████║██████╦╝██║░░░░░░░
+        ░░░░░░░██║░░╚██╗██╔══██╗██╔══██║░░░░░░░░██║░░░░░░░░░░░██║░░░██╔══██╗██╔══██║██╔══██╗██║░░░░░░░
+        ░░░░░░░╚██████╔╝██║░░██║██║░░██║░░░░░░░░██║░░░░░░░░░░░██║░░░██║░░██║██║░░██║██████╦╝██║░░░░░░░
+        ░░░░░░░░╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝░░░░░░░░╚═╝░░░░░░░░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚═╝╚═════╝░╚═╝░░░░░░░
+
+        ███████╗███████╗░██████╗██████╗░░█████╗░██╗░░░░░░░░░░░░░██╗░░██╗░█████╗░███╗░░░███╗██████╗░██╗
+        ╚════██║██╔════╝██╔════╝██╔══██╗██╔══██╗██║░░░░░░░░░░░░░██║░██╔╝██╔══██╗████╗░████║██╔══██╗██║
+        ░░███╔═╝█████╗░░╚█████╗░██████╔╝██║░░██║██║░░░░░░░░░░░░░█████═╝░██║░░██║██╔████╔██║██████╦╝██║
+        ██╔══╝░░██╔══╝░░░╚═══██╗██╔═══╝░██║░░██║██║░░░░░░░░░░░░░██╔═██╗░██║░░██║██║╚██╔╝██║██╔══██╗██║
+        ███████╗███████╗██████╔╝██║░░░░░╚█████╔╝███████╗░░░░░░░░██║░╚██╗╚█████╔╝██║░╚═╝░██║██████╦╝██║
+        ╚══════╝╚══════╝╚═════╝░╚═╝░░░░░░╚════╝░╚══════╝░░░░░░░░╚═╝░░╚═╝░╚════╝░╚═╝░░░░░╚═╝╚═════╝░╚═╝
+*/

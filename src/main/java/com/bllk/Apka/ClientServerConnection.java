@@ -44,6 +44,13 @@ public class ClientServerConnection {
             map.put(Integer.parseInt(pair.getKey()), jsonObject.getJSONObject(pair.getKey()));
         return map;
     }
+    public Map<Integer, JSONObject> getCredits(String login, String hashed_password) {
+        JSONObject jsonObject = new JSONObject(getData(String.format("login/credits?login=%s&password=%s", login, hashed_password)));
+        TreeMap<Integer, JSONObject> map = new TreeMap<>();
+        for (Map.Entry<String, Object> pair : jsonObject.toMap().entrySet())
+            map.put(Integer.parseInt(pair.getKey()), jsonObject.getJSONObject(pair.getKey()));
+        return map;
+    }
     public Map<Integer, JSONObject> getUserAccounts(String login, String hashed_password) {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/accounts?login=%s&password=%s", login, hashed_password)));
         TreeMap<Integer, JSONObject> map = new TreeMap<>();
@@ -206,6 +213,34 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
+    public void createCredit(String login, String hashed_password, String name, int value, double interest, double commission, int months, int accountid) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createcredit").openConnection();
+            http_connection.setRequestMethod("POST");
+
+            String post_data = "login=" + login;
+            post_data += "&passwordhash=" + hashed_password;
+            post_data += "&name=" + name;
+            post_data += "&value=" + value;
+            post_data += "&interest=" + interest;
+            post_data += "&commission=" + commission;
+            post_data += "&months=" + months;
+            post_data += "&accountid=" + accountid;
+
+            http_connection.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
+            writer.write(post_data);
+            writer.flush();
+
+            int responseCode = http_connection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
     public void createOrUpdateContact(String login, String hashed_password, String name, int accountid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createorupdatecontact").openConnection();
@@ -303,7 +338,33 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
+    public void updateCredit(String login, String hashed_password, int creditid, int accountid) {
+        try {
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/payinstallment").openConnection();
+            http_connection.setRequestMethod("POST");
 
+            String post_data = "creditid=" + creditid;
+            post_data += "&accountid=" + accountid;
+            post_data += "&login=" + login;
+            post_data += "&passwordhash=" + hashed_password;
+
+            http_connection.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(http_connection.getOutputStream());
+            writer.write(post_data);
+            writer.flush();
+
+            int responseCode = http_connection.getResponseCode();
+            if (responseCode == 200)
+                System.out.println("POST was successful.");
+            else if (responseCode == 401)
+                throw new Exception("Wrong password");
+            else if (responseCode == 402)
+                throw new Exception("Not enough money to pay installment.");
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
     public String getData(String url) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/" + url).openConnection();

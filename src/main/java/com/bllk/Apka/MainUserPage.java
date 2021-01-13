@@ -48,7 +48,6 @@ public class MainUserPage {
     private JButton createInvestmentButton;
     private JButton createCreditButton;
     private JTabbedPane financialProductsTabbedPane;
-    private JPanel creditsSummary;
     private JLabel accountsSummaryLabel;
     private JLabel transfer_currentBalanceLabel;
     private JLabel transfer_titleLabel;
@@ -61,7 +60,10 @@ public class MainUserPage {
     private JPanel accountsPanel;
     private JPanel contactsPanel;
     private JPanel settingsPanel;
-    private JPanel depositPanel;
+    private JPanel creditsSummary;
+    private JPanel creditsBalancePanel;
+    private JPanel investmentsPanel;
+    private JPanel creditsPanel;
 
     List<Integer> user_currencies;
     List<Integer> accountBoxUnformatted;
@@ -86,6 +88,7 @@ public class MainUserPage {
         accountsSummary.setLayout(new GridBagLayout());
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         investmentsSummary.setLayout(new BoxLayout(investmentsSummary, BoxLayout.Y_AXIS));
+        creditsSummary.setLayout(new BoxLayout(creditsSummary, BoxLayout.Y_AXIS));
         updateFontsAndColors();
 
         updateContacts();
@@ -96,6 +99,7 @@ public class MainUserPage {
         updateContactsSummary();
         updateCreditsBalance();
         updateInvestmentsSummary();
+        updateCreditsSummary();
 
         transfer_sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> {
@@ -245,23 +249,21 @@ public class MainUserPage {
                 "Całkowity okres spłaty [mies.]", months,
         };
 
-        int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
-        /*
+        int option = JOptionPane.showConfirmDialog(null, message, "Nowy kredyt", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            connection.createInvestment(
+            connection.createCredit(
                     login.getLogin(),
                     login.getPasswordHash(),
                     name.getText(),
                     (int)(Double.parseDouble(value.getText()) * 100),
-                    Double.parseDouble(interestrate.getText()),
-                    Double.parseDouble(yearprofitrate.getText()),
-                    Integer.parseInt(capperoid.getText()),
+                    interestrate.getValue()/1000.0,
+                    commission.getValue()/1000.0,
+                    Integer.parseInt((String) months.getValue()),
                     accounts_to_select.get(accountBox.getSelectedIndex())
             );
-            updateInvestmentsSummary();
+            updateCreditsSummary();
             updateAccounts();
         }
-         */
     }
     boolean currencyChangeWarning() {
         int n = JOptionPane.showConfirmDialog(
@@ -365,7 +367,7 @@ public class MainUserPage {
         }
 
         for (JPanel jPanel : Arrays.asList(accountsPanel, transactionPanel, transactionHistoryPanel,
-                financialProductsPanel, contactsPanel, settingsPanel, depositPanel)) {
+                financialProductsPanel, contactsPanel, settingsPanel, investmentsPanel, creditsPanel)) {
             jPanel.setFont(standard_font);
             jPanel.setForeground(Colors.getBrightTextColor());
             jPanel.setBackground(Colors.getDarkGrey());
@@ -563,6 +565,16 @@ public class MainUserPage {
             investmentsSummary.add(investmentPanel);
         }
         investmentsSummary.updateUI();
+    }
+    public void updateCreditsSummary() {
+        creditsSummary.removeAll();
+        Map<Integer, JSONObject> credits = connection.getCredits(login.getLogin(), login.getPasswordHash());
+
+        for (Map.Entry<Integer, JSONObject> credit: credits.entrySet()) {
+            CreditPanel creditPanel = new CreditPanel(creditsSummary, this, credit.getKey(), credit.getValue());
+            creditsSummary.add(creditPanel);
+        }
+        creditsSummary.updateUI();
     }
     private void updateCreditsBalance() {
         if (transfer_accountSelectBox.getItemCount() > 0) {

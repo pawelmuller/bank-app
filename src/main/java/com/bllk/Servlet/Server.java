@@ -200,6 +200,40 @@ public class Server extends HttpServlet {
                     else
                         response.getOutputStream().println("{}");
                 }
+                else if (atributes[0].equals("login") && atributes[1].equals("credits")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("password");
+                    List credits = data.getCredits(login, password);
+                    if (credits != null) {
+                        int iter = 1;
+                        json = "{\n";
+                        for (Object inv: credits) {
+                            Credit credit = (Credit) inv;
+                            json += "\"" + credit.getID() + "\": {\n";
+                            json += "\t\"ownerid\": \"" + credit.getOwnerid() + "\",\n";
+                            json += "\t\"name\": \"" + credit.getName() + "\",\n";
+                            json += "\t\"value\": \"" + credit.getValue() + "\",\n";
+                            json += "\t\"currencyid\": \"" + credit.getCurrencyID() + "\",\n";
+                            json += "\t\"interest\": \"" + credit.getInterest() + "\",\n";
+                            json += "\t\"commission\": \"" + credit.getCommission() + "\",\n";
+                            json += "\t\"rrso\": \"" + credit.getRrso() + "\",\n";
+                            json += "\t\"datecreated\": \"" + credit.getDateCreatedFormatted() + "\",\n";
+                            json += "\t\"dateended\": \"" + credit.getDateEndedFormatted() + "\",\n";
+                            json += "\t\"monthly\": \"" + credit.getMonthly() + "\",\n";
+                            json += "\t\"monthsremaining\": \"" + (int) Math.round(credit.getRemaining()/(double)credit.getMonthly()) + "\",\n";
+                            json += "\t\"remaining\": \"" + credit.getRemaining() + "\"\n";
+                            if (iter == credits.size())
+                                json += "}\n";
+                            else
+                                json += "},\n";
+                            iter++;
+                        }
+                        json += "}";
+                        response.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+                    }
+                    else
+                        response.getOutputStream().println("{}");
+                }
                 else if (atributes[0].equals("login") && atributes[1].equals("totalmoney")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("password");
@@ -348,6 +382,22 @@ public class Server extends HttpServlet {
                         data.addInvestment(client.getID(), name, value, profrate, yearprofrate, capperoid, accountid);
                     }
                 }
+                if (atributes[0].equals("login") && atributes[1].equals("createcredit")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("passwordhash");
+                    String name = request.getParameter("name");
+                    int value = Integer.parseInt(request.getParameter("value"));
+                    double interest = Double.parseDouble(request.getParameter("interest"));
+                    double commission = Double.parseDouble(request.getParameter("commission"));
+                    int months = Integer.parseInt(request.getParameter("months"));
+                    int accountid = Integer.parseInt(request.getParameter("accountid"));
+                    Login log = data.getLogin(login, password);
+                    if (log != null) {
+                        Client client = data.getClient(log.getID());
+                        //System.out.println("logged in");
+                        data.addCredit(client.getID(), name, value, interest, commission, months, accountid);
+                    }
+                }
                 if (atributes[0].equals("login") && atributes[1].equals("removecontact")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("passwordhash");
@@ -367,6 +417,17 @@ public class Server extends HttpServlet {
                     if (log != null) {
                         Client client = data.getClient(log.getID());
                         data.removeInvestment(client.getID(), investmentid, accountid);
+                    }
+                }
+                if (atributes[0].equals("login") && atributes[1].equals("payinstallment")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("passwordhash");
+                    int investmentid = Integer.parseInt(request.getParameter("creditid"));
+                    int accountid = Integer.parseInt(request.getParameter("accountid"));
+                    Login log = data.getLogin(login, password);
+                    if (log != null) {
+                        Client client = data.getClient(log.getID());
+                        data.updateRemainingCredit(client.getID(), investmentid, accountid);
                     }
                 }
                 break;
