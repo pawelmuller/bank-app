@@ -178,8 +178,8 @@ class AccountPanel extends JPanel {
         deleteAccountButton.addActionListener(e -> deleteAccount());
         renameAccountButton.addActionListener(e -> {
             renameAccount();
-            page.updateAccounts();
             page.updateContacts();
+            page.updateAccounts();
             page.updateInvestmentsSummary();
             page.updateAccountsSummary();
             page.updateMoney();
