@@ -6,6 +6,8 @@ import com.bllk.Servlet.mapclasses.Login;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -41,11 +43,12 @@ public class MainUserPage {
     private JButton transfer_addContactButton;
     private JPanel accountsSummary;
     private JPanel contactsSummary;
-    private JPanel creditPanel;
     private JLabel creditsBalance;
     private JPanel investmentsSummary;
     private JButton createInvestmentButton;
+    private JButton createCreditButton;
     private JTabbedPane financialProductsTabbedPane;
+    private JPanel creditsSummary;
     private JLabel accountsSummaryLabel;
     private JLabel transfer_currentBalanceLabel;
     private JLabel transfer_titleLabel;
@@ -125,6 +128,7 @@ public class MainUserPage {
             }
         });
         createInvestmentButton.addActionListener(e -> addInvestmentDialog());
+        createCreditButton.addActionListener(e -> addCreditDialog());
     }
     void addInvestmentDialog() {
         JTextField name = new JTextField();
@@ -145,7 +149,7 @@ public class MainUserPage {
                 "Kwota początkowa", value,
                 "Oprocentowanie", profitrate,
                 "Oprocentowanie roczne", yearprofitrate,
-                "Okres kapitalizacji", capperoid,
+                "Okres kapitalizacji [mies.]", capperoid,
         };
 
         int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
@@ -163,6 +167,98 @@ public class MainUserPage {
             updateInvestmentsSummary();
             updateAccounts();
         }
+    }
+    void addCreditDialog() {
+        JTextField name = new JTextField();
+        JComboBox<String> accountBox = new JComboBox<>();
+        List<Integer> accounts_to_select = new ArrayList<>();
+        for (Map.Entry<Integer, JSONObject> account : accounts.entrySet()) {
+            accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getDouble("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
+            accounts_to_select.add(account.getKey());
+        }
+        JTextField value = new JTextField();
+        value.setText("1000");
+        JLabel interestValue = new JLabel("Oprocentowanie: 5,0%");
+        JLabel commissionValue = new JLabel("Prowizja: 5,0%");
+
+        JSlider interestrate = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        JSlider commission = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+
+
+        ChangeListener interestChangeListener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider slider = (JSlider)e.getSource();
+                interestValue.setText("Oprocentowanie: " + String.format("%.1f", slider.getValue() / 10f) + "%");
+                }
+            };
+        ChangeListener commissionChangeListener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider slider = (JSlider)e.getSource();
+                commissionValue.setText("Prowizja: " + String.format("%.1f", slider.getValue() / 10f) + "%");
+            }
+        };
+
+        commission.addChangeListener(commissionChangeListener);
+        commission.setMajorTickSpacing(10);
+        commission.setMinorTickSpacing(5);
+        commission.setPaintTicks(true);
+        commission.setPaintLabels(true);
+
+        interestrate.addChangeListener(interestChangeListener);
+        interestrate.setMajorTickSpacing(10);
+        interestrate.setMinorTickSpacing(5);
+        interestrate.setPaintTicks(true);
+        interestrate.setPaintLabels(true);
+
+        //Create the label table
+        Hashtable slidersLabelTable = new Hashtable();
+        slidersLabelTable.put(2, new JLabel("0%") );
+        slidersLabelTable.put(22, new JLabel("2%") );
+        slidersLabelTable.put(42, new JLabel("4%") );
+        slidersLabelTable.put(62, new JLabel("6%") );
+        slidersLabelTable.put(82, new JLabel("8%") );
+        slidersLabelTable.put(100, new JLabel("10%") );
+
+        commission.setLabelTable( slidersLabelTable );
+        commission.setPaintLabels(true);
+        interestrate.setLabelTable( slidersLabelTable );
+        interestrate.setPaintLabels(true);
+
+        List<String> monthsList = new ArrayList<>();
+        for (int i = 1; i <= 120; i++)
+            monthsList.add(i + "");
+        SpinnerListModel monthsModel = new SpinnerListModel(monthsList.toArray());
+        JSpinner months = new JSpinner(monthsModel);
+        months.setValue("24");
+
+        Object[] message = {
+                "Nazwa:", name,
+                "Na konto:", accountBox,
+                "Kwota początkowa", value,
+                interestValue, interestrate,
+                commissionValue, commission,
+                "Całkowity okres spłaty [mies.]", months,
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
+        /*
+        if (option == JOptionPane.OK_OPTION) {
+            connection.createInvestment(
+                    login.getLogin(),
+                    login.getPasswordHash(),
+                    name.getText(),
+                    (int)(Double.parseDouble(value.getText()) * 100),
+                    Double.parseDouble(interestrate.getText()),
+                    Double.parseDouble(yearprofitrate.getText()),
+                    Integer.parseInt(capperoid.getText()),
+                    accounts_to_select.get(accountBox.getSelectedIndex())
+            );
+            updateInvestmentsSummary();
+            updateAccounts();
+        }
+         */
     }
     boolean currencyChangeWarning() {
         int n = JOptionPane.showConfirmDialog(
@@ -266,7 +362,7 @@ public class MainUserPage {
         }
 
         for (JPanel jPanel : Arrays.asList(accountsPanel, transactionPanel, transactionHistoryPanel,
-                financialProductsPanel, contactsPanel, settingsPanel, creditPanel, depositPanel)) {
+                financialProductsPanel, contactsPanel, settingsPanel, depositPanel)) {
             jPanel.setFont(standard_font);
             jPanel.setForeground(Colors.getBrightTextColor());
             jPanel.setBackground(Colors.getDarkGrey());
