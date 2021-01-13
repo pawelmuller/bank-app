@@ -85,7 +85,7 @@ class Fonts {
 class AccountPanel extends JPanel {
     private String account_name;
     private final String account_number;
-    public AccountPanel(String _account_name, String _account_number, String _balance, String _currency) {
+    public AccountPanel(String _account_name, String _account_number, String _balance, String _currency, ClientServerConnection connection) {
         super();
         account_number = _account_number;
         account_name = _account_name;
@@ -144,8 +144,6 @@ class AccountPanel extends JPanel {
         });
     }
 }
-
-
 
 class ContactPanel extends JPanel {
     public ContactPanel(JPanel parent, MainUserPage page, int target_id, String name) {

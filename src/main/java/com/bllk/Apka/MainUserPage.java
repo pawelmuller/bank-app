@@ -502,10 +502,18 @@ public class MainUserPage {
         c.gridwidth = 1;
 
         c.gridy = 0;
-        for (int i = 0; i < 6; i++) {
-            JLabel nothing = new JLabel("");
-            c.gridx = i;
-            accountsSummary.add(nothing, c);
+        if (accounts_count != 0) {
+            for (int i = 0; i < 6; i++) {
+                JLabel nothing = new JLabel("");
+                c.gridx = i;
+                accountsSummary.add(nothing, c);
+            }
+        } else {
+            c.gridx = 0;
+            JLabel no_account_information = new JLabel("Nie masz żadnego konta. Możesz dodać je poniżej.");
+            no_account_information.setFont(Fonts.getStandardFont());
+            no_account_information.setForeground(Colors.getBrightTextColor());
+            accountsSummary.add(no_account_information, c);
         }
 
         c.gridwidth = 2;
@@ -515,7 +523,8 @@ public class MainUserPage {
             int balance = account.getValue().getInt("value");
             String formatted_balance = String.format("%.2f", balance/100.0);
 
-            AccountPanel accountPanel = new AccountPanel(getContactIfPossible(account.getKey()), "" + account.getKey(), formatted_balance, currency_name);
+            AccountPanel accountPanel = new AccountPanel(getContactIfPossible(account.getKey()),
+                    "" + account.getKey(), formatted_balance, currency_name, connection);
 
             if (counter == accounts_count - 1) {
                 if (accounts_count % 3 == 2) column = 1;
