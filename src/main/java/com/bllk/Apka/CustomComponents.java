@@ -83,12 +83,16 @@ class Fonts {
 
 
 class AccountPanel extends JPanel {
+    private String account_name;
+    private final String account_number;
     public AccountPanel(String _account_name, String _account_number, String _balance, String _currency) {
         super();
-
+        account_number = _account_number;
+        account_name = _account_name;
 
         if (_account_name.equals(_account_number))
-            _account_name = "Konto";
+            account_name = "Konto";
+
         JLabel balanceLabel = new JLabel(_balance);
         JLabel currencyLabel = new JLabel(_currency);
 
@@ -108,12 +112,36 @@ class AccountPanel extends JPanel {
 
         this.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
-                _account_name + " (nr " + _account_number + ")",
+                account_name + " (nr " + account_number + ")",
                 TitledBorder.CENTER,
                 TitledBorder.DEFAULT_POSITION,
                 Fonts.getStandardFont(),
                 Colors.getBrightTextColor()
                 ));
+
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(Colors.getBlue(), 3, true),
+                        account_name + " (nr " + account_number + ")",
+                        TitledBorder.CENTER,
+                        TitledBorder.DEFAULT_POSITION,
+                        Fonts.getStandardFont(),
+                        Colors.getBrightTextColor()
+                ));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
+                        account_name + " (nr " + account_number + ")",
+                        TitledBorder.CENTER,
+                        TitledBorder.DEFAULT_POSITION,
+                        Fonts.getStandardFont(),
+                        Colors.getBrightTextColor()
+                ));
+            }
+        });
     }
 }
 
