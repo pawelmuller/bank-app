@@ -396,7 +396,7 @@ public class MainUserPage {
     }
     private void updateAccountsSummary() {
         accountsSummary.removeAll();
-        int column = 0, row = 0, counter = 0, accounts_count = accounts.size();
+        int column = 0, row = 1, counter = 1, accounts_count = accounts.size();
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(10,10,10,10);
@@ -405,6 +405,14 @@ public class MainUserPage {
         c.weighty = 1;
         c.gridwidth = 1;
 
+        c.gridy = 0;
+        for (int i = 0; i < 6; i++) {
+            JLabel nothing = new JLabel("");
+            c.gridx = i;
+            accountsSummary.add(nothing, c);
+        }
+
+        c.gridwidth = 2;
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
             String currency_id = account.getValue().getString("currencyid");
             String currency_name = currencies.get(currency_id);
@@ -413,18 +421,23 @@ public class MainUserPage {
 
             AccountPanel accountPanel = new AccountPanel(getContactIfPossible(account.getKey()), "" + account.getKey(), formatted_balance, currency_name);
 
-            c.gridx = column++;
+            if (counter == accounts_count - 1) {
+                if (accounts_count % 3 == 2) column = 1;
+            } else if (counter == accounts_count) {
+                if (accounts_count % 3 == 1) column = 2;
+            }
+
+            counter++;
+            c.gridx = column;
             c.gridy = row;
-            if (column % 3 == 0) {
+            column += 2;
+            if (column % 6 == 0) {
                 column = 0;
                 row++;
             }
-            if (accounts_count % 3 == 1 && ++counter == accounts_count) {
-                c.gridx = 1;
-            }
-
             accountsSummary.add(accountPanel, c);
         }
+        refreshFrame();
     }
     private void updateContactsSummary() {
         contactsSummary.removeAll();
@@ -454,5 +467,10 @@ public class MainUserPage {
 
             creditsBalance.setText(String.format("%.2f %s", credits_total / 100.0, active_currency_shortcut));
         }
+    }
+    private void refreshFrame() {
+        Dimension dimension = frame.getSize();
+        frame.setSize(dimension.width, dimension.height + 10);
+        frame.setSize(dimension);
     }
 }
