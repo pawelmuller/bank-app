@@ -206,9 +206,9 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
-    public void createContact(String login, String hashed_password, String name, int accountid) {
+    public void createOrUpdateContact(String login, String hashed_password, String name, int accountid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createcontact").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createorupdatecontact").openConnection();
             http_connection.setRequestMethod("POST");
 
             String post_data = "name=" + name;

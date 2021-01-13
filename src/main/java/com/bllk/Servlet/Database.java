@@ -463,7 +463,7 @@ public class Database {
             refresh();
         }
     }
-    public void addContact(int ownerid, int accountid, String name) {
+    public void addOrUpdateContact(int ownerid, int accountid, String name) {
         try {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();

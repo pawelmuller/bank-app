@@ -321,7 +321,7 @@ public class Server extends HttpServlet {
                         data.addAccount(currencyid, client.getID());
                     }
                 }
-                if (atributes[0].equals("login") && atributes[1].equals("createcontact")) {
+                if (atributes[0].equals("login") && atributes[1].equals("createorupdatecontact")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("passwordhash");
                     String name = request.getParameter("name");
@@ -329,7 +329,7 @@ public class Server extends HttpServlet {
                     Login log = data.getLogin(login, password);
                     if (log != null) {
                         Client client = data.getClient(log.getID());
-                        data.addContact(client.getID(), accountid, name);
+                        data.addOrUpdateContact(client.getID(), accountid, name);
                     }
                 }
                 if (atributes[0].equals("login") && atributes[1].equals("createinvestment")) {
