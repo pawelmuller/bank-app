@@ -85,8 +85,11 @@ class Fonts {
 class AccountPanel extends JPanel {
     private String account_name;
     private final String account_number;
-    public AccountPanel(String _account_name, String _account_number, String _balance, String _currency, ClientServerConnection connection) {
+    MainUserPage page;
+
+    public AccountPanel(String _account_name, String _account_number, String _balance, String _currency, MainUserPage _page) {
         super();
+        page = _page;
         account_number = _account_number;
         account_name = _account_name;
 
@@ -109,6 +112,8 @@ class AccountPanel extends JPanel {
         currencyLabel.setFont(Fonts.getStandardFont());
         deleteAccountButton.setFont(Fonts.getStandardFont());
         renameAccountButton.setFont(Fonts.getStandardFont());
+
+        deleteAccountButton.setEnabled(false);
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -170,6 +175,40 @@ class AccountPanel extends JPanel {
                 ));
             }
         });
+        deleteAccountButton.addActionListener(e -> deleteAccount());
+        renameAccountButton.addActionListener(e -> {
+            renameAccount();
+            page.updateAccounts();
+            page.updateContacts();
+            page.updateInvestmentsSummary();
+            page.updateAccountsSummary();
+            page.updateMoney();
+        });
+    }
+    private void deleteAccount() {
+        System.out.println("Not implemented yet.");
+    }
+    private void renameAccount() {
+        JTextField new_name = new JTextField();
+        String new_name_string = null;
+
+        Object[] message = {
+                "Chcesz zmienić nazwę konta '" + account_name + "'",
+                "Nowa nazwa:", new_name
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message,
+                "Zmiana nazwy konta", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (option == JOptionPane.OK_OPTION) {
+            new_name_string = new_name.getText();
+            if (new_name_string.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                        "Pole nazwy nie może być puste.",
+                        "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            } else {
+                page.connection.createOrUpdateContact(page.login.getLogin(), page.login.getPasswordHash(), new_name_string, Integer.parseInt(account_number));
+            }
+        }
     }
 }
 
