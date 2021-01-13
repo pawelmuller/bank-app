@@ -96,19 +96,47 @@ class AccountPanel extends JPanel {
         JLabel balanceLabel = new JLabel(_balance);
         JLabel currencyLabel = new JLabel(_currency);
 
+        JButton deleteAccountButton = new JButton("Usuń konto");
+        JButton renameAccountButton = new JButton("Zmień nazwę");
+
+        balanceLabel.setHorizontalAlignment(JLabel.RIGHT);
+        currencyLabel.setHorizontalAlignment(JLabel.LEFT);
+
         balanceLabel.setForeground(Colors.getBrightTextColor());
         currencyLabel.setForeground(Colors.getBrightTextColor());
 
         balanceLabel.setFont(Fonts.getStandardFont());
         currencyLabel.setFont(Fonts.getStandardFont());
+        deleteAccountButton.setFont(Fonts.getStandardFont());
+        renameAccountButton.setFont(Fonts.getStandardFont());
 
-        this.setLayout(new FlowLayout());
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
         this.setBackground(Colors.getGrey());
-        this.setPreferredSize(new Dimension(150, 50));
-        this.setMinimumSize(new Dimension(150, 50));
+        this.setPreferredSize(new Dimension(150, 100));
+        this.setMinimumSize(new Dimension(150, 100));
 
-        this.add(balanceLabel);
-        this.add(currencyLabel);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridwidth = 1;
+
+        c.gridy = 0;
+        c.gridx = 0;
+        c.insets = new Insets(0, 0, 0, 2);
+        this.add(balanceLabel, c);
+        c.gridx = 1;
+        c.insets = new Insets(0, 2, 0, 0);
+        this.add(currencyLabel, c);
+
+
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridy = 1;
+        c.gridx = 0;
+        this.add(renameAccountButton, c);
+        c.gridx = 1;
+        this.add(deleteAccountButton, c);
 
         this.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
