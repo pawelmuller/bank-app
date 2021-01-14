@@ -138,7 +138,11 @@ public class StartWindow {
                             "Nie istnieje konto o podanym loginie. Proszę spróbować ponownie.",
                             "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    if (password_length > passwordMinimumLength && password_length < passwordMaximumLength) {
+                    if (password_length < passwordMinimumLength || password_length > passwordMaximumLength) {
+                        JOptionPane.showMessageDialog(frame,
+                                "Hasło powinno mieć długość pomiędzy " + passwordMinimumLength + ", a " + passwordMaximumLength + " znaków. Proszę spróbować ponownie.",
+                                "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+                    } else {
                         if (new_password_string.equals(new_passwordRepeat_string)) {
                             hashed_password = BCrypt.hashpw(new_password_string, BCrypt.gensalt(12));
                             connection.updatePassword(login.getText(), hashed_password);
@@ -149,11 +153,6 @@ public class StartWindow {
                                     "Wprowadzone hasła są różne. Proszę spróbować ponownie.",
                                     "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                         }
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(frame,
-                                "Hasło powinno mieć długość pomiędzy " + passwordMinimumLength + ", a " + passwordMaximumLength + " znaków. Proszę spróbować ponownie.",
-                                "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
