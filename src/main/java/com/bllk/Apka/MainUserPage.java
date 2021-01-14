@@ -16,12 +16,13 @@ import java.util.*;
 import java.util.List;
 
 public class MainUserPage {
-    ClientServerConnection connection;
+    static JFrame frame = StartWindow.frame;
+    static ClientServerConnection connection = StartWindow.connection;
+    JPanel currentPanel;
+
     Client client;
     Login login;
 
-    JFrame frame;
-    JPanel previousPanel, currentPanel;
     private JLabel logoLabel, nameLabel;
     private JTextField transfer_amount;
     private JButton transfer_sendMoneyButton, logOutButton;
@@ -77,10 +78,7 @@ public class MainUserPage {
     Map <Integer, JSONObject> accounts;
     boolean lock_combobox = false;
 
-    public MainUserPage(JFrame _frame, JPanel _previousPanel, ClientServerConnection _connection, Client _client, Login _login) {
-        frame = _frame;
-        previousPanel = _previousPanel;
-        connection = _connection;
+    public MainUserPage(Client _client, Login _login) {
         client = _client;
         login = _login;
         nameLabel.setText("Witaj " + client.getName() + "!");
@@ -106,8 +104,8 @@ public class MainUserPage {
 
         transfer_sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> {
-            previousPanel.setSize(currentPanel.getSize());
-            frame.setContentPane(previousPanel);
+            StartWindow.startingPanel.setSize(currentPanel.getSize());
+            StartWindow.frame.setContentPane(StartWindow.startingPanel);
         });
         transfer_accountSelectBox.addActionListener(e -> updateMoney());
         createAccountButton.addActionListener(e -> {
@@ -352,7 +350,7 @@ public class MainUserPage {
 
             if (new_password_string.isEmpty())
                 JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
-            else if (password_length < 8 || password_length > 16)
+            else if (password_length < StartWindow.passwordMinimumLength || password_length > StartWindow.passwordMaximumLength)
                 JOptionPane.showMessageDialog(null,"Hasło musi mieć od 8 do 16 znaków.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else if (!new_password_string.equals(new_password_repeat_string))
                 JOptionPane.showMessageDialog(null,"Hasła nie są identyczne.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
