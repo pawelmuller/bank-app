@@ -652,9 +652,11 @@ public class MainUserPage {
         Map<String, Integer> contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
 
         for (Map.Entry<String, Integer> contact: contacts.entrySet()) {
-            ContactPanel contactPanel = new ContactPanel(contactsSummary, this, contact.getValue(), contact.getKey());
-            contactsSummary.add(contactPanel);
-            contactsSummary.add(new JSeparator());
+            if (!accounts.containsKey(contact.getValue())) {
+                ContactPanel contactPanel = new ContactPanel(contactsSummary, this, contact.getValue(), contact.getKey());
+                contactsSummary.add(contactPanel);
+                contactsSummary.add(new JSeparator());
+            }
         }
     }
     public void updateInvestmentsSummary() {
