@@ -313,28 +313,52 @@ public class MainUserPage {
 
         int option = JOptionPane.showConfirmDialog(null, message,
                 "Zmiana loginu", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
         if (option == JOptionPane.OK_OPTION) {
             String new_name_string = new_name.getText();
-            if (connection.updateLogin(login.getLogin(), login.getPasswordHash(), new_name_string))
-                loginField.setText(new_name_string);
+            if (new_name_string.isEmpty())
+                JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            else if (connection.checkLogin(new_name_string))
+                JOptionPane.showMessageDialog(null,"Login jest zajęty.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            else {
+                if (connection.updateLogin(login.getLogin(), login.getPasswordHash(), new_name_string)) {
+                    JOptionPane.showMessageDialog(null,"Zmiana loginu powiodła się.","Sukces", JOptionPane.ERROR_MESSAGE);
+                    loginField.setText(new_name_string);
+                }
+                else
+                    JOptionPane.showMessageDialog(null,"Serwer odrzucił żądanie","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     void changePasswordDialog() {
         JTextField new_password = new JPasswordField();
-        JTextField new_passwordRepeat = new JPasswordField();
+        JTextField new_password_repeat = new JPasswordField();
 
         Object[] message = {
                 "Czy chcesz zmienić twoje hasło?",
                 "Nowe hasło:", new_password,
-                "Powtórz hasło", new_passwordRepeat
+                "Powtórz hasło", new_password_repeat
         };
 
         int option = JOptionPane.showConfirmDialog(null, message,
                 "Zmiana hasła", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
         if (option == JOptionPane.OK_OPTION) {
             String new_password_string = new_password.getText();
-            String hashed_password = BCrypt.hashpw(new_password_string, BCrypt.gensalt(12));
-            connection.updatePassword(login.getLogin(), hashed_password);
+            String new_password_repeat_string = new_password_repeat.getText();
+            int password_length = new_password_string.length();
+
+            if (new_password_string.isEmpty())
+                JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            else if (password_length < 8 || password_length > 16)
+                JOptionPane.showMessageDialog(null,"Hasło musi mieć od 8 do 16 znaków.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            else if (!new_password_string.equals(new_password_repeat_string))
+                JOptionPane.showMessageDialog(null,"Hasła nie są identyczne.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            else {
+                String hashed_password = BCrypt.hashpw(new_password_string, BCrypt.gensalt(12));
+                connection.updatePassword(login.getLogin(), hashed_password);
+                JOptionPane.showMessageDialog(null,"Zmiana hasła powiodła się.","Sukces", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     boolean currencyChangeWarning() {
