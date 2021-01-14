@@ -630,8 +630,7 @@ public class Database {
             refresh();
         }
     }
-    public void updateRemainingCredit(int ownerid, int creditid, int accountid)
-    {
+    public void updateRemainingCredit(int ownerid, int creditid, int accountid) {
         try {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();

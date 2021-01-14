@@ -65,8 +65,8 @@ public class MainUserPage {
     private JPanel investmentsPanel;
     private JPanel creditsPanel;
 
-    List<Integer> user_currencies;
-    List<Integer> accountBoxUnformatted;
+    List<Integer> user_currencies = new ArrayList<>();
+    List<Integer> accountBoxUnformatted = new ArrayList<>();
     Account active_payer_account = null;
     Map <String, String> currencies;
     Map <String, Integer> contacts;
@@ -82,8 +82,6 @@ public class MainUserPage {
         nameLabel.setText("Witaj " + client.getName() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
         currencies = connection.getCurrencies();
-        user_currencies = new ArrayList<>();
-        accountBoxUnformatted = new ArrayList<>();
 
         accountsSummary.setLayout(new GridBagLayout());
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
@@ -146,33 +144,63 @@ public class MainUserPage {
             accounts_to_select.add(account.getKey());
         }
         JTextField value = new JTextField();
-        JTextField profitrate = new JTextField();
-        JTextField yearprofitrate = new JTextField();
         JTextField capperoid = new JTextField();
+
+        JLabel profitrateValue = new JLabel("Oprocentowanie: 5,0%");
+        JLabel yearprofitrateValue = new JLabel("Oprocentowanie roczne: 5,0%");
+        JSlider profitrate = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+        JSlider yearprofitrate = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+
+        profitrate.addChangeListener(e -> profitrateValue.setText("Oprocentowanie: " + String.format("%.1f", profitrate.getValue() / 10f) + "%"));
+        yearprofitrate.addChangeListener(e -> yearprofitrateValue.setText("Oprocentowanie roczne: " + String.format("%.1f", yearprofitrate.getValue() / 10f) + "%"));
+
+        Hashtable<Integer, JLabel> slidersLabelTable = new Hashtable<>();
+        slidersLabelTable.put(2, new JLabel("0%") );
+        slidersLabelTable.put(22, new JLabel("2%") );
+        slidersLabelTable.put(42, new JLabel("4%") );
+        slidersLabelTable.put(62, new JLabel("6%") );
+        slidersLabelTable.put(82, new JLabel("8%") );
+        slidersLabelTable.put(100, new JLabel("10%") );
+
+        profitrate.setMajorTickSpacing(10);
+        profitrate.setMinorTickSpacing(5);
+        profitrate.setPaintTicks(true);
+        profitrate.setLabelTable(slidersLabelTable);
+        profitrate.setPaintLabels(true);
+
+        yearprofitrate.setMajorTickSpacing(10);
+        yearprofitrate.setMinorTickSpacing(5);
+        yearprofitrate.setPaintTicks(true);
+        yearprofitrate.setLabelTable(slidersLabelTable);
+        yearprofitrate.setPaintLabels(true);
 
         Object[] message = {
                 "Nazwa:", name,
                 "Z konta:", accountBox,
                 "Kwota początkowa", value,
-                "Oprocentowanie", profitrate,
-                "Oprocentowanie roczne", yearprofitrate,
+                profitrateValue, profitrate,
+                yearprofitrateValue, yearprofitrate,
                 "Okres kapitalizacji [mies.]", capperoid,
         };
 
         int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            connection.createInvestment(
-                    login.getLogin(),
-                    login.getPasswordHash(),
-                    name.getText(),
-                    (int)(Double.parseDouble(value.getText()) * 100),
-                    Double.parseDouble(profitrate.getText()),
-                    Double.parseDouble(yearprofitrate.getText()),
-                    Integer.parseInt(capperoid.getText()),
-                    accounts_to_select.get(accountBox.getSelectedIndex())
-            );
-            updateInvestmentsSummary();
-            updateAccounts();
+            if (name.getText().isEmpty() || value.getText().isEmpty() || capperoid.getText().isEmpty())
+                JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            else {
+                connection.createInvestment(
+                        login.getLogin(),
+                        login.getPasswordHash(),
+                        name.getText(),
+                        (int) (Double.parseDouble(value.getText().replace(",",".")) * 100),
+                        profitrate.getValue()/1000.0,
+                        yearprofitrate.getValue()/1000.0,
+                        Integer.parseInt(capperoid.getText()),
+                        accounts_to_select.get(accountBox.getSelectedIndex())
+                );
+                updateInvestmentsSummary();
+                updateAccounts();
+            }
         }
     }
     void addCreditDialog() {
@@ -190,7 +218,6 @@ public class MainUserPage {
 
         JSlider interestrate = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
         JSlider commission = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
-
 
         ChangeListener interestChangeListener = new ChangeListener() {
             @Override
@@ -220,7 +247,7 @@ public class MainUserPage {
         interestrate.setPaintLabels(true);
 
         //Create the label table
-        Hashtable slidersLabelTable = new Hashtable();
+        Hashtable<Integer, JLabel> slidersLabelTable = new Hashtable<>();
         slidersLabelTable.put(2, new JLabel("0%") );
         slidersLabelTable.put(22, new JLabel("2%") );
         slidersLabelTable.put(42, new JLabel("4%") );
