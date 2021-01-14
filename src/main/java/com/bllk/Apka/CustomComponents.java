@@ -190,7 +190,7 @@ class AccountPanel extends JPanel {
     }
     private void renameAccount() {
         JTextField new_name = new JTextField();
-        String new_name_string = null;
+        String new_name_string;
 
         Object[] message = {
                 "Chcesz zmienić nazwę konta '" + account_name + "'",
