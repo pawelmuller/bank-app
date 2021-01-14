@@ -188,18 +188,22 @@ public class MainUserPage {
             if (name.getText().isEmpty() || value.getText().isEmpty() || capperoid.getText().isEmpty())
                 JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else {
-                connection.createInvestment(
-                        login.getLogin(),
-                        login.getPasswordHash(),
-                        name.getText(),
-                        (int) (Double.parseDouble(value.getText().replace(",",".")) * 100),
-                        profitrate.getValue()/1000.0,
-                        yearprofitrate.getValue()/1000.0,
-                        Integer.parseInt(capperoid.getText()),
-                        accounts_to_select.get(accountBox.getSelectedIndex())
-                );
-                updateInvestmentsSummary();
-                updateAccounts();
+                try {
+                    int valueint = (int) Double.parseDouble(value.getText().replace(",",".")) * 100;
+                    int capperoidint = Integer.parseInt(capperoid.getText());
+
+                    if (accounts.get(accounts_to_select.get(accountBox.getSelectedIndex())).getInt("value") < valueint)
+                        JOptionPane.showMessageDialog(null,"Nie posiadasz tyle pieniędzy.", "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+                    else {
+                        connection.createInvestment(login.getLogin(), login.getPasswordHash(), name.getText(),
+                                valueint, profitrate.getValue() / 1000.0, yearprofitrate.getValue() / 1000.0,
+                                capperoidint, accounts_to_select.get(accountBox.getSelectedIndex()));
+                        updateInvestmentsSummary();
+                        updateAccounts();
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null,"Błędna wartość.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
