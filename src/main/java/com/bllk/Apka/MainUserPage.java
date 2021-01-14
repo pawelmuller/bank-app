@@ -69,6 +69,7 @@ public class MainUserPage {
     private JButton changePasswordButton;
     private JTextField loginField;
     private JLabel loginpasswordLabel;
+    private JLabel creditsBalanceLabel;
 
     List<Integer> user_currencies = new ArrayList<>();
     List<Integer> accountBoxUnformatted = new ArrayList<>();
@@ -506,6 +507,12 @@ public class MainUserPage {
         loginpasswordLabel.setFont(Fonts.getHeaderFont());
         loginpasswordLabel.setForeground(Colors.getBrightTextColor());
         loginField.setFont(standard_font);
+
+        // Credits
+        creditsBalance.setFont(Fonts.getHeaderFont());
+        creditsBalance.setForeground(Colors.getBrightTextColor());
+        creditsBalanceLabel.setFont(Fonts.getHeaderFont());
+        creditsBalanceLabel.setForeground(Colors.getBrightTextColor());
 
         String system_name = System.getProperty("os.name");
         if (!system_name.startsWith("Windows")) {
