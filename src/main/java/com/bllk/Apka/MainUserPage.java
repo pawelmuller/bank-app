@@ -207,6 +207,7 @@ public class MainUserPage {
                                 capperoidint, accounts_to_select.get(accountBox.getSelectedIndex()));
                         updateInvestmentsSummary();
                         updateAccounts();
+                        JOptionPane.showMessageDialog(null,"Operacja powiodła się.","Sukces", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null,"Błędna wartość.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
@@ -301,6 +302,7 @@ public class MainUserPage {
             );
             updateCreditsSummary();
             updateAccounts();
+            JOptionPane.showMessageDialog(null,"Operacja powiodła się.","Sukces", JOptionPane.ERROR_MESSAGE);
         }
     }
     void changeLoginDialog() {
