@@ -430,6 +430,13 @@ public class Server extends HttpServlet {
                         data.updateRemainingCredit(client.getID(), investmentid, accountid);
                     }
                 }
+                if (atributes[0].equals("login") && atributes[1].equals("updatelogin")) {
+                    String login = request.getParameter("login");
+                    String password = request.getParameter("passwordhash");
+                    String newlogin = request.getParameter("newlogin");
+                    data.updateLogin(login, password, newlogin);
+                }
+
                 break;
         }
     }

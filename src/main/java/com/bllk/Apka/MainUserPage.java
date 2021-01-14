@@ -64,6 +64,10 @@ public class MainUserPage {
     private JPanel creditsBalancePanel;
     private JPanel investmentsPanel;
     private JPanel creditsPanel;
+    private JButton changeLoginButton;
+    private JButton changePasswordButton;
+    private JTextField loginField;
+    private JLabel loginpasswordLabel;
 
     List<Integer> user_currencies = new ArrayList<>();
     List<Integer> accountBoxUnformatted = new ArrayList<>();
@@ -81,6 +85,7 @@ public class MainUserPage {
         login = _login;
         nameLabel.setText("Witaj " + client.getName() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
+        loginField.setText(login.getLogin());
         currencies = connection.getCurrencies();
 
         accountsSummary.setLayout(new GridBagLayout());
@@ -134,6 +139,8 @@ public class MainUserPage {
         });
         createInvestmentButton.addActionListener(e -> addInvestmentDialog());
         createCreditButton.addActionListener(e -> addCreditDialog());
+        changeLoginButton.addActionListener(e -> changeLoginDialog());
+        changePasswordButton.addActionListener(e -> changePasswordDialog());
     }
     void addInvestmentDialog() {
         JTextField name = new JTextField();
@@ -296,6 +303,40 @@ public class MainUserPage {
             updateAccounts();
         }
     }
+    void changeLoginDialog() {
+        JTextField new_name = new JTextField();
+
+        Object[] message = {
+                "Czy chcesz zmienić login '" + login.getLogin() + "'?",
+                "Nowy login:", new_name
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message,
+                "Zmiana loginu", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (option == JOptionPane.OK_OPTION) {
+            String new_name_string = new_name.getText();
+            if (connection.updateLogin(login.getLogin(), login.getPasswordHash(), new_name_string))
+                loginField.setText(new_name_string);
+        }
+    }
+    void changePasswordDialog() {
+        JTextField new_password = new JPasswordField();
+        JTextField new_passwordRepeat = new JPasswordField();
+
+        Object[] message = {
+                "Czy chcesz zmienić twoje hasło?",
+                "Nowe hasło:", new_password,
+                "Powtórz hasło", new_passwordRepeat
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message,
+                "Zmiana hasła", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (option == JOptionPane.OK_OPTION) {
+            String new_password_string = new_password.getText();
+            String hashed_password = BCrypt.hashpw(new_password_string, BCrypt.gensalt(12));
+            connection.updatePassword(login.getLogin(), hashed_password);
+        }
+    }
     boolean currencyChangeWarning() {
         int n = JOptionPane.showConfirmDialog(
                 frame,
@@ -436,6 +477,11 @@ public class MainUserPage {
         // Transfer history
         historyPane.setFont(standard_font);
         historyPane.getViewport().setBackground(Colors.getDarkGrey());
+
+        // Settings
+        loginpasswordLabel.setFont(Fonts.getHeaderFont());
+        loginpasswordLabel.setForeground(Colors.getBrightTextColor());
+        loginField.setFont(standard_font);
 
         String system_name = System.getProperty("os.name");
         if (!system_name.startsWith("Windows")) {

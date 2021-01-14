@@ -385,6 +385,37 @@ public class Database {
         return credits;
     }
 
+    public void updateRemainingCredit(int ownerid, int creditid, int accountid) {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            Query query = session.createQuery("FROM Credit WHERE ownerid=:ownerid AND id=:creditid");
+            query.setParameter("ownerid", ownerid);
+            query.setParameter("creditid", creditid);
+
+            if (query.list().size() >= 1) {
+                Credit credit = (Credit) query.list().get(0);
+
+                query = session.createQuery("FROM Account WHERE id=:accountid");
+                query.setParameter("accountid", accountid);
+
+                if (query.list().size() >= 1) {
+                    Account account = (Account) query.list().get(0);
+                    account.setValue(account.getValue() - credit.getMonthly());
+                    credit.setRemaining(credit.getRemaining() - credit.getMonthly());
+                    session.update(account);
+                    session.update(credit);
+                }
+            }
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+    }
     public void updatePassword(String _login, String _hashed_password) {
         try {
             Session session = factory.openSession();
@@ -407,6 +438,30 @@ public class Database {
             refresh();
         }
     }
+    public void updateLogin(String _login, String _hashed_password, String _newlogin) {
+        try {
+            Session session = factory.openSession();
+            Transaction tx = session.beginTransaction();
+
+            Query query = session.createQuery("FROM Login WHERE login=:login AND passwordhash=:password");
+            query.setParameter("login", _login);
+            query.setParameter("password", _hashed_password);
+
+            if (query.list().size() >= 1) {
+                Login login = (Login) query.list().get(0);
+                login.setLogin(_newlogin);
+                session.update(login);
+            }
+
+            tx.commit();
+            session.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            factory.close();
+            refresh();
+        }
+    }
+
     public void makeTransfer(int payerid, int targetid, int amount, String title, int currencyid) {
         try {
             Session session = factory.openSession();
@@ -545,6 +600,7 @@ public class Database {
             refresh();
         }
     }
+
     public void addClient(String _name, String _surname, String _date, String _gender, String _street, String _num, String _city,
                           String _postcode, String _country_name, String _login, String _password) {
 
@@ -576,7 +632,6 @@ public class Database {
             refresh();
         }
     }
-
     public void removeContact(int ownerid, int accountid) {
         try {
             Session session = factory.openSession();
@@ -622,37 +677,6 @@ public class Database {
                 }
             }
 
-            tx.commit();
-            session.close();
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            factory.close();
-            refresh();
-        }
-    }
-    public void updateRemainingCredit(int ownerid, int creditid, int accountid) {
-        try {
-            Session session = factory.openSession();
-            Transaction tx = session.beginTransaction();
-
-            Query query = session.createQuery("FROM Credit WHERE ownerid=:ownerid AND id=:creditid");
-            query.setParameter("ownerid", ownerid);
-            query.setParameter("creditid", creditid);
-
-            if (query.list().size() >= 1) {
-                Credit credit = (Credit) query.list().get(0);
-
-                query = session.createQuery("FROM Account WHERE id=:accountid");
-                query.setParameter("accountid", accountid);
-
-                if (query.list().size() >= 1) {
-                    Account account = (Account) query.list().get(0);
-                    account.setValue(account.getValue() - credit.getMonthly());
-                    credit.setRemaining(credit.getRemaining() - credit.getMonthly());
-                    session.update(account);
-                    session.update(credit);
-                }
-            }
             tx.commit();
             session.close();
         } catch (Exception ex) {
