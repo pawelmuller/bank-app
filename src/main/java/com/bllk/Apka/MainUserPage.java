@@ -106,7 +106,7 @@ public class MainUserPage {
         transfer_sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> {
             StartWindow.startingPanel.setSize(currentPanel.getSize());
-            StartWindow.frame.setContentPane(StartWindow.startingPanel);
+            frame.setContentPane(StartWindow.startingPanel);
         });
         transfer_accountSelectBox.addActionListener(e -> updateMoney());
         createAccountButton.addActionListener(e -> {
