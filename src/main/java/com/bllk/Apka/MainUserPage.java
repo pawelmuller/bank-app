@@ -684,6 +684,7 @@ public class MainUserPage {
             CreditPanel creditPanel = new CreditPanel(creditsSummary, this, credit.getKey(), credit.getValue());
             creditsSummary.add(creditPanel);
         }
+        updateCreditsBalance();
         creditsSummary.updateUI();
     }
     private void updateCreditsBalance() {
