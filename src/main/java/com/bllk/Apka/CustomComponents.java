@@ -139,9 +139,10 @@ class AccountPanel extends JPanel {
         c.insets = new Insets(0, 0, 0, 0);
         c.gridy = 1;
         c.gridx = 0;
+        c.gridwidth = 2;
         this.add(renameAccountButton, c);
-        c.gridx = 1;
-        this.add(deleteAccountButton, c);
+        //c.gridx = 1;
+        //this.add(deleteAccountButton, c);
 
         this.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
