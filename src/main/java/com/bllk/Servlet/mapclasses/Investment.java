@@ -18,7 +18,7 @@ public class Investment {
     @Column(name = "NAME")
     String name;
     @Column(name = "VALUE")
-    Integer value;
+    Long value;
     @Column(name = "PROFIT_RATE")
     Double profit;
     @Column(name = "YEAR_PROFIT_RATE")
@@ -32,7 +32,7 @@ public class Investment {
     @Column(name = "CURRENCY_ID")
     Integer currencyid;
 
-    public Investment(Integer id, String name, Integer ownerid, Integer value, Double profit, Double yearprofit, Integer capperiod, Date datecreated, Date dateend, Integer currencyid) {
+    public Investment(Integer id, String name, Integer ownerid, Long value, Double profit, Double yearprofit, Integer capperiod, Date datecreated, Date dateend, Integer currencyid) {
         this.id = id;
         this.name = name;
         this.ownerid = ownerid;
@@ -44,7 +44,7 @@ public class Investment {
         this.dateend = dateend;
         this.currencyid = currencyid;
     }
-    public Investment(Integer id, String name, Integer ownerid, Integer value, Double profit, Double yearprofit, Integer capperiod, Integer currencyid) {
+    public Investment(Integer id, String name, Integer ownerid, Long value, Double profit, Double yearprofit, Integer capperiod, Integer currencyid) {
         this.id = id;
         this.name = name;
         this.ownerid = ownerid;
@@ -74,10 +74,10 @@ public class Investment {
     public void setName(String name) {
         this.name = name;
     }
-    public Integer getValue() {
+    public Long getValue() {
         return value;
     }
-    public void setValue(Integer value) {
+    public void setValue(Long value) {
         this.value = value;
     }
     public Double getProfit() { return profit; }

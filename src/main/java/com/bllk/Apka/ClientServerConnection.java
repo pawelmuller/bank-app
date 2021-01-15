@@ -34,7 +34,7 @@ public class ClientServerConnection {
         JSONObject jsonObject = new JSONObject(getData(String.format("login/transactions?login=%s&password=%s", login, hashed_password)));
         TreeMap<Integer, JSONObject> map = new TreeMap<>(Collections.reverseOrder());
         for (Map.Entry<String, Object> pair : jsonObject.toMap().entrySet())
-            map.put(Integer.parseInt(pair.getKey()), new JSONObject((HashMap) pair.getValue()));
+            map.put(Integer.parseInt(pair.getKey()), jsonObject.getJSONObject(pair.getKey()));
         return map;
     }
     public Map<Integer, JSONObject> getInvestments(String login, String hashed_password) {
@@ -71,19 +71,19 @@ public class ClientServerConnection {
     }
     public Account getAccount(String login, String hashed_password, int accountid) {
         JSONObject json_object = new JSONObject(getData(String.format("account/%s?login=%s&password=%s", accountid, login, hashed_password)));
-        return new Account(json_object.getInt("id"), json_object.getInt("value"), json_object.getInt("currency"), json_object.getInt("ownerid"));
+        return new Account(json_object.getInt("id"), json_object.getLong("value"), json_object.getInt("currency"), json_object.getInt("ownerid"));
     }
     public Account getBasicAccount(int accountid) {
         JSONObject json_object = new JSONObject(getData(String.format("account/%s", accountid)));
         return new Account(json_object.getInt("id"), json_object.getInt("currency"));
     }
-    public int getTotalSavings(String login, String hashed_password, int currencyid) {
+    public long getTotalSavings(String login, String hashed_password, int currencyid) {
         JSONObject json_object = new JSONObject(getData(String.format("login/totalmoney?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
-        return json_object.getInt("value");
+        return json_object.getLong("value");
     }
-    public int getTotalCredits(String login, String hashed_password, int currencyid) {
+    public long getTotalCredits(String login, String hashed_password, int currencyid) {
         JSONObject json_object = new JSONObject(getData(String.format("login/totalcredits?login=%s&password=%s&currency=%s", login, hashed_password, currencyid)));
-        return json_object.getInt("value");
+        return json_object.getLong("value");
     }
 
     public boolean checkLogin(String login) {
@@ -104,7 +104,7 @@ public class ClientServerConnection {
         }
     }
 
-    public void makeTransfer(String login, String hashed_password, int payer_id, int target_id, String title, int amount, int currencyid) {
+    public void makeTransfer(String login, String hashed_password, int payer_id, int target_id, String title, long amount, int currencyid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/transaction").openConnection();
             http_connection.setRequestMethod("POST");
@@ -185,7 +185,7 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
-    public void createInvestment(String login, String hashed_password, String name, int value, double profrate, double yearprofrate, int capperoid, int accountid) {
+    public void createInvestment(String login, String hashed_password, String name, long value, double profrate, double yearprofrate, int capperoid, int accountid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createinvestment").openConnection();
             http_connection.setRequestMethod("POST");
@@ -213,7 +213,7 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
-    public void createCredit(String login, String hashed_password, String name, int value, double interest, double commission, int months, int accountid) {
+    public void createCredit(String login, String hashed_password, String name, long value, double interest, double commission, int months, int accountid) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createcredit").openConnection();
             http_connection.setRequestMethod("POST");

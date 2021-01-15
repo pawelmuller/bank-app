@@ -11,7 +11,7 @@ public class Account {
     @Column(name = "ACCOUNT_ID")
     private Integer id;
     @Column(name = "VALUE")
-    private Integer value;
+    private Long value;
     @Column(name = "CURRENCY_ID")
     private Integer currency_id;
     @Column(name = "OWNER_ID")
@@ -23,13 +23,13 @@ public class Account {
     public void setID(Integer id) {
         this.id = id;
     }
-    public Integer getValue() {
+    public Long getValue() {
         return value;
     }
     public Integer getOwnerID() {
         return owner_id;
     }
-    public void setValue(Integer value) {
+    public void setValue(Long value) {
         this.value = value;
     }
     public Integer getCurrencyID() {
@@ -44,7 +44,7 @@ public class Account {
 
     public Account() {
     }
-    public Account(Integer id, Integer value, Integer currency_id, Integer owner_id) {
+    public Account(Integer id, Long value, Integer currency_id, Integer owner_id) {
         this.id = id;
         this.value = value;
         this.currency_id = currency_id;

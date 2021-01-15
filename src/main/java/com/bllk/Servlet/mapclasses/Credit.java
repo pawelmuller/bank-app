@@ -18,7 +18,7 @@ public class Credit {
     @Column(name = "NAME")
     String name;
     @Column(name = "VALUE")
-    Integer value;
+    Long value;
     @Column(name = "CURRENCY_ID")
     Integer currencyid;
     @Column(name = "INTEREST_RATE")
@@ -32,13 +32,11 @@ public class Credit {
     @Column(name = "DATE_ENDED")
     Date dateended;
     @Column(name = "MONTHLY_PAYMENT")
-    Integer monthly;
+    Long monthly;
     @Column(name = "REMAINING_TO_PAY")
-    Integer remaining;
+    Long remaining;
 
-
-
-    public Credit(Integer id, Integer ownerid, String name, Integer value, Integer currencyid, Double interest, Double commission, int months) {
+    public Credit(Integer id, Integer ownerid, String name, Long value, Integer currencyid, Double interest, Double commission, Long months) {
         this.id = id;
         this.ownerid = ownerid;
         this.name = name;
@@ -54,8 +52,8 @@ public class Credit {
         this.remaining = null;
         */
     }
-    public Credit(Integer id, Integer ownerid, String name, Integer value, Integer currencyid, Double interest,
-                  Double commission, Double rrso, Date datecreated, Date dateended, Integer monthly, Integer remaining) {
+    public Credit(Integer id, Integer ownerid, String name, Long value, Integer currencyid, Double interest,
+                  Double commission, Double rrso, Date datecreated, Date dateended, Long monthly, Long remaining) {
         this.id = id;
         this.ownerid = ownerid;
         this.name = name;
@@ -77,8 +75,8 @@ public class Credit {
     public void setOwnerid(Integer ownerid) { this.ownerid = ownerid; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-    public Integer getValue() { return value; }
-    public void setValue(Integer value) { this.value = value; }
+    public Long getValue() { return value; }
+    public void setValue(Long value) { this.value = value; }
     public Integer getCurrencyID() { return currencyid; }
     public void setCurrencyID(Integer currencyid) { this.currencyid = currencyid; }
     public Double getInterest() { return interest; }
@@ -99,8 +97,8 @@ public class Credit {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
         return formatter.format(dateended);
     }
-    public Integer getMonthly() { return monthly; }
-    public void setMonthly(Integer monthly) { this.monthly = monthly; }
-    public Integer getRemaining() { return remaining; }
-    public void setRemaining(Integer remaining) { this.remaining = remaining; }
+    public Long getMonthly() { return monthly; }
+    public void setMonthly(Long monthly) { this.monthly = monthly; }
+    public Long getRemaining() { return remaining; }
+    public void setRemaining(Long remaining) { this.remaining = remaining; }
 }

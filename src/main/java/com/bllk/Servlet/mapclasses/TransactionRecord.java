@@ -20,20 +20,20 @@ public class TransactionRecord {
     @Column(name = "TITLE")
     private String title;
     @Column(name = "VALUE")
-    private Integer value;
+    private Long value;
     @Column(name = "CURRENCY_ID")
     private Integer currencyid;
     @Column(name = "TRANSACTION_DATE")
     private Date date;
 
-    public TransactionRecord(Integer senderid, Integer receiverid, String title, Integer value, Integer currencyid) {
+    public TransactionRecord(Integer senderid, Integer receiverid, String title, Long value, Integer currencyid) {
         this.senderid = senderid;
         this.receiverid = receiverid;
         this.title = title;
         this.value = value;
         this.currencyid = currencyid;
     }
-    public TransactionRecord(Integer id, Integer senderid, Integer receiverid, String title, Integer value, Integer currencyid) {
+    public TransactionRecord(Integer id, Integer senderid, Integer receiverid, String title, Long value, Integer currencyid) {
         this.id = id;
         this.senderid = senderid;
         this.receiverid = receiverid;
@@ -68,10 +68,10 @@ public class TransactionRecord {
     public void setTitle(String title) {
         this.title = title;
     }
-    public Integer getValue() {
+    public Long getValue() {
         return value;
     }
-    public void setValue(Integer value) {
+    public void setValue(Long value) {
         this.value = value;
     }
     public Integer getCurrencyID() {

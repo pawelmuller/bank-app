@@ -239,7 +239,7 @@ public class Server extends HttpServlet {
                     String password = request.getParameter("password");
                     int currency = Integer.parseInt(request.getParameter("currency"));
 
-                    Integer savings = data.getTotalSavings(login, password, currency);
+                    Long savings = data.getTotalSavings(login, password, currency);
                     if (savings != null) {
                         json = "{\n";
                         json += "\"value\": \"" + savings + "\"\n";
@@ -254,7 +254,7 @@ public class Server extends HttpServlet {
                     String password = request.getParameter("password");
                     int currency = Integer.parseInt(request.getParameter("currency"));
 
-                    Integer credits = data.getTotalCredits(login, password, currency);
+                    Long credits = data.getTotalCredits(login, password, currency);
                     if (credits != null) {
                         json = "{\n";
                         json += "\"value\": \"" + credits + "\"\n";

@@ -195,7 +195,7 @@ public class MainUserPage {
                 JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else {
                 try {
-                    int valueint = (int) Double.parseDouble(value.getText().replace(",",".")) * 100;
+                    long valueint = (long) Double.parseDouble(value.getText().replace(",",".")) * 100;
                     int capperoidint = Integer.parseInt(capperoid.getText());
 
                     if (accounts.get(accounts_to_select.get(accountBox.getSelectedIndex())).getInt("value") < valueint)
@@ -293,7 +293,7 @@ public class MainUserPage {
                     login.getLogin(),
                     login.getPasswordHash(),
                     name.getText(),
-                    (int)(Double.parseDouble(value.getText()) * 100),
+                    (long)(Double.parseDouble(value.getText()) * 100),
                     interestrate.getValue()/1000.0,
                     commission.getValue()/1000.0,
                     Integer.parseInt((String) months.getValue()),
@@ -402,7 +402,7 @@ public class MainUserPage {
                 int payer_id = active_payer_account.getID();
                 int target_id = Integer.parseInt(transfer_accountNumber.getText());
                 int currency_id = active_payer_account.getCurrencyID();
-                int money_value = (int) (Double.parseDouble(transfer_amount.getText()) * 100);
+                long money_value = (long) (Double.parseDouble(transfer_amount.getText()) * 100);
                 String title = transfer_title.getText();
 
                 if (active_payer_account.getID() == target_id) {
@@ -569,7 +569,7 @@ public class MainUserPage {
             if (transfer_accountSelectBox.getItemCount() > 0) {
                 active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
                 String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
-                int total_balance = connection.getTotalSavings(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
+                long total_balance = connection.getTotalSavings(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
 
                 transfer_currentBalance.setText(String.format("%.2f %s", total_balance / 100.0, active_currency_shortcut));
                 transfer_payerBalance.setText(String.format("%.2f %s", active_payer_account.getValue() / 100.0, active_currency_shortcut));
@@ -691,7 +691,7 @@ public class MainUserPage {
         if (transfer_accountSelectBox.getItemCount() > 0) {
             active_payer_account = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
             String active_currency_shortcut = currencies.get("" + active_payer_account.getCurrencyID());
-            int credits_total = connection.getTotalCredits(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
+            long credits_total = connection.getTotalCredits(login.getLogin(), login.getPasswordHash(), active_payer_account.getCurrencyID());
 
             creditsBalance.setText(String.format("%.2f %s", credits_total / 100.0, active_currency_shortcut));
         }

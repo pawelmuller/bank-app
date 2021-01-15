@@ -343,8 +343,8 @@ public class Database {
         }
         return valid;
     }
-    public Integer getTotalSavings(String login, String hashed_password, int currencyid) {
-        Integer savings = null;
+    public long getTotalSavings(String login, String hashed_password, int currencyid) {
+        Long savings = null;
         try {
             Session session = factory.openSession();
             Query query = session.createSQLQuery("SELECT calculate_total_savings(CLIENT_ID, :currency) FROM CLIENTS C\n" +
@@ -355,7 +355,7 @@ public class Database {
             query.setParameter("password", hashed_password);
 
             if (query.list().size() >= 1)
-                savings = ((BigDecimal) query.list().get(0)).intValue();
+                savings = ((BigDecimal) query.list().get(0)).longValue();
             session.close();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -364,8 +364,8 @@ public class Database {
         }
         return savings;
     }
-    public Integer getTotalCredits(String login, String hashed_password, int currencyid) {
-        Integer credits = null;
+    public long getTotalCredits(String login, String hashed_password, int currencyid) {
+        Long credits = null;
         try {
             Session session = factory.openSession();
             Query query = session.createSQLQuery("SELECT calculate_total_credits(CLIENT_ID, :currency) FROM CLIENTS C\n" +
@@ -375,7 +375,7 @@ public class Database {
             query.setParameter("login", login);
             query.setParameter("password", hashed_password);
             if (query.list().size() >= 1)
-                credits = ((BigDecimal) query.list().get(0)).intValue();
+                credits = ((BigDecimal) query.list().get(0)).longValue();
             session.close();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -462,7 +462,7 @@ public class Database {
         }
     }
 
-    public void makeTransfer(int payerid, int targetid, int amount, String title, int currencyid) {
+    public void makeTransfer(int payerid, int targetid, long amount, String title, int currencyid) {
         try {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
@@ -471,7 +471,7 @@ public class Database {
             q.setParameter("param", payerid);
             Account payer = (Account)q.list().get(0);
 
-            Integer i = payer.getValue();
+            Long i = payer.getValue();
             payer.setValue(i-amount);
             session.update(payer);
 
@@ -526,7 +526,7 @@ public class Database {
             Transaction tx = session.beginTransaction();
 
             int id = ((BigDecimal) session.createSQLQuery("SELECT MAX(ACCOUNT_ID) FROM ACCOUNTS").list().get(0)).intValue() + 1;
-            Account account = new Account(id, 0, currencyid, ownerid);
+            Account account = new Account(id, 0L, currencyid, ownerid);
             session.save(account);
 
             tx.commit();
@@ -570,7 +570,7 @@ public class Database {
             refresh();
         }
     }
-    public void addInvestment(int ownerid, String name, int value, double profrate, double yearprofrate, int capperoid, int accountid) {
+    public void addInvestment(int ownerid, String name, long value, double profrate, double yearprofrate, int capperoid, int accountid) {
         try {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
@@ -686,7 +686,7 @@ public class Database {
         }
     }
 
-    public void addCredit(Integer ownerid, String name, int value, double interest, double commission, int months, int accountid) {
+    public void addCredit(Integer ownerid, String name, long value, double interest, double commission, long months, int accountid) {
         try {
             Session session = factory.openSession();
             Transaction tx = session.beginTransaction();
