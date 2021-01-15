@@ -11,10 +11,10 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class StartWindow {
-    private static JFrame frame;
-    private static ClientServerConnection connection;
-
+    static JFrame frame;
+    static ClientServerConnection connection;
     static JPanel startingPanel;
+
     private JPanel mainPanel;
     private JTextField loginField;
     private JPasswordField passwordField;
@@ -48,7 +48,7 @@ public class StartWindow {
     private Integer year, month, day;
     private boolean isDataValid;
 
-    private static final Integer passwordMinimumLength = 8, passwordMaximumLength = 30;
+    static final Integer passwordMinimumLength = 8, passwordMaximumLength = 30;
 
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
@@ -90,7 +90,7 @@ public class StartWindow {
             login_mainErrorLabel.setText("Błędny login lub hasło.");
         }
 
-        frame.setContentPane(new MainUserPage(frame, startingPanel, connection, client, log).currentPanel);
+        frame.setContentPane(new MainUserPage(client, log).currentPanel);
         loginField.setText("");
         passwordField.setText("");
         login_mainErrorLabel.setText("");

@@ -265,6 +265,7 @@ public class ClientServerConnection {
             System.out.println(ex.getMessage());
         }
     }
+
     public void updatePassword(String login, String hashed_password) {
         try {
             HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/updatepassword").openConnection();
