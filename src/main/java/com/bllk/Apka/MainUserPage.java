@@ -8,9 +8,6 @@ import org.json.JSONObject;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -468,7 +465,7 @@ public class MainUserPage {
         }
 
         for (JPanel jPanel : Arrays.asList(accountsPanel, transactionPanel, transactionHistoryPanel,
-                financialProductsPanel, contactsPanel, settingsPanel, investmentsPanel, creditsPanel)) {
+                financialProductsPanel, contactsPanel, settingsPanel, investmentsPanel, creditsPanel, historyPanel)) {
             jPanel.setFont(standard_font);
             jPanel.setForeground(Colors.getBrightTextColor());
             jPanel.setBackground(Colors.getDarkGrey());
@@ -491,7 +488,7 @@ public class MainUserPage {
         }
         for (JTextField jTextField : Arrays.asList(transfer_accountNumber, transfer_amount, transfer_title)) {
             jTextField.setForeground(Colors.getBrightTextColor());
-            jTextField.setBackground(Colors.getLightGrey());
+            jTextField.setBackground(Colors.getBrightGrey());
             jTextField.setFont(standard_font);
         }
         for (JComboBox<String> jComboBox : Arrays.asList(transfer_contactBox, transfer_accountSelectBox)) {
@@ -505,6 +502,7 @@ public class MainUserPage {
 
         // Transfer history
         historyPane.setFont(standard_font);
+        historyPane.setBackground(Colors.getDarkGrey());
         historyPane.getViewport().setBackground(Colors.getDarkGrey());
 
         // Settings
@@ -537,6 +535,7 @@ public class MainUserPage {
         lock_combobox = false;
     }
     private void updateTransactionTable() {
+        historyPanel.removeAll();
         //String[] columns = new String[] {"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"};
         Map<Integer, JSONObject> transactions = connection.getTransactions(login.getLogin(), login.getPasswordHash());
         char type = 0;
@@ -563,7 +562,7 @@ public class MainUserPage {
                             currencies.get(transaction.getString("currencyid")),
                             type
                             ));
-            historyPanel.add(new JSeparator());
+            historyPanel.add(new Box.Filler(new Dimension(1, 1), new Dimension(100, 1), new Dimension(600, 1)));
         }
     }
     public void updateMoney() {
