@@ -19,7 +19,7 @@ public class TransactionPanel extends JPanel {
     Color color;
 
     //"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"
-    public TransactionPanel(String _sender, String _receiver, String _date, String _title, Double _unformatted_amount,
+    public TransactionPanel(String _sender, String _receiver, String _date, String _title, Double _unformattedAmount,
                             String _currency, char _type) {
         super();
         sender = _sender;
@@ -45,7 +45,7 @@ public class TransactionPanel extends JPanel {
             default:
                 sign = "?";
         }
-        amount = String.format("%.2f", _unformatted_amount / 100.0);
+        amount = String.format("%.2f", _unformattedAmount / 100.0);
 
         if (type == 0 || type == 1) {
             amount = sign + amount;
