@@ -39,7 +39,7 @@ public class MainUserPage {
     private JComboBox<String> transfer_contactBox;
     private JTextField transfer_accountNumber;
     private JButton transfer_addContactButton;
-    private JPanel accountsSummary;
+    private JPanel accountsSummaryPanel;
     private JPanel contactsSummary;
     private JLabel creditsBalance;
     private JPanel investmentsSummary;
@@ -68,6 +68,7 @@ public class MainUserPage {
     private JLabel loginpasswordLabel;
     private JLabel creditsBalanceLabel;
     private JPanel historyPanel;
+    private JScrollPane accountsSummaryPane;
 
     List<Integer> user_currencies = new ArrayList<>();
     List<Integer> accountBoxUnformatted = new ArrayList<>();
@@ -85,7 +86,7 @@ public class MainUserPage {
         loginField.setText(login.getLogin());
         currencies = connection.getCurrencies();
 
-        accountsSummary.setLayout(new GridBagLayout());
+        accountsSummaryPanel.setLayout(new GridBagLayout());
         historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         investmentsSummary.setLayout(new BoxLayout(investmentsSummary, BoxLayout.Y_AXIS));
@@ -95,7 +96,6 @@ public class MainUserPage {
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
         updateContacts();
-        fillCurrenciesComboBox();
         updateAccounts();
         updateTransactionTable();
         updateAccountsSummary();
@@ -110,20 +110,6 @@ public class MainUserPage {
             frame.setContentPane(StartWindow.startingPanel);
         });
         transfer_accountSelectBox.addActionListener(e -> updateMoney());
-        createAccountButton.addActionListener(e -> {
-            for (Map.Entry<String, String> entry : currencies.entrySet()) {
-                if (Objects.equals(currenciesComboBox.getSelectedItem(), entry.getValue())) {
-                    int currency_id = Integer.parseInt(entry.getKey());
-                    if (user_currencies.contains(currency_id)) {
-                        doubleAccountWarning.setVisible(true);
-                    } else {
-                        doubleAccountWarning.setVisible(false);
-                        connection.createAccount(login.getLogin(), login.getPasswordHash(), currency_id);
-                    }
-                }
-            }
-            updateAccounts();
-        });
         transfer_addContactButton.addActionListener(e -> {
             addContact();
             updateContacts();
@@ -137,17 +123,45 @@ public class MainUserPage {
                     transfer_accountNumber.setText("" + accountid);
             }
         });
+        createAccountButton.addActionListener(e -> createAccountDialog());
         createInvestmentButton.addActionListener(e -> addInvestmentDialog());
         createCreditButton.addActionListener(e -> addCreditDialog());
         changeLoginButton.addActionListener(e -> changeLoginDialog());
         changePasswordButton.addActionListener(e -> changePasswordDialog());
+    }
+
+    void createAccountDialog() {
+        JComboBox<String> currenciesComboBox = new JComboBox<String>();
+
+        for (Map.Entry<String, String> currency: currencies.entrySet()) {
+            if (!user_currencies.contains(Integer.parseInt(currency.getKey()))) {
+                currenciesComboBox.addItem(currency.getValue());
+            }
+        }
+
+        Object[] message = {
+                "Wybierz walutę", currenciesComboBox
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message, "Dodawanie nowego konta", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            for (Map.Entry<String, String> entry : currencies.entrySet()) {
+                if (Objects.equals(currenciesComboBox.getSelectedItem(), entry.getValue())) {
+                    int currency_id = Integer.parseInt(entry.getKey());
+                    connection.createAccount(login.getLogin(), login.getPasswordHash(), currency_id);
+                }
+            }
+        }
+        updateAccounts();
     }
     void addInvestmentDialog() {
         JTextField name = new JTextField();
         JComboBox<String> accountBox = new JComboBox<>();
         List<Integer> accounts_to_select = new ArrayList<>();
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
-            accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getDouble("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
+            accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()),
+                    account.getValue().getDouble("value") / 100,
+                    currencies.get(account.getValue().getString("currencyid"))));
             accounts_to_select.add(account.getKey());
         }
         JTextField value = new JTextField();
@@ -475,9 +489,10 @@ public class MainUserPage {
         accountsSummaryLabel.setFont(Fonts.getHeaderFont());
 
         accountsSummaryLabel.setForeground(Colors.getBrightTextColor());
-        accountsSummary.setForeground(Colors.getBrightTextColor());
+        accountsSummaryPanel.setForeground(Colors.getBrightTextColor());
 
-        accountsSummary.setBackground(Colors.getDarkGrey());
+        accountsSummaryPanel.setBackground(Colors.getDarkGrey());
+        accountsSummaryPane.setBackground(Colors.getDarkGrey());
 
         // Transfers
         for (JLabel jLabel : Arrays.asList(transfer_contactNameLabel, transfer_currencyLabel, transfer_currentBalance,
@@ -596,14 +611,8 @@ public class MainUserPage {
         updateMoney();
         updateAccountsSummary();
     }
-    private void fillCurrenciesComboBox() {
-        Object[] currencies_sorted = currencies.values().toArray();
-        Arrays.sort(currencies_sorted);
-        for (Object currency: currencies_sorted)
-            currenciesComboBox.addItem((String) currency);
-    }
     public void updateAccountsSummary() {
-        accountsSummary.removeAll();
+        accountsSummaryPanel.removeAll();
         int column = 0, row = 1, counter = 1, accounts_count = accounts.size();
 
         GridBagConstraints c = new GridBagConstraints();
@@ -618,14 +627,14 @@ public class MainUserPage {
             for (int i = 0; i < 6; i++) {
                 JLabel nothing = new JLabel("");
                 c.gridx = i;
-                accountsSummary.add(nothing, c);
+                accountsSummaryPanel.add(nothing, c);
             }
         } else {
             c.gridx = 0;
             JLabel no_account_information = new JLabel("Nie masz żadnego konta. Możesz dodać je poniżej.");
             no_account_information.setFont(Fonts.getStandardFont());
             no_account_information.setForeground(Colors.getBrightTextColor());
-            accountsSummary.add(no_account_information, c);
+            accountsSummaryPanel.add(no_account_information, c);
         }
 
         c.gridwidth = 2;
@@ -652,7 +661,7 @@ public class MainUserPage {
                 column = 0;
                 row++;
             }
-            accountsSummary.add(accountPanel, c);
+            accountsSummaryPanel.add(accountPanel, c);
         }
         refreshFrame();
     }
