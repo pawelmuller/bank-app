@@ -9,14 +9,14 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 public class ContactPanel extends JPanel {
-    public ContactPanel(JPanel parent, MainUserPage page, int target_id, String name) {
+    public ContactPanel(JPanel parent, MainUserPage page, int targetID, String name) {
         super();
 
         this.setLayout(new FlowLayout());
         this.setBackground(Colors.getGrey());
         this.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
-                name + " (nr " + target_id + ")",
+                name + " (nr " + targetID + ")",
                 TitledBorder.CENTER,
                 TitledBorder.DEFAULT_POSITION,
                 Fonts.getStandardFont(),
@@ -24,24 +24,24 @@ public class ContactPanel extends JPanel {
         ));
 
         JLabel nameLabel = new JLabel(name);
-        JLabel targetidLabel = new JLabel("" + target_id);
+        JLabel targetIDLabel = new JLabel("" + targetID);
         JButton deleteButton = new JButton("Usuń");
 
         nameLabel.setForeground(Colors.getBrightTextColor());
-        targetidLabel.setForeground(Colors.getBrightTextColor());
+        targetIDLabel.setForeground(Colors.getBrightTextColor());
 
         nameLabel.setFont(Fonts.getStandardFont());
-        targetidLabel.setFont(Fonts.getStandardFont());
+        targetIDLabel.setFont(Fonts.getStandardFont());
         deleteButton.setFont(Fonts.getStandardFont());
 
         deleteButton.addActionListener(e -> {
-            MainUserPage.getConnection().removeContact(MainUserPage.getLogin().getLogin(), MainUserPage.getLogin().getPasswordHash(), target_id);
+            MainUserPage.getConnection().removeContact(MainUserPage.getLogin().getLogin(), MainUserPage.getLogin().getPasswordHash(), targetID);
             page.updateContacts();
             parent.remove(this);
             parent.updateUI();
         });
         this.add(nameLabel);
-        this.add(targetidLabel);
+        this.add(targetIDLabel);
         this.add(deleteButton);
     }
 }
