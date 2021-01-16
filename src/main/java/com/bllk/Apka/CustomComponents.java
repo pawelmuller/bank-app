@@ -432,3 +432,123 @@ class CreditPanel extends JPanel {
         return -1;
     }
 }
+
+class TransactionPanel extends JPanel {
+    private String sender, receiver, date, title, amount, currency, sign;
+    char type;
+
+    //"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"
+    public TransactionPanel(String _sender, String _receiver, String _date, String _title, Double _unformatted_amount,
+                            String _currency, char _type) {
+        super();
+        sender = _sender;
+        receiver = _receiver;
+        date = _date;
+        title = _title;
+        currency = _currency;
+        type = _type;
+
+        switch (type) {
+            case 0:
+                sign = "-";
+                break;
+            case 1:
+                sign = "+";
+                break;
+            case 2:
+                sign = "<->";
+                break;
+            default:
+                sign = "?";
+        }
+        amount = String.format("%.2f", _unformatted_amount / 100.0);
+
+        if (type == 0 || type == 1) {
+            amount = sign + amount;
+        }
+
+        addSubcomponents();
+        addListeners();
+    }
+
+    private void addSubcomponents() {
+        JLabel signLabel = new JLabel(sign);
+        JLabel senderLabel = new JLabel(sender);
+        JLabel receiverLabel = new JLabel(receiver);
+        JLabel dateLabel = new JLabel(date);
+        JLabel titleLabel = new JLabel(title);
+        JLabel amountLabel = new JLabel(amount);
+        JLabel currencyLabel = new JLabel(currency);
+        JLabel arrowLabel = new JLabel("->");
+
+
+        // Colors and fonts
+        for (JLabel label : Arrays.asList(signLabel, senderLabel, receiverLabel, dateLabel, titleLabel, amountLabel, arrowLabel)) {
+            label.setFont(Fonts.getStandardFont());
+            label.setForeground(Colors.getBrightTextColor());
+        }
+
+        // Layout
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        this.setBackground(Colors.getGrey());
+        this.setPreferredSize(new Dimension(150, 100));
+        this.setMinimumSize(new Dimension(150, 100));
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridwidth = 1;
+
+
+        // Adding subcomponents
+
+        c.gridy = 0;
+        c.gridx = 0;
+        c.gridheight = 2;
+        this.add(signLabel, c);
+
+
+        c.gridx = 1;
+        c.gridheight = 1;
+        c.gridwidth = 3;
+        this.add(titleLabel, c);
+
+        c.gridx = 4;
+        c.gridwidth = 2;
+        this.add(dateLabel, c);
+
+        c.gridx = 6;
+        c.gridwidth = 1;
+        this.add(amountLabel, c);
+
+        c.gridx = 7;
+        c.gridwidth = 1;
+        this.add(currencyLabel, c);
+
+        c.gridy = 1;
+        c.gridx = 1;
+        c.gridwidth = 2;
+        this.add(senderLabel, c);
+
+        c.gridx = 3;
+        c.gridwidth = 1;
+        this.add(arrowLabel, c);
+
+        c.gridx = 4;
+        c.gridwidth = 2;
+        this.add(receiverLabel, c);
+    }
+
+    private void addListeners() {
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                setBackground(Colors.getLightGrey());
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                setBackground(Colors.getGrey());
+            }
+        });
+    }
+}
