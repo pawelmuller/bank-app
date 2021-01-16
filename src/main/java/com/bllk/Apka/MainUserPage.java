@@ -1,12 +1,14 @@
 package com.bllk.Apka;
 
+import com.bllk.Apka.customComponents.*;
+import com.bllk.Apka.resourceHandlers.Colors;
+import com.bllk.Apka.resourceHandlers.Fonts;
 import com.bllk.Servlet.mapclasses.Account;
 import com.bllk.Servlet.mapclasses.Client;
 import com.bllk.Servlet.mapclasses.Login;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.util.*;
@@ -18,7 +20,7 @@ public class MainUserPage {
     JPanel currentPanel;
 
     Client client;
-    Login login;
+    static Login login;
 
     private JLabel logoLabel, nameLabel;
     private JTextField transfer_amount;
@@ -33,9 +35,7 @@ public class MainUserPage {
     private JLabel transfer_payerBalance;
     private JLabel transfer_currencyLabel;
     private JScrollPane historyPane;
-    private JComboBox<String> currenciesComboBox;
     private JButton createAccountButton;
-    private JLabel doubleAccountWarning;
     private JComboBox<String> transfer_contactBox;
     private JTextField transfer_accountNumber;
     private JButton transfer_addContactButton;
@@ -73,9 +73,9 @@ public class MainUserPage {
     List<Integer> user_currencies = new ArrayList<>();
     List<Integer> accountBoxUnformatted = new ArrayList<>();
     Account active_payer_account = null;
-    Map <String, String> currencies;
+    private static Map <String, String> currencies;
     Map <String, Integer> contacts;
-    Map <Integer, JSONObject> accounts;
+    private static Map <Integer, JSONObject> accounts;
     boolean lock_combobox = false;
 
     public MainUserPage(Client _client, Login _login) {
@@ -131,7 +131,7 @@ public class MainUserPage {
     }
 
     void createAccountDialog() {
-        JComboBox<String> currenciesComboBox = new JComboBox<String>();
+        JComboBox<String> currenciesComboBox = new JComboBox<>();
 
         for (Map.Entry<String, String> currency: currencies.entrySet()) {
             if (!user_currencies.contains(Integer.parseInt(currency.getKey()))) {
@@ -245,19 +245,13 @@ public class MainUserPage {
         JSlider interestrate = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
         JSlider commission = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
 
-        ChangeListener interestChangeListener = new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider slider = (JSlider)e.getSource();
-                interestValue.setText("Oprocentowanie: " + String.format("%.1f", slider.getValue() / 10f) + "%");
-                }
+        ChangeListener interestChangeListener = e -> {
+            JSlider slider = (JSlider)e.getSource();
+            interestValue.setText("Oprocentowanie: " + String.format("%.1f", slider.getValue() / 10f) + "%");
             };
-        ChangeListener commissionChangeListener = new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider slider = (JSlider)e.getSource();
-                commissionValue.setText("Prowizja: " + String.format("%.1f", slider.getValue() / 10f) + "%");
-            }
+        ChangeListener commissionChangeListener = e -> {
+            JSlider slider = (JSlider)e.getSource();
+            commissionValue.setText("Prowizja: " + String.format("%.1f", slider.getValue() / 10f) + "%");
         };
 
         commission.addChangeListener(commissionChangeListener);
@@ -444,7 +438,7 @@ public class MainUserPage {
         }
     }
 
-    String getContactIfPossible(int value) {
+    public String getContactIfPossible(int value) {
         for (Map.Entry<String, Integer> contact:contacts.entrySet())
             if (contact.getValue() == value)
                 return contact.getKey();
@@ -486,11 +480,10 @@ public class MainUserPage {
         }
 
         // Accounts
+        createAccountButton.setFont(standard_font);
         accountsSummaryLabel.setFont(Fonts.getHeaderFont());
-
         accountsSummaryLabel.setForeground(Colors.getBrightTextColor());
         accountsSummaryPanel.setForeground(Colors.getBrightTextColor());
-
         accountsSummaryPanel.setBackground(Colors.getDarkGrey());
         accountsSummaryPane.setBackground(Colors.getDarkGrey());
 
@@ -525,7 +518,11 @@ public class MainUserPage {
         loginpasswordLabel.setForeground(Colors.getBrightTextColor());
         loginField.setFont(standard_font);
 
+        // Investments
+        createInvestmentButton.setFont(standard_font);
+
         // Credits
+        createCreditButton.setFont(standard_font);
         creditsBalance.setFont(Fonts.getHeaderFont());
         creditsBalance.setForeground(Colors.getBrightTextColor());
         creditsBalanceLabel.setFont(Fonts.getHeaderFont());
@@ -711,5 +708,18 @@ public class MainUserPage {
         Dimension dimension = frame.getSize();
         frame.setSize(dimension.width, dimension.height + 10);
         frame.setSize(dimension);
+    }
+
+    public static ClientServerConnection getConnection() {
+        return connection;
+    }
+    public static Login getLogin() {
+        return login;
+    }
+    public static Map <String, String> getCurrencies() {
+        return currencies;
+    }
+    public static Map <Integer, JSONObject> getAccounts() {
+        return accounts;
     }
 }

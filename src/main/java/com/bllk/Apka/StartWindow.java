@@ -1,5 +1,7 @@
 package com.bllk.Apka;
 
+import com.bllk.Apka.resourceHandlers.Colors;
+import com.bllk.Apka.resourceHandlers.Fonts;
 import com.bllk.Servlet.mapclasses.Client;
 import com.bllk.Servlet.mapclasses.Login;
 
