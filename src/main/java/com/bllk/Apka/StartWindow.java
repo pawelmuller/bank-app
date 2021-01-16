@@ -80,11 +80,11 @@ public class StartWindow {
         try {
             login_mainErrorLabel.setVisible(true);
             login_mainErrorLabel.setText("Logowanie...");
-            String password_salt = connection.getSalt(login);
-            String hashed_password = BCrypt.hashpw(password, password_salt);
+            String passwordSalt = connection.getSalt(login);
+            String hashedPassword = BCrypt.hashpw(password, passwordSalt);
 
-            client = connection.getClient(login, hashed_password);
-            log = new Login(client.getID(), login, hashed_password);
+            client = connection.getClient(login, hashedPassword);
+            log = new Login(client.getID(), login, hashedPassword);
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -114,40 +114,40 @@ public class StartWindow {
     }
     private void changePassword() {
         JTextField login = new JTextField();
-        JPasswordField new_password = new JPasswordField(), new_passwordRepeat = new JPasswordField();
+        JPasswordField newPassword = new JPasswordField(), newPasswordRepeat = new JPasswordField();
 
         Object[] message = {
                 "Nazwa użytkownika:", login,
-                "Nowe hasło:", new_password,
-                "Powtórz hasło", new_passwordRepeat
+                "Nowe hasło:", newPassword,
+                "Powtórz hasło", newPasswordRepeat
         };
 
         int option = JOptionPane.showConfirmDialog(null, message, "Resetowanie hasła", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            String new_password_string = String.valueOf(new_password.getPassword());
-            String new_passwordRepeat_string = String.valueOf(new_passwordRepeat.getPassword());
-            String typed_login = login.getText();
-            String hashed_password;
-            int password_length = new_password_string.length(); //, login_length = typed_login.length();
+            String newPasswordString = String.valueOf(newPassword.getPassword());
+            String newPasswordRepeatString = String.valueOf(newPasswordRepeat.getPassword());
+            String typedLogin = login.getText();
+            String hashedPassword;
+            int passwordLength = newPasswordString.length(); //, login_length = typedLogin.length();
 
-            if (typed_login.isEmpty() || new_password_string.isEmpty() || new_passwordRepeat_string.isEmpty()) {
+            if (typedLogin.isEmpty() || newPasswordString.isEmpty() || newPasswordRepeatString.isEmpty()) {
                 JOptionPane.showMessageDialog(frame,
                         "Pole loginu i hasła nie może być puste. Proszę spróbować ponownie.",
                         "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             } else {
-                if (!connection.checkLogin(typed_login)) {
+                if (!connection.checkLogin(typedLogin)) {
                     JOptionPane.showMessageDialog(frame,
                             "Nie istnieje konto o podanym loginie. Proszę spróbować ponownie.",
                             "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    if (password_length < passwordMinimumLength || password_length > passwordMaximumLength) {
+                    if (passwordLength < passwordMinimumLength || passwordLength > passwordMaximumLength) {
                         JOptionPane.showMessageDialog(frame,
                                 "Hasło powinno mieć długość pomiędzy " + passwordMinimumLength + ", a " + passwordMaximumLength + " znaków. Proszę spróbować ponownie.",
                                 "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        if (new_password_string.equals(new_passwordRepeat_string)) {
-                            hashed_password = BCrypt.hashpw(new_password_string, BCrypt.gensalt(12));
-                            connection.updatePassword(login.getText(), hashed_password);
+                        if (newPasswordString.equals(newPasswordRepeatString)) {
+                            hashedPassword = BCrypt.hashpw(newPasswordString, BCrypt.gensalt(12));
+                            connection.updatePassword(login.getText(), hashedPassword);
                             JOptionPane.showMessageDialog(frame, "Zmiana hasła powiodła się.",
                                     "Sukces", JOptionPane.INFORMATION_MESSAGE);
                         } else {
@@ -281,48 +281,48 @@ public class StartWindow {
         Colors colors = new Colors();
         Fonts fonts = new Fonts();
 
-        Font standard_font = Fonts.getStandardFont();
-        Font header_font = Fonts.getHeaderFont();
-        Font logo_font = Fonts.getLogoFont();
+        Font standardFont = Fonts.getStandardFont();
+        Font headerFont = Fonts.getHeaderFont();
+        Font logoFont = Fonts.getLogoFont();
 
         // Main elements
-        logoLabel.setFont(logo_font);
-        registerTab.setFont(standard_font);
+        logoLabel.setFont(logoFont);
+        registerTab.setFont(standardFont);
         registerTab.setBackground(Colors.getDarkGrey());
-        mainTabbedPane.setFont(standard_font);
+        mainTabbedPane.setFont(standardFont);
 
         // Login page
         for (JLabel label : Arrays.asList(loginLabel, passwordLabel)) {
-            label.setFont(standard_font);
+            label.setFont(standardFont);
             label.setForeground(Colors.getBrightTextColor());
         }
         for (JButton jButton : Arrays.asList(loginButton, forgotPasswordButton)) {
-            jButton.setFont(standard_font);
+            jButton.setFont(standardFont);
         }
 
         //Register page
         for (JLabel jLabel : Arrays.asList(register_personalHeaderLabel, register_loginHeaderLabel)) {
-            jLabel.setFont(header_font);
+            jLabel.setFont(headerFont);
             jLabel.setForeground(Colors.getBrightTextColor());
         }
         for (JLabel jLabel : Arrays.asList(register_loginLabel, register_passwordLabel, register_repeatPasswordLabel,
                 register_nameLabel, register_surnameLabel, register_genderLabel, register_birthDateLabel,
                 register_yearLabel, register_monthLabel, register_dayLabel, register_streetLabel, register_numberLabel,
                 register_cityLabel, register_postcodeLabel, register_countryLabel)) {
-            jLabel.setFont(standard_font);
+            jLabel.setFont(standardFont);
             jLabel.setForeground(Colors.getBrightTextColor());
         }
         for (JRadioButton jRadioButton : Arrays.asList(maleRadioButton, femaleRadioButton)) {
-            jRadioButton.setFont(standard_font);
+            jRadioButton.setFont(standardFont);
             jRadioButton.setForeground(Colors.getBrightTextColor());
         }
         for (JComboBox<Integer> integerJComboBox : Arrays.asList(register_yearsComboBox, register_monthsComboBox, register_daysComboBox)) {
-            integerJComboBox.setFont(standard_font);
+            integerJComboBox.setFont(standardFont);
             integerJComboBox.setForeground(Colors.getOrange());
             integerJComboBox.setBackground(Colors.getGrey());
         }
-        register_countriesComboBox.setFont(standard_font);
-        register_button.setFont(standard_font);
+        register_countriesComboBox.setFont(standardFont);
+        register_button.setFont(standardFont);
 
         String system_name = System.getProperty("os.name");
         if (!system_name.startsWith("Windows")) {
@@ -330,40 +330,40 @@ public class StartWindow {
         }
     }
     private void fillYearComboBox(LocalDateTime now) {
-        int current_year = now.getYear();
+        int currentYear = now.getYear();
 
-        for (int i = current_year; i >= current_year - 120; --i)
+        for (int i = currentYear; i >= currentYear - 120; --i)
             register_yearsComboBox.addItem(i);
     }
-    private void fillMonthComboBox(LocalDateTime now, Integer chosen_year) {
-        int month_count = 12;
+    private void fillMonthComboBox(LocalDateTime now, Integer chosenYear) {
+        int monthCount = 12;
 
-        if (now.getYear() == chosen_year)
-            month_count = now.getMonthValue();
+        if (now.getYear() == chosenYear)
+            monthCount = now.getMonthValue();
 
-        for (int i = 1; i <= month_count; ++i)
+        for (int i = 1; i <= monthCount; ++i)
             register_monthsComboBox.addItem(i);
     }
-    private void fillDaysComboBox(LocalDateTime now, Integer chosen_year, Integer chosen_month) {
-        int day_count = 31;
+    private void fillDaysComboBox(LocalDateTime now, Integer chosenYear, Integer chosenMonth) {
+        int dayCount = 31;
 
-        switch(chosen_month) {
+        switch(chosenMonth) {
             case 1: case 3: case 5: case 7: case 8: case 10: case 12:
                 break;
             case 2:
-                if ((chosen_year % 4 == 0 && chosen_year % 100 != 0) || chosen_year % 400 == 0)
-                    day_count = 29;
+                if ((chosenYear % 4 == 0 && chosenYear % 100 != 0) || chosenYear % 400 == 0)
+                    dayCount = 29;
                 else
-                    day_count = 28;
+                    dayCount = 28;
                 break;
             default:
-                day_count = 30;
+                dayCount = 30;
         }
 
-        if (now.getYear() == chosen_year && now.getMonthValue() == chosen_month)
-            day_count = now.getDayOfMonth();
+        if (now.getYear() == chosenYear && now.getMonthValue() == chosenMonth)
+            dayCount = now.getDayOfMonth();
 
-        for (int i = 1; i <= day_count; ++i)
+        for (int i = 1; i <= dayCount; ++i)
             register_daysComboBox.addItem(i);
     }
     private void fillCountriesComboBox() {
@@ -404,12 +404,27 @@ public class StartWindow {
             isDataValid = false;
         return isDataValid;
     }
-    private String getDataFromField(JTextField field_to_check, JLabel label_to_modify, int min_length, int max_length) {
-        String inputData = field_to_check.getText();
+    private String getDataFromField(JTextField fieldToCheck, JLabel labelToModify, int minLength, int maxLength) {
+        String inputData = fieldToCheck.getText();
         int input_length = inputData.length();
+        boolean isValid;
+
+        isValid = validateDataFromField(labelToModify, input_length, minLength, maxLength, "Pole");
+
+        if (isValid) {
+            isDataValid = true;
+            return inputData;
+        } else {
+            isDataValid = false;
+            return null;
+        }
+    }
+    private String getPasswordFromField(JPasswordField passwordField, JLabel labelToModify, int minLength, int maxLength) {
+        String inputData = String.valueOf(passwordField.getPassword());
+        int inputLength = inputData.length();
         boolean is_valid;
 
-        is_valid = validateDataFromField(label_to_modify, input_length, min_length, max_length, "Pole");
+        is_valid = validateDataFromField(labelToModify, inputLength, minLength, maxLength, "Hasło");
 
         if (is_valid) {
             isDataValid = true;
@@ -419,40 +434,25 @@ public class StartWindow {
             return null;
         }
     }
-    private String getPasswordFromField(JPasswordField password_field, JLabel label_to_modify, int min_length, int max_length) {
-        String inputData = String.valueOf(password_field.getPassword());
-        int input_length = inputData.length();
-        boolean is_valid;
-
-        is_valid = validateDataFromField(label_to_modify, input_length, min_length, max_length, "Hasło");
-
-        if (is_valid) {
-            isDataValid = true;
-            return inputData;
-        } else {
-            isDataValid = false;
-            return null;
-        }
-    }
-    private boolean validateDataFromField(JLabel label_to_modify, int length, int min_length, int max_length, String data_name) {
-        boolean is_valid;
+    private boolean validateDataFromField(JLabel labelToModify, int length, int minLength, int maxLength, String dataName) {
+        boolean isValid;
         if (length == 0) {
-            is_valid = false;
-            label_to_modify.setText(data_name + " nie może być puste.");
-            label_to_modify.setVisible(true);
-        } else if (length < min_length || length > max_length) {
-            is_valid = false;
-            if (min_length == 0) {
-                label_to_modify.setText(data_name + " powinno mieć długość do " + max_length + " znaków.");
+            isValid = false;
+            labelToModify.setText(dataName + " nie może być puste.");
+            labelToModify.setVisible(true);
+        } else if (length < minLength || length > maxLength) {
+            isValid = false;
+            if (minLength == 0) {
+                labelToModify.setText(dataName + " powinno mieć długość do " + maxLength + " znaków.");
             } else {
-                label_to_modify.setText(data_name + " powinno mieć długość pomiędzy " + min_length + ", a " + max_length + " znaków.");
+                labelToModify.setText(dataName + " powinno mieć długość pomiędzy " + minLength + ", a " + maxLength + " znaków.");
             }
-            label_to_modify.setVisible(true);
+            labelToModify.setVisible(true);
         } else {
-            is_valid = true;
-            label_to_modify.setVisible(false);
+            isValid = true;
+            labelToModify.setVisible(false);
         }
-        return is_valid;
+        return isValid;
     }
     private void validateLogin() {
         if (login == null) {
