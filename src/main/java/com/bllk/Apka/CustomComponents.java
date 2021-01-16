@@ -438,8 +438,15 @@ class CreditPanel extends JPanel {
 }
 
 class TransactionPanel extends JPanel {
-    private String sender, receiver, date, title, amount, currency, sign;
+    private final String sender;
+    private final String receiver;
+    private final String date;
+    private final String title;
+    private String amount;
+    private final String currency;
+    private final String sign;
     char type;
+    Color color;
 
     //"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"
     public TransactionPanel(String _sender, String _receiver, String _date, String _title, Double _unformatted_amount,
@@ -455,12 +462,15 @@ class TransactionPanel extends JPanel {
         switch (type) {
             case 0:
                 sign = "-";
+                color = Color.red;
                 break;
             case 1:
                 sign = "+";
+                color = Color.green;
                 break;
             case 2:
-                sign = "<->";
+                sign = ">";
+                color = Color.magenta;
                 break;
             default:
                 sign = "?";
@@ -485,11 +495,11 @@ class TransactionPanel extends JPanel {
         JLabel currencyLabel = new JLabel(currency);
         JLabel arrowLabel = new JLabel("->");
 
-
         // Colors and fonts
         for (JLabel label : Arrays.asList(signLabel, senderLabel, receiverLabel, dateLabel, titleLabel, amountLabel, arrowLabel)) {
             label.setFont(Fonts.getStandardFont());
             label.setForeground(Colors.getBrightTextColor());
+            label.setPreferredSize(new Dimension(10, 25));
         }
 
         // Layout
@@ -497,49 +507,73 @@ class TransactionPanel extends JPanel {
         GridBagConstraints c = new GridBagConstraints();
 
         this.setBackground(Colors.getGrey());
-        this.setPreferredSize(new Dimension(150, 100));
-        this.setMinimumSize(new Dimension(150, 100));
+        this.setPreferredSize(new Dimension(600, 50));
+        this.setMinimumSize(new Dimension(150, 50));
 
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1;
         c.weighty = 1;
         c.gridwidth = 1;
 
-
         // Adding subcomponents
-
+        signLabel.setForeground(color);
+        signLabel.setFont(Fonts.getHeaderFont().deriveFont(40f));
+        signLabel.setHorizontalAlignment(JLabel.CENTER);
+        signLabel.setPreferredSize(new Dimension(80, 50));
         c.gridy = 0;
         c.gridx = 0;
         c.gridheight = 2;
+        c.weightx = 0;
         this.add(signLabel, c);
 
-
+        titleLabel.setForeground(Colors.getOrange());
+        titleLabel.setFont(Fonts.getStandardFont().deriveFont(Font.BOLD));
+        c.weightx = 1;
         c.gridx = 1;
         c.gridheight = 1;
         c.gridwidth = 3;
         this.add(titleLabel, c);
 
+        //dateLabel.setPreferredSize(new Dimension(100, 50));
+        c.weightx = 1;
         c.gridx = 4;
         c.gridwidth = 2;
         this.add(dateLabel, c);
 
+        amountLabel.setForeground(color);
+        amountLabel.setFont(Fonts.getHeaderFont().deriveFont(26f));
+        amountLabel.setHorizontalAlignment(JLabel.RIGHT);
+        amountLabel.setPreferredSize(new Dimension(120, 50));
+        c.insets = new Insets(0, 0, 0, 2);
+        c.weightx = 0;
         c.gridx = 6;
         c.gridwidth = 1;
+        c.gridheight = 2;
         this.add(amountLabel, c);
 
+        currencyLabel.setForeground(color);
+        currencyLabel.setFont(Fonts.getHeaderFont().deriveFont(18f));
+        currencyLabel.setHorizontalAlignment(JLabel.LEFT);
+        currencyLabel.setPreferredSize(new Dimension(45, 50));
+        c.insets = new Insets(0, 2, 0, 0);
         c.gridx = 7;
         c.gridwidth = 1;
         this.add(currencyLabel, c);
 
+        c.insets = new Insets(0, 0, 0, 0);
+        c.weightx = 1;
         c.gridy = 1;
         c.gridx = 1;
+        c.gridheight = 1;
         c.gridwidth = 2;
         this.add(senderLabel, c);
 
+        arrowLabel.setHorizontalAlignment(JLabel.CENTER);
+        c.weightx = 0.1;
         c.gridx = 3;
         c.gridwidth = 1;
         this.add(arrowLabel, c);
 
+        c.weightx = 1;
         c.gridx = 4;
         c.gridwidth = 2;
         this.add(receiverLabel, c);
