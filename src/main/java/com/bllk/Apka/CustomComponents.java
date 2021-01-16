@@ -509,6 +509,7 @@ class TransactionPanel extends JPanel {
         this.setBackground(Colors.getGrey());
         this.setPreferredSize(new Dimension(600, 50));
         this.setMinimumSize(new Dimension(150, 50));
+        this.setMaximumSize(new Dimension(5000, 50));
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 1;
