@@ -211,7 +211,7 @@ class AccountPanel extends JPanel {
                         "Pole nazwy nie może być puste.",
                         "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             } else {
-                page.connection.createOrUpdateContact(page.login.getLogin(), page.login.getPasswordHash(), new_name_string, Integer.parseInt(account_number));
+                MainUserPage.connection.createOrUpdateContact(page.login.getLogin(), page.login.getPasswordHash(), new_name_string, Integer.parseInt(account_number));
             }
         }
     }
@@ -244,7 +244,7 @@ class ContactPanel extends JPanel {
         deleteButton.setFont(Fonts.getStandardFont());
 
         deleteButton.addActionListener(e -> {
-            page.connection.removeContact(page.login.getLogin(), page.login.getPasswordHash(), target_id);
+            MainUserPage.connection.removeContact(page.login.getLogin(), page.login.getPasswordHash(), target_id);
             page.updateContacts();
             parent.remove(this);
             parent.updateUI();
@@ -259,7 +259,7 @@ class InvestmentPanel extends JPanel {
     MainUserPage page;
     JSONObject inv;
 
-    public InvestmentPanel(JPanel parent, MainUserPage _page, int _id, JSONObject _inv) {
+    public InvestmentPanel(MainUserPage _page, int _id, JSONObject _inv) {
         super();
         page = _page;
         inv = _inv;
@@ -305,7 +305,7 @@ class InvestmentPanel extends JPanel {
         endbutton.addActionListener(e -> {
             int accountid = removeInvestmentDialog();
             System.out.println(accountid);
-            page.connection.removeInvestment(page.login.getLogin(), page.login.getPasswordHash(), _id, accountid);
+            MainUserPage.connection.removeInvestment(page.login.getLogin(), page.login.getPasswordHash(), _id, accountid);
             page.updateInvestmentsSummary();
             page.updateAccounts();
         });
@@ -345,7 +345,7 @@ class CreditPanel extends JPanel {
     MainUserPage page;
     JSONObject inv;
 
-    public CreditPanel(JPanel parent, MainUserPage _page, int _id, JSONObject _inv) {
+    public CreditPanel(MainUserPage _page, int _id, JSONObject _inv) {
         super();
         page = _page;
         inv = _inv;
@@ -407,7 +407,7 @@ class CreditPanel extends JPanel {
         payInstallmentButton.addActionListener(e -> {
             int accountid = payInstallmentDialog();
             System.out.println(accountid);
-            page.connection.updateCredit(page.login.getLogin(), page.login.getPasswordHash(), _id, accountid);
+            MainUserPage.connection.updateCredit(page.login.getLogin(), page.login.getPasswordHash(), _id, accountid);
             page.updateCreditsSummary();
             page.updateAccounts();
         });

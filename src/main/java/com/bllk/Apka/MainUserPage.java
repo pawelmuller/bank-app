@@ -566,7 +566,7 @@ public class MainUserPage {
             } else if (accounts.containsKey(senderId) && accounts.containsKey(receiverId)) {
                 type = 2; // between own accounts
             } else {
-                System.out.println("Dziwna sprawa.");
+                System.out.println("Something went terribly wrong.");
             }
 
             historyPanel.add(new TransactionPanel(getContactIfPossible(senderId),
@@ -682,7 +682,7 @@ public class MainUserPage {
         Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
 
         for (Map.Entry<Integer, JSONObject> investment: investments.entrySet()) {
-            InvestmentPanel investmentPanel = new InvestmentPanel(investmentsSummary, this, investment.getKey(), investment.getValue());
+            InvestmentPanel investmentPanel = new InvestmentPanel(this, investment.getKey(), investment.getValue());
             investmentsSummary.add(investmentPanel);
         }
         investmentsSummary.updateUI();
@@ -692,7 +692,7 @@ public class MainUserPage {
         Map<Integer, JSONObject> credits = connection.getCredits(login.getLogin(), login.getPasswordHash());
 
         for (Map.Entry<Integer, JSONObject> credit: credits.entrySet()) {
-            CreditPanel creditPanel = new CreditPanel(creditsSummary, this, credit.getKey(), credit.getValue());
+            CreditPanel creditPanel = new CreditPanel(this, credit.getKey(), credit.getValue());
             creditsSummary.add(creditPanel);
         }
         updateCreditsBalance();
