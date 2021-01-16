@@ -13,14 +13,15 @@ import java.util.List;
 import java.util.Map;
 
 class Colors {
-    private static Color bright_text_color, orange, blue, dark_grey, light_grey, grey;
+    private static Color bright_text_color, orange, blue, dark_grey, bright_grey, grey, light_grey;
     public Colors() {
         bright_text_color = Color.decode("#EEEEEE");
         blue = Color.decode("#1891FF");
         orange = Color.decode("#FF7F00");
         dark_grey = Color.decode("#222222");
         grey = Color.decode("#333333");
-        light_grey = Color.decode("#808080");
+        light_grey = Color.decode("#444444");
+        bright_grey = Color.decode("#808080");
     }
     public static Color getBrightTextColor() {
         return bright_text_color;
@@ -38,7 +39,10 @@ class Colors {
         return grey;
     }
     public static Color getLightGrey() {
-        return light_grey;
+        return  light_grey;
+    }
+    public static Color getBrightGrey() {
+        return bright_grey;
     }
 }
 
@@ -430,5 +434,160 @@ class CreditPanel extends JPanel {
             return accounts_to_select.get(accountBox.getSelectedIndex());
         }
         return -1;
+    }
+}
+
+class TransactionPanel extends JPanel {
+    private final String sender;
+    private final String receiver;
+    private final String date;
+    private final String title;
+    private String amount;
+    private final String currency;
+    private final String sign;
+    char type;
+    Color color;
+
+    //"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"
+    public TransactionPanel(String _sender, String _receiver, String _date, String _title, Double _unformatted_amount,
+                            String _currency, char _type) {
+        super();
+        sender = _sender;
+        receiver = _receiver;
+        date = _date;
+        title = _title;
+        currency = _currency;
+        type = _type;
+
+        switch (type) {
+            case 0:
+                sign = "-";
+                color = Color.red;
+                break;
+            case 1:
+                sign = "+";
+                color = Color.green;
+                break;
+            case 2:
+                sign = ">";
+                color = Color.magenta;
+                break;
+            default:
+                sign = "?";
+        }
+        amount = String.format("%.2f", _unformatted_amount / 100.0);
+
+        if (type == 0 || type == 1) {
+            amount = sign + amount;
+        }
+
+        addSubcomponents();
+        addListeners();
+    }
+
+    private void addSubcomponents() {
+        JLabel signLabel = new JLabel(sign);
+        JLabel senderLabel = new JLabel(sender);
+        JLabel receiverLabel = new JLabel(receiver);
+        JLabel dateLabel = new JLabel(date);
+        JLabel titleLabel = new JLabel(title);
+        JLabel amountLabel = new JLabel(amount);
+        JLabel currencyLabel = new JLabel(currency);
+        JLabel arrowLabel = new JLabel("->");
+
+        // Colors and fonts
+        for (JLabel label : Arrays.asList(signLabel, senderLabel, receiverLabel, dateLabel, titleLabel, amountLabel, arrowLabel)) {
+            label.setFont(Fonts.getStandardFont());
+            label.setForeground(Colors.getBrightTextColor());
+            label.setPreferredSize(new Dimension(10, 25));
+        }
+
+        // Layout
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        this.setBackground(Colors.getGrey());
+        this.setPreferredSize(new Dimension(600, 50));
+        this.setMinimumSize(new Dimension(150, 50));
+        this.setMaximumSize(new Dimension(5000, 50));
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 1;
+        c.gridwidth = 1;
+
+        // Adding subcomponents
+        signLabel.setForeground(color);
+        signLabel.setFont(Fonts.getHeaderFont().deriveFont(40f));
+        signLabel.setHorizontalAlignment(JLabel.CENTER);
+        signLabel.setPreferredSize(new Dimension(80, 50));
+        c.gridy = 0;
+        c.gridx = 0;
+        c.gridheight = 2;
+        c.weightx = 0;
+        this.add(signLabel, c);
+
+        titleLabel.setForeground(Colors.getOrange());
+        titleLabel.setFont(Fonts.getStandardFont().deriveFont(Font.BOLD));
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridheight = 1;
+        c.gridwidth = 3;
+        this.add(titleLabel, c);
+
+        //dateLabel.setPreferredSize(new Dimension(100, 50));
+        c.weightx = 1;
+        c.gridx = 4;
+        c.gridwidth = 2;
+        this.add(dateLabel, c);
+
+        amountLabel.setForeground(color);
+        amountLabel.setFont(Fonts.getHeaderFont().deriveFont(26f));
+        amountLabel.setHorizontalAlignment(JLabel.RIGHT);
+        amountLabel.setPreferredSize(new Dimension(120, 50));
+        c.insets = new Insets(0, 0, 0, 2);
+        c.weightx = 0;
+        c.gridx = 6;
+        c.gridwidth = 1;
+        c.gridheight = 2;
+        this.add(amountLabel, c);
+
+        currencyLabel.setForeground(color);
+        currencyLabel.setFont(Fonts.getHeaderFont().deriveFont(18f));
+        currencyLabel.setHorizontalAlignment(JLabel.LEFT);
+        currencyLabel.setPreferredSize(new Dimension(45, 50));
+        c.insets = new Insets(0, 2, 0, 0);
+        c.gridx = 7;
+        c.gridwidth = 1;
+        this.add(currencyLabel, c);
+
+        c.insets = new Insets(0, 0, 0, 0);
+        c.weightx = 1;
+        c.gridy = 1;
+        c.gridx = 1;
+        c.gridheight = 1;
+        c.gridwidth = 2;
+        this.add(senderLabel, c);
+
+        arrowLabel.setHorizontalAlignment(JLabel.CENTER);
+        c.weightx = 0.1;
+        c.gridx = 3;
+        c.gridwidth = 1;
+        this.add(arrowLabel, c);
+
+        c.weightx = 1;
+        c.gridx = 4;
+        c.gridwidth = 2;
+        this.add(receiverLabel, c);
+    }
+
+    private void addListeners() {
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                setBackground(Colors.getLightGrey());
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                setBackground(Colors.getGrey());
+            }
+        });
     }
 }

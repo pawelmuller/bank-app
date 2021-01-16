@@ -8,9 +8,6 @@ import org.json.JSONObject;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -70,6 +67,7 @@ public class MainUserPage {
     private JTextField loginField;
     private JLabel loginpasswordLabel;
     private JLabel creditsBalanceLabel;
+    private JPanel historyPanel;
 
     List<Integer> user_currencies = new ArrayList<>();
     List<Integer> accountBoxUnformatted = new ArrayList<>();
@@ -88,10 +86,13 @@ public class MainUserPage {
         currencies = connection.getCurrencies();
 
         accountsSummary.setLayout(new GridBagLayout());
+        historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         investmentsSummary.setLayout(new BoxLayout(investmentsSummary, BoxLayout.Y_AXIS));
         creditsSummary.setLayout(new BoxLayout(creditsSummary, BoxLayout.Y_AXIS));
         updateFontsAndColors();
+
+        accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
         updateContacts();
         fillCurrenciesComboBox();
@@ -464,7 +465,7 @@ public class MainUserPage {
         }
 
         for (JPanel jPanel : Arrays.asList(accountsPanel, transactionPanel, transactionHistoryPanel,
-                financialProductsPanel, contactsPanel, settingsPanel, investmentsPanel, creditsPanel)) {
+                financialProductsPanel, contactsPanel, settingsPanel, investmentsPanel, creditsPanel, historyPanel)) {
             jPanel.setFont(standard_font);
             jPanel.setForeground(Colors.getBrightTextColor());
             jPanel.setBackground(Colors.getDarkGrey());
@@ -487,7 +488,7 @@ public class MainUserPage {
         }
         for (JTextField jTextField : Arrays.asList(transfer_accountNumber, transfer_amount, transfer_title)) {
             jTextField.setForeground(Colors.getBrightTextColor());
-            jTextField.setBackground(Colors.getLightGrey());
+            jTextField.setBackground(Colors.getBrightGrey());
             jTextField.setFont(standard_font);
         }
         for (JComboBox<String> jComboBox : Arrays.asList(transfer_contactBox, transfer_accountSelectBox)) {
@@ -501,6 +502,7 @@ public class MainUserPage {
 
         // Transfer history
         historyPane.setFont(standard_font);
+        historyPane.setBackground(Colors.getDarkGrey());
         historyPane.getViewport().setBackground(Colors.getDarkGrey());
 
         // Settings
@@ -533,35 +535,35 @@ public class MainUserPage {
         lock_combobox = false;
     }
     private void updateTransactionTable() {
-        String[] columns = new String[] {"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"};
+        historyPanel.removeAll();
+        //String[] columns = new String[] {"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"};
         Map<Integer, JSONObject> transactions = connection.getTransactions(login.getLogin(), login.getPasswordHash());
-        List<String[]> values = new ArrayList<>();
+        char type = 0;
 
         for (JSONObject transaction: transactions.values()) {
-            values.add(new String[] {
-                    getContactIfPossible(transaction.getInt("senderid")),
-                    getContactIfPossible(transaction.getInt("receiverid")),
-                    transaction.getString("date"),
-                    transaction.getString("title"),
-                    String.format("%.2f", transaction.getDouble("value") / 100.0),
-                    currencies.get(transaction.getString("currencyid"))
-            });
+            int senderId = transaction.getInt("senderid");
+            int receiverId = transaction.getInt("receiverid");
+
+            if (accounts.containsKey(senderId) && !accounts.containsKey(receiverId)) {
+                type = 0; // outgoing
+            } else if (accounts.containsKey(receiverId) && !accounts.containsKey(senderId)) {
+                type = 1; // incoming
+            } else if (accounts.containsKey(senderId) && accounts.containsKey(receiverId)) {
+                type = 2; // between own accounts
+            } else {
+                System.out.println("Dziwna sprawa.");
+            }
+
+            historyPanel.add(new TransactionPanel(getContactIfPossible(senderId),
+                            getContactIfPossible(receiverId),
+                            transaction.getString("date"),
+                            transaction.getString("title"),
+                            transaction.getDouble("value"),
+                            currencies.get(transaction.getString("currencyid")),
+                            type
+                            ));
+            historyPanel.add(new Box.Filler(new Dimension(1, 1), new Dimension(100, 1), new Dimension(600, 1)));
         }
-        TableModel tableModel = new DefaultTableModel(values.toArray(new Object[][] {}), columns);
-        JTable table = new JTable(tableModel);
-
-        table.setFont(Fonts.getStandardFont());
-        table.setBackground(Colors.getDarkGrey());
-        table.setForeground(Colors.getBrightTextColor());
-        table.getTableHeader().setOpaque(false);
-        table.getTableHeader().setFont(Fonts.getSmallHeaderFont());
-        table.getTableHeader().setBackground(Colors.getOrange());
-        table.setGridColor(Colors.getGrey());
-        ((DefaultTableCellRenderer)table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
-
-        table.setDefaultEditor(Object.class, null);
-        table.getTableHeader().setReorderingAllowed(false);
-        historyPane.getViewport().add(table);
     }
     public void updateMoney() {
         if (transfer_accountSelectBox.getItemCount() > 0) {
