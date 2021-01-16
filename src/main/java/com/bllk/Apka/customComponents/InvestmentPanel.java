@@ -25,19 +25,20 @@ public class InvestmentPanel extends JPanel {
         JLabel valueLabel = new JLabel("" + inv.getDouble("value") / 100);
         JLabel currencyLabel = new JLabel(MainUserPage.getCurrencies().get(inv.getString("currencyid")));
         JLabel profitLabel = new JLabel(inv.getString("profit"));
-        JLabel yearprofit = new JLabel(inv.getString("yearprofit"));
-        JLabel capperiod = new JLabel(inv.getString("capperiod"));
-        JLabel datecreated = new JLabel(inv.getString("datecreated"));
-        JButton endbutton = new JButton("Zamknij lokatę");
+        JLabel yearProfitLabel = new JLabel(inv.getString("yearprofit"));
+        JLabel capPeriodLabel = new JLabel(inv.getString("capperiod"));
+        JLabel dateCreatedLabel = new JLabel(inv.getString("datecreated"));
+        JButton closeInvestmentButton = new JButton("Zamknij lokatę");
 
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        for (JLabel jLabel : Arrays.asList(nameLabel, yearprofit, capperiod, datecreated, valueLabel, currencyLabel, profitLabel)) {
+        for (JLabel jLabel : Arrays.asList(nameLabel, yearProfitLabel, capPeriodLabel, dateCreatedLabel,
+                valueLabel, currencyLabel, profitLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
             jLabel.setFont(Fonts.getStandardFont());
         }
-        endbutton.setFont(Fonts.getStandardFont());
-        datecreated.setAlignmentX(Component.CENTER_ALIGNMENT);
+        closeInvestmentButton.setFont(Fonts.getStandardFont());
+        dateCreatedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         this.setBackground(Colors.getGrey());
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -54,15 +55,16 @@ public class InvestmentPanel extends JPanel {
         JPanel p2 = new JPanel();
         p2.setBackground(Colors.getGrey());
         p2.add(profitLabel);
-        p2.add(yearprofit);
-        p2.add(capperiod);
+        p2.add(yearProfitLabel);
+        p2.add(capPeriodLabel);
         this.add(p2);
-        this.add(datecreated);
+        this.add(dateCreatedLabel);
 
-        endbutton.addActionListener(e -> {
+        closeInvestmentButton.addActionListener(e -> {
             int accountid = removeInvestmentDialog();
             System.out.println(accountid);
-            MainUserPage.getConnection().removeInvestment(MainUserPage.getLogin().getLogin(), MainUserPage.getLogin().getPasswordHash(), _id, accountid);
+            MainUserPage.getConnection().removeInvestment(MainUserPage.getLogin().getLogin(),
+                    MainUserPage.getLogin().getPasswordHash(), _id, accountid);
             page.updateInvestmentsSummary();
             page.updateAccounts();
         });
@@ -73,8 +75,8 @@ public class InvestmentPanel extends JPanel {
             dateendedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             this.add(dateendedLabel);
         }
-        endbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.add(endbutton);
+        closeInvestmentButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.add(closeInvestmentButton);
     }
 
     int removeInvestmentDialog() {
