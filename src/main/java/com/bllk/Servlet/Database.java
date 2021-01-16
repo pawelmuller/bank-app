@@ -403,9 +403,14 @@ public class Database {
                 if (query.list().size() >= 1) {
                     Account account = (Account) query.list().get(0);
                     account.setValue(account.getValue() - credit.getMonthly());
-                    credit.setRemaining(credit.getRemaining() - credit.getMonthly());
                     session.update(account);
-                    session.update(credit);
+                    long new_remaining = credit.getRemaining() - credit.getMonthly();
+                    if (new_remaining == 0) {
+                        session.delete(credit);
+                    } else {
+                        credit.setRemaining(new_remaining);
+                        session.update(credit);
+                    }
                 }
             }
             tx.commit();

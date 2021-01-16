@@ -422,10 +422,10 @@ class CreditPanel extends JPanel {
         }
 
         Object[] message = {
-                "Na konto:", accountBox,
+                "Zapłać z konta:", accountBox,
         };
 
-        int option = JOptionPane.showConfirmDialog(null, message, "Nowy kredyt", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, message, "Spłać ratę kredytu", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             return accounts_to_select.get(accountBox.getSelectedIndex());
         }

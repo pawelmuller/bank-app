@@ -422,12 +422,12 @@ public class Server extends HttpServlet {
                 if (atributes[0].equals("login") && atributes[1].equals("payinstallment")) {
                     String login = request.getParameter("login");
                     String password = request.getParameter("passwordhash");
-                    int investmentid = Integer.parseInt(request.getParameter("creditid"));
+                    int creditid = Integer.parseInt(request.getParameter("creditid"));
                     int accountid = Integer.parseInt(request.getParameter("accountid"));
                     Login log = data.getLogin(login, password);
                     if (log != null) {
                         Client client = data.getClient(log.getID());
-                        data.updateRemainingCredit(client.getID(), investmentid, accountid);
+                        data.updateRemainingCredit(client.getID(), creditid, accountid);
                     }
                 }
                 if (atributes[0].equals("login") && atributes[1].equals("updatelogin")) {
