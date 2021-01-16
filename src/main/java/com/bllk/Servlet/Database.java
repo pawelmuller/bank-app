@@ -685,7 +685,6 @@ public class Database {
             refresh();
         }
     }
-
     public void addCredit(Integer ownerid, String name, long value, double interest, double commission, long months, int accountid) {
         try {
             Session session = factory.openSession();
@@ -707,7 +706,10 @@ public class Database {
                 if (idbig != null)
                     id = idbig.intValue() + 1;
 
-                Credit credit = new Credit(id, ownerid, name, value, currencyid, interest, commission, months);
+                query = session.createSQLQuery("SELECT add_months(SYSDATE, :param) FROM DUAL");
+                Date enddate = (Date) query.setParameter("param", months).list().get(0);
+
+                Credit credit = new Credit(id, ownerid, name, value, currencyid, interest, commission, enddate);
                 session.save(credit);
             }
             tx.commit();

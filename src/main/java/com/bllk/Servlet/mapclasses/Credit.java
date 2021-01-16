@@ -36,7 +36,7 @@ public class Credit {
     @Column(name = "REMAINING_TO_PAY")
     Long remaining;
 
-    public Credit(Integer id, Integer ownerid, String name, Long value, Integer currencyid, Double interest, Double commission, Long months) {
+    public Credit(Integer id, Integer ownerid, String name, Long value, Integer currencyid, Double interest, Double commission, Date dateended) {
         this.id = id;
         this.ownerid = ownerid;
         this.name = name;
@@ -44,7 +44,7 @@ public class Credit {
         this.currencyid = currencyid;
         this.interest = interest;
         this.commission = commission;
-        this.monthly = months;
+        this.dateended = dateended;
         /*
         this.rrso = null;
         this.datecreated = null;
