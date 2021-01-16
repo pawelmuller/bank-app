@@ -405,7 +405,7 @@ public class Database {
                     account.setValue(account.getValue() - credit.getMonthly());
                     session.update(account);
                     long new_remaining = credit.getRemaining() - credit.getMonthly();
-                    if (new_remaining == 0) {
+                    if (new_remaining <= 0) {
                         session.delete(credit);
                     } else {
                         credit.setRemaining(new_remaining);
