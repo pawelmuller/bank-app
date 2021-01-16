@@ -27,8 +27,8 @@ public class CreditPanel extends JPanel {
         JLabel interestLabel = new JLabel(inv.getString("interest"));
         JLabel commissionLabel = new JLabel(inv.getString("commission"));
         JLabel RRSOLabel = new JLabel(inv.getString("rrso"));
-        JLabel datecreated = new JLabel(inv.getString("datecreated"));
-        JLabel dateended = new JLabel(inv.getString("dateended"));
+        JLabel dateCreatedLabel = new JLabel(inv.getString("datecreated"));
+        JLabel dateEndedLabel = new JLabel(inv.getString("dateended"));
         JLabel remainingLabel = new JLabel(inv.getString("remaining"));
         JLabel monthlyLabel = new JLabel(inv.getString("monthly"));
         JLabel monthsRemainingLabel = new JLabel(inv.getString("monthsremaining"));
@@ -36,12 +36,12 @@ public class CreditPanel extends JPanel {
 
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        for (JLabel jLabel : Arrays.asList(nameLabel, valueLabel, currencyLabel, interestLabel, commissionLabel, RRSOLabel, datecreated, dateended, remainingLabel, monthlyLabel, monthsRemainingLabel)) {
+        for (JLabel jLabel : Arrays.asList(nameLabel, valueLabel, currencyLabel, interestLabel, commissionLabel, RRSOLabel, dateCreatedLabel, dateEndedLabel, remainingLabel, monthlyLabel, monthsRemainingLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
             jLabel.setFont(Fonts.getStandardFont());
         }
         payInstallmentButton.setFont(Fonts.getStandardFont());
-        datecreated.setAlignmentX(Component.CENTER_ALIGNMENT);
+        dateCreatedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         this.setBackground(Colors.getGrey());
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -63,8 +63,8 @@ public class CreditPanel extends JPanel {
         this.add(p2);
         JPanel p3 = new JPanel();
         p3.setBackground(Colors.getGrey());
-        p3.add(datecreated);
-        p3.add(dateended);
+        p3.add(dateCreatedLabel);
+        p3.add(dateEndedLabel);
         this.add(p3);
         JPanel p4 = new JPanel();
         p4.setBackground(Colors.getGrey());
@@ -76,9 +76,9 @@ public class CreditPanel extends JPanel {
         this.add(p4);
 
         payInstallmentButton.addActionListener(e -> {
-            int accountid = payInstallmentDialog();
-            System.out.println(accountid);
-            MainUserPage.getConnection().updateCredit(MainUserPage.getLogin().getLogin(), MainUserPage.getLogin().getPasswordHash(), _id, accountid);
+            int accountID = payInstallmentDialog();
+            System.out.println(accountID);
+            MainUserPage.getConnection().updateCredit(MainUserPage.getLogin().getLogin(), MainUserPage.getLogin().getPasswordHash(), _id, accountID);
             page.updateCreditsSummary();
             page.updateAccounts();
         });
