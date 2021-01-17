@@ -10,6 +10,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClientServerConnection {
+    private String serverAddress = "http://localhost";
+                                // "http://largehadroncollider.tplinkdns.com";
+
     public boolean checkConnection() {
         String a = getData("");
         return (!a.equals("Connection refused: connect"));
@@ -210,7 +213,7 @@ public class ClientServerConnection {
 
     public String getData(String url) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://largehadroncollider.tplinkdns.com:8080/" + url).openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/" + url).openConnection();
             System.out.println("GET: " + http_connection.getURL());
             http_connection.setRequestMethod("GET");
 
@@ -232,7 +235,7 @@ public class ClientServerConnection {
     }
     public boolean postData(String url, String post_data) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://largehadroncollider.tplinkdns.com:8080/" + url).openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/" + url).openConnection();
             System.out.println("POST: " + http_connection.getURL());
             http_connection.setRequestMethod("POST");
 
