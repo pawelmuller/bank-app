@@ -10,6 +10,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClientServerConnection {
+    private String serverAddress = "http://localhost";
+                                // "http://largehadroncollider.tplinkdns.com";
+    
     public boolean checkConnection() {
         String a = getData("");
         return (!a.equals("Connection refused: connect"));
@@ -106,7 +109,7 @@ public class ClientServerConnection {
 
     public void makeTransfer(String login, String hashed_password, int payer_id, int target_id, String title, long amount, int currencyid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/transaction").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/login/transaction").openConnection();
             http_connection.setRequestMethod("POST");
 
             String postData = "login=" + login;
@@ -133,7 +136,7 @@ public class ClientServerConnection {
     }
     public void createAccount(String login, String hashed_password, int currencyid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createaccount").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/login/createaccount").openConnection();
             http_connection.setRequestMethod("POST");
 
             String post_data = "login=" + login;
@@ -156,7 +159,7 @@ public class ClientServerConnection {
     }
     public void createClient(String name, String surname, String date, String gender, String street, String num, String city, String postcode, String country, String login, String hashed_password) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/createclient").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/createclient").openConnection();
             http_connection.setRequestMethod("POST");
 
             String post_data = "name=" + name;
@@ -187,7 +190,7 @@ public class ClientServerConnection {
     }
     public void createInvestment(String login, String hashed_password, String name, long value, double profrate, double yearprofrate, int capperoid, int accountid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createinvestment").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/login/createinvestment").openConnection();
             http_connection.setRequestMethod("POST");
 
             String post_data = "login=" + login;
@@ -215,7 +218,7 @@ public class ClientServerConnection {
     }
     public void createCredit(String login, String hashed_password, String name, long value, double interest, double commission, int months, int accountid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createcredit").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/login/createcredit").openConnection();
             http_connection.setRequestMethod("POST");
 
             String post_data = "login=" + login;
@@ -243,7 +246,7 @@ public class ClientServerConnection {
     }
     public void createOrUpdateContact(String login, String hashed_password, String name, int accountid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/createorupdatecontact").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/login/createorupdatecontact").openConnection();
             http_connection.setRequestMethod("POST");
 
             String post_data = "name=" + name;
@@ -268,7 +271,7 @@ public class ClientServerConnection {
 
     public void updatePassword(String login, String hashed_password) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/updatepassword").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/updatepassword").openConnection();
             http_connection.setRequestMethod("POST");
 
             String postData = "login=" + login;
@@ -291,7 +294,7 @@ public class ClientServerConnection {
     }
     boolean updateLogin(String login, String hashed_password, String newlogin) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/updatelogin").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/login/updatelogin").openConnection();
             http_connection.setRequestMethod("POST");
 
             String postData = "login=" + login;
@@ -319,7 +322,7 @@ public class ClientServerConnection {
 
     public void removeContact(String login, String hashed_password, int accountid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/removecontact").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/login/removecontact").openConnection();
             http_connection.setRequestMethod("POST");
 
             String post_data = "accountid=" + accountid;
@@ -343,7 +346,7 @@ public class ClientServerConnection {
     }
     public void removeInvestment(String login, String hashed_password, int investmentid, int accountid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/removeinvestment").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/login/removeinvestment").openConnection();
             http_connection.setRequestMethod("POST");
 
             String post_data = "investmentid=" + investmentid;
@@ -368,7 +371,7 @@ public class ClientServerConnection {
     }
     public void updateCredit(String login, String hashed_password, int creditid, int accountid) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/login/payinstallment").openConnection();
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/login/payinstallment").openConnection();
             http_connection.setRequestMethod("POST");
 
             String post_data = "creditid=" + creditid;
@@ -395,8 +398,8 @@ public class ClientServerConnection {
     }
     public String getData(String url) {
         try {
-            HttpURLConnection http_connection = (HttpURLConnection) new URL("http://localhost:8080/" + url).openConnection();
-            System.out.println("http://localhost:8080/" + url);
+            HttpURLConnection http_connection = (HttpURLConnection) new URL(serverAddress + ":8080/" + url).openConnection();
+            System.out.println(serverAddress + ":8080/" + url);
             http_connection.setRequestMethod("GET");
 
             int response_code = http_connection.getResponseCode();
