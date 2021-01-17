@@ -42,7 +42,7 @@ public class MainUserPage {
     private JPanel accountsSummaryPanel;
     private JPanel contactsSummary;
     private JLabel creditsBalance;
-    private JPanel investmentsSummary;
+    private JPanel investmentsSummaryPanel;
     private JButton createInvestmentButton;
     private JButton createCreditButton;
     private JTabbedPane financialProductsTabbedPane;
@@ -58,7 +58,7 @@ public class MainUserPage {
     private JPanel accountsPanel;
     private JPanel contactsPanel;
     private JPanel settingsPanel;
-    private JPanel creditsSummary;
+    private JPanel creditsSummaryPanel;
     private JPanel creditsBalancePanel;
     private JPanel investmentsPanel;
     private JPanel creditsPanel;
@@ -69,6 +69,8 @@ public class MainUserPage {
     private JLabel creditsBalanceLabel;
     private JPanel historyPanel;
     private JScrollPane accountsSummaryPane;
+    private JScrollPane creditsSummaryPane;
+    private JScrollPane investmentsSummaryPane;
 
     List<Integer> user_currencies = new ArrayList<>();
     List<Integer> accountBoxUnformatted = new ArrayList<>();
@@ -89,8 +91,8 @@ public class MainUserPage {
         accountsSummaryPanel.setLayout(new GridBagLayout());
         historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
-        investmentsSummary.setLayout(new BoxLayout(investmentsSummary, BoxLayout.Y_AXIS));
-        creditsSummary.setLayout(new BoxLayout(creditsSummary, BoxLayout.Y_AXIS));
+        investmentsSummaryPanel.setLayout(new BoxLayout(investmentsSummaryPanel, BoxLayout.Y_AXIS));
+        creditsSummaryPanel.setLayout(new BoxLayout(creditsSummaryPanel, BoxLayout.Y_AXIS));
         updateFontsAndColors();
 
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
@@ -675,25 +677,25 @@ public class MainUserPage {
         }
     }
     public void updateInvestmentsSummary() {
-        investmentsSummary.removeAll();
+        investmentsSummaryPanel.removeAll();
         Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
 
         for (Map.Entry<Integer, JSONObject> investment: investments.entrySet()) {
             InvestmentPanel investmentPanel = new InvestmentPanel(this, investment.getKey(), investment.getValue());
-            investmentsSummary.add(investmentPanel);
+            investmentsSummaryPanel.add(investmentPanel);
         }
-        investmentsSummary.updateUI();
+        investmentsSummaryPanel.updateUI();
     }
     public void updateCreditsSummary() {
-        creditsSummary.removeAll();
+        creditsSummaryPanel.removeAll();
         Map<Integer, JSONObject> credits = connection.getCredits(login.getLogin(), login.getPasswordHash());
 
         for (Map.Entry<Integer, JSONObject> credit: credits.entrySet()) {
             CreditPanel creditPanel = new CreditPanel(this, credit.getKey(), credit.getValue());
-            creditsSummary.add(creditPanel);
+            creditsSummaryPanel.add(creditPanel);
         }
         updateCreditsBalance();
-        creditsSummary.updateUI();
+        creditsSummaryPanel.updateUI();
     }
     private void updateCreditsBalance() {
         if (transfer_accountSelectBox.getItemCount() > 0) {
