@@ -284,66 +284,7 @@ public class Database {
         }
         return account;
     }
-    public Account getAccount(String login, String hashed_password, int accountid) {
-        Account account = null;
-        try {
-            Session session = factory.openSession();
-
-            Query query = session.createQuery("SELECT A FROM Account A, Client C, Login L WHERE C.id=A.owner_id AND L.id = C.login_id AND L.login =:param AND L.passwordhash =:param2 AND A.id=:param3");
-            query.setParameter("param", login);
-            query.setParameter("param2", hashed_password);
-            query.setParameter("param3", accountid);
-
-            if (query.list().size() >= 1)
-                account = (Account) query.list().get(0);
-
-            session.close();
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            factory.close();
-            refresh();
-        }
-        return account;
-    }
-    public boolean checkClient(int accountid) {
-        boolean valid = false;
-        try {
-            Session session = factory.openSession();
-
-            String hql = "FROM Client WHERE id=" + accountid;
-            Query query = session.createQuery(hql);
-            List list = query.list();
-
-            if (list.size() == 1)
-                valid = true;
-            session.close();
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            factory.close();
-            refresh();
-        }
-        return valid;
-    }
-    public boolean checkAccount(int accountid) {
-        boolean valid = false;
-        try {
-            Session session = factory.openSession();
-
-            String hql = "FROM Account WHERE id=" + accountid;
-            Query query = session.createQuery(hql);
-            List list = query.list();
-
-            if (list.size() == 1)
-                valid = true;
-            session.close();
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            factory.close();
-            refresh();
-        }
-        return valid;
-    }
-    public long getTotalSavings(String login, String hashed_password, int currencyid) {
+      public long getTotalSavings(String login, String hashed_password, int currencyid) {
         Long savings = null;
         try {
             Session session = factory.openSession();
@@ -504,25 +445,6 @@ public class Database {
             System.out.println(ex.getMessage());
             factory.close();
             refresh();
-        }
-    }
-    public int addLogin(String _login, String _password) {
-        try {
-            Session session = factory.openSession();
-            org.hibernate.Transaction tx = session.beginTransaction();
-
-            int id = session.createSQLQuery("SELECT MAX(LOGIN_ID) FROM LOGINS").getFirstResult() + 1;
-            Login login = new Login(id, _login, _password);
-            session.save(login);
-
-            tx.commit();
-            session.close();
-            return id;
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            factory.close();
-            refresh();
-            return -1;
         }
     }
     public void addAccount(int currencyid, int ownerid) {

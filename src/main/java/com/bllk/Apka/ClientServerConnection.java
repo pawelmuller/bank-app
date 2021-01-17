@@ -10,8 +10,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClientServerConnection {
-    private String serverAddress = "http://localhost";
-                                // "http://largehadroncollider.tplinkdns.com";
+//    private String serverAddress = "http://localhost";
+    private String serverAddress = "http://largehadroncollider.tplinkdns.com";
 
     public boolean checkConnection() {
         String a = getData("");
