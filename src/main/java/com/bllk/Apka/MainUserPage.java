@@ -459,9 +459,6 @@ public class MainUserPage {
         updateCreditsSummary();
     }
     private void updateFontsAndColors() {
-        Colors colors = new Colors();
-        Fonts fonts = new Fonts();
-
         Font standardFont = Fonts.getStandardFont();
         Font headerFont = Fonts.getHeaderFont();
         Font logoFont = Fonts.getLogoFont();
@@ -624,7 +621,7 @@ public class MainUserPage {
     public void updateAccountsSummary() {
         accountsSummaryPanel.removeAll();
         int column = 0, row = 1, counter = 1, accountsCount = accounts.size();
-        boolean canBeDeleted = true;
+        boolean canBeDeleted;
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(10,10,10,10);

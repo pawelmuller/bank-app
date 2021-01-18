@@ -56,8 +56,14 @@ public class StartWindow {
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
         connection = new ClientServerConnection();
-        if (!connection.checkConnection())
+        if (!connection.checkConnection()) {
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "Server is not responding.\nThe app is going to shut down.",
+                    "Cannot connect to the server",
+                    JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
+        }
         startingPanel = new StartWindow().mainPanel;
         frame.setContentPane(startingPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -162,6 +168,8 @@ public class StartWindow {
         }
     }
     public StartWindow() {
+        new Fonts();
+        new Colors();
         updateFontsAndColors();
         makeErrorLabelsInvisible();
 
@@ -281,9 +289,6 @@ public class StartWindow {
         forgotPasswordButton.addActionListener(e -> changePassword());
     }
     private void updateFontsAndColors() {
-        Colors colors = new Colors();
-        Fonts fonts = new Fonts();
-
         Font standardFont = Fonts.getStandardFont();
         Font headerFont = Fonts.getHeaderFont();
         Font logoFont = Fonts.getLogoFont();
