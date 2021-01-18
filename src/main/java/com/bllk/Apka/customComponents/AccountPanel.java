@@ -144,7 +144,7 @@ public class AccountPanel extends JPanel {
                         "Pole nazwy nie może być puste.",
                         "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             } else {
-                MainUserPage.getConnection().createOrUpdateContact(page.getLogin().getLogin(), page.getLogin().getPasswordHash(), new_name_string, Integer.parseInt(account_number));
+                MainUserPage.getConnection().createOrUpdateContact(MainUserPage.getLogin().getLogin(), MainUserPage.getLogin().getPasswordHash(), new_name_string, Integer.parseInt(account_number));
             }
         }
     }
