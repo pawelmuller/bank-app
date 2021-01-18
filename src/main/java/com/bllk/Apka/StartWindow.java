@@ -43,6 +43,7 @@ public class StartWindow {
     private JLabel register_streetLabel, register_numberLabel, register_cityLabel, register_postcodeLabel, register_countryLabel;
     private JLabel register_loginHeaderLabel, register_personalHeaderLabel;
     private JPanel registerTab;
+    private JScrollPane registerScrollPanel;
 
     private String login, password, repeatedPassword;
     private String name, surname, gender;
@@ -185,6 +186,7 @@ public class StartWindow {
         mainTabbedPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
+            if (mainTabbedPane.getSelectedIndex() == 1) {
                 if (register_yearsComboBox.getItemCount() == 0) {
                     LocalDateTime now = LocalDateTime.now();
                     year = now.getYear();
@@ -194,8 +196,9 @@ public class StartWindow {
                     fillYearComboBox(LocalDateTime.now());
                 }
                 if (register_countriesComboBox.getItemCount() == 0) {
-                    fillCountriesComboBox();
-                }
+                fillCountriesComboBox();
+            }
+            }
             }
         });
         register_yearsComboBox.addActionListener(e -> {
