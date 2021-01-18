@@ -167,6 +167,8 @@ public class StartWindow {
         }
     }
     public StartWindow() {
+        new Fonts();
+        new Colors();
         updateFontsAndColors();
         makeErrorLabelsInvisible();
 
@@ -284,9 +286,6 @@ public class StartWindow {
         forgotPasswordButton.addActionListener(e -> changePassword());
     }
     private void updateFontsAndColors() {
-        Colors colors = new Colors();
-        Fonts fonts = new Fonts();
-
         Font standardFont = Fonts.getStandardFont();
         Font headerFont = Fonts.getHeaderFont();
         Font logoFont = Fonts.getLogoFont();
