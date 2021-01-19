@@ -213,7 +213,7 @@ public class MainUserPage {
                 JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else {
                 try {
-                    long integerValue = (long) Double.parseDouble(value.getText().replace(",",".")) * 100;
+                    long integerValue = Math.round(Double.parseDouble(value.getText().replace(",",".")) * 100);
                     int integerCapPeroid = Integer.parseInt(capPeroid.getText());
 
                     if (accounts.get(accountsToSelect.get(accountBox.getSelectedIndex())).getInt("value") < integerValue)
@@ -305,7 +305,7 @@ public class MainUserPage {
                     login.getLogin(),
                     login.getPasswordHash(),
                     name.getText(),
-                    (long)(Double.parseDouble(value.getText()) * 100),
+                    Math.round(Double.parseDouble(value.getText().replace(",",".")) * 100),
                     interestRate.getValue()/1000.0,
                     commission.getValue()/1000.0,
                     Integer.parseInt((String) months.getValue()),
@@ -414,7 +414,7 @@ public class MainUserPage {
                 int payerID = activePayerAccount.getID();
                 int targetID = Integer.parseInt(transfer_accountNumber.getText());
                 int currencyID = activePayerAccount.getCurrencyID();
-                long moneyValue = (long) (Double.parseDouble(transfer_amount.getText()) * 100);
+                long moneyValue = Math.round(Double.parseDouble(transfer_amount.getText().replace(",", ".")) * 100.0);
                 String title = transfer_title.getText();
 
                 if (activePayerAccount.getID() == targetID) {
