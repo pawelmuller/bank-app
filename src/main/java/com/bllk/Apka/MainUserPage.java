@@ -646,10 +646,15 @@ public class MainUserPage {
         }
 
         Map<Integer, JSONObject> credits = connection.getCredits(login.getLogin(), login.getPasswordHash());
+        Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
         List<String> currencies_used = new ArrayList<>();
 
         for (Map.Entry<Integer, JSONObject> credit : credits.entrySet()) {
             JSONObject values = credit.getValue();
+            currencies_used.add(values.getString("currencyid"));
+        }
+        for (Map.Entry<Integer, JSONObject> investment : investments.entrySet()) {
+            JSONObject values = investment.getValue();
             currencies_used.add(values.getString("currencyid"));
         }
 

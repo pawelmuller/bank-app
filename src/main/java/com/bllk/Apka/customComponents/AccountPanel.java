@@ -120,10 +120,12 @@ public class AccountPanel extends JPanel {
     }
 
     private void deleteAccount() {
-        JOptionPane.showMessageDialog(null,
-                "Potrzebuje implementacji po stronie serwera.",
-                "Uwaga", JOptionPane.WARNING_MESSAGE);
-        System.out.println("Not implemented yet.");
+        MainUserPage.getConnection().removeAccount(MainUserPage.getLogin().getLogin(), MainUserPage.getLogin().getPasswordHash(), Integer.parseInt(account_number));
+        page.updateContacts();
+        page.updateAccounts();
+        page.updateInvestmentsSummary();
+        page.updateAccountsSummary();
+        page.updateMoney();
     }
 
     private void renameAccount() {
