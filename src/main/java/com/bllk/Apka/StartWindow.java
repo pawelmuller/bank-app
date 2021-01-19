@@ -194,19 +194,19 @@ public class StartWindow {
         mainTabbedPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-            if (mainTabbedPane.getSelectedIndex() == 1) {
-                if (register_yearsComboBox.getItemCount() == 0) {
-                    LocalDateTime now = LocalDateTime.now();
-                    year = now.getYear();
-                    month = now.getMonthValue();
-                    day = now.getDayOfMonth();
-                    register_yearsComboBox.removeAllItems();
-                    fillYearComboBox(LocalDateTime.now());
+                if (mainTabbedPane.getSelectedIndex() == 1) {
+                    if (register_yearsComboBox.getItemCount() == 0) {
+                        LocalDateTime now = LocalDateTime.now();
+                        year = now.getYear();
+                        month = now.getMonthValue();
+                        day = now.getDayOfMonth();
+                        register_yearsComboBox.removeAllItems();
+                        fillYearComboBox(LocalDateTime.now());
+                    }
+                    if (register_countriesComboBox.getItemCount() == 0) {
+                        fillCountriesComboBox();
+                    }
                 }
-                if (register_countriesComboBox.getItemCount() == 0) {
-                fillCountriesComboBox();
-            }
-            }
             }
         });
         register_yearsComboBox.addActionListener(e -> {
