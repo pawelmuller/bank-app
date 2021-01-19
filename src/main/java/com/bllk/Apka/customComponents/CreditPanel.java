@@ -21,17 +21,17 @@ public class CreditPanel extends JPanel {
         page = _page;
         credit = _credit;
 
-        JLabel nameLabel = new JLabel(inv.getString("name"));
-        JLabel valueLabel = new JLabel("" + inv.getDouble("value") / 100);
-        JLabel currencyLabel = new JLabel(MainUserPage.getCurrencies().get(inv.getString("currencyid")));
-        JLabel interestLabel = new JLabel(inv.getString("interest"));
-        JLabel commissionLabel = new JLabel(inv.getString("commission"));
-        JLabel RRSOLabel = new JLabel(inv.getString("rrso"));
-        JLabel dateCreatedLabel = new JLabel(inv.getString("datecreated"));
-        JLabel dateEndedLabel = new JLabel(inv.getString("dateended"));
-        JLabel remainingLabel = new JLabel(inv.getString("remaining"));
-        JLabel monthlyLabel = new JLabel(inv.getString("monthly"));
-        JLabel monthsRemainingLabel = new JLabel(inv.getString("monthsremaining"));
+        JLabel nameLabel = new JLabel(credit.getString("name"));
+        JLabel valueLabel = new JLabel("" + credit.getDouble("value") / 100);
+        JLabel currencyLabel = new JLabel(MainUserPage.getCurrencies().get(credit.getString("currencyid")));
+        JLabel interestLabel = new JLabel(credit.getString("interest"));
+        JLabel commissionLabel = new JLabel(credit.getString("commission"));
+        JLabel RRSOLabel = new JLabel(credit.getString("rrso"));
+        JLabel dateCreatedLabel = new JLabel(credit.getString("datecreated"));
+        JLabel dateEndedLabel = new JLabel(credit.getString("dateended"));
+        JLabel remainingLabel = new JLabel(credit.getString("remaining"));
+        JLabel monthlyLabel = new JLabel(credit.getString("monthly"));
+        JLabel monthsRemainingLabel = new JLabel(credit.getString("monthsremaining"));
         JButton payInstallmentButton = new JButton("Spłać ratę kredytu");
 
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
