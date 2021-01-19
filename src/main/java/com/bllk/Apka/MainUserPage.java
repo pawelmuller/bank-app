@@ -472,6 +472,9 @@ public class MainUserPage {
 
         logOutButton.setFont(standardFont);
 
+        creditsSummaryPane.setBackground(Colors.getDarkGrey());
+        investmentsSummaryPane.setBackground(Colors.getDarkGrey());
+
         for (JLabel jLabel : Arrays.asList(idLabel, nameLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
         }
@@ -483,7 +486,8 @@ public class MainUserPage {
         }
 
         for (JPanel jPanel : Arrays.asList(accountsPanel, transactionPanel, transactionHistoryPanel,
-                financialProductsPanel, contactsPanel, settingsPanel, investmentsPanel, creditsPanel, historyPanel)) {
+                financialProductsPanel, contactsPanel, settingsPanel, investmentsPanel, creditsPanel, historyPanel,
+                creditsBalancePanel)) {
             jPanel.setFont(standardFont);
             jPanel.setForeground(Colors.getBrightTextColor());
             jPanel.setBackground(Colors.getDarkGrey());
