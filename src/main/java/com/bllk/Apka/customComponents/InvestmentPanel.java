@@ -107,6 +107,29 @@ public class InvestmentPanel extends JPanel {
             page.updateInvestmentsSummary();
             page.updateAccounts();
         });
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(Colors.getBlue(), 3, true),
+                        investmentName,
+                        TitledBorder.CENTER,
+                        TitledBorder.DEFAULT_POSITION,
+                        Fonts.getStandardFont(),
+                        Colors.getBrightTextColor()
+                ));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
+                        investmentName,
+                        TitledBorder.CENTER,
+                        TitledBorder.DEFAULT_POSITION,
+                        Fonts.getStandardFont(),
+                        Colors.getBrightTextColor()
+                ));
+            }
+        });
     }
 
     int removeInvestmentDialog() {
