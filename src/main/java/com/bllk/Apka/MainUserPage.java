@@ -690,7 +690,7 @@ public class MainUserPage {
             }
             accountsSummaryPanel.add(accountPanel, c);
         }
-        refreshFrame();
+        accountsSummaryPanel.updateUI();
     }
     private void updateContactsSummary() {
         contactsSummary.removeAll();
@@ -733,11 +733,6 @@ public class MainUserPage {
 
             creditsBalance.setText(String.format("%.2f %s", credits_total / 100.0, active_currency_shortcut));
         }
-    }
-    private void refreshFrame() {
-        Dimension dimension = frame.getSize();
-        frame.setSize(dimension.width, dimension.height + 10);
-        frame.setSize(dimension);
     }
 
     public static ClientServerConnection getConnection() {
