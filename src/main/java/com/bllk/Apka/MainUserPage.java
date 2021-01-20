@@ -93,7 +93,7 @@ public class MainUserPage {
         accountsSummaryPanel.setLayout(new GridBagLayout());
         historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
-        investmentsSummaryPanel.setLayout(new BoxLayout(investmentsSummaryPanel, BoxLayout.Y_AXIS));
+        investmentsSummaryPanel.setLayout(new GridBagLayout());
         creditsSummaryPanel.setLayout(new BoxLayout(creditsSummaryPanel, BoxLayout.Y_AXIS));
         updateFontsAndColors();
 
@@ -705,12 +705,54 @@ public class MainUserPage {
         }
     }
     public void updateInvestmentsSummary() {
-        investmentsSummaryPanel.removeAll();
         Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
 
+        int column = 0, row = 1, counter = 1, investmentsCount = investments.size();
+        investmentsSummaryPanel.removeAll();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(10,10,10,10);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridwidth = 1;
+
+        c.gridy = 0;
+
+        if (investmentsCount != 0) {
+            for (int i = 0; i < 4; i++) {
+                JLabel nothing = new JLabel("");
+                c.gridx = i;
+                investmentsSummaryPanel.add(nothing, c);
+            }
+        } else {
+            c.gridx = 0;
+            JLabel noAccountInformation = new JLabel("Nie masz żadnej lokaty. Możesz dodać ją poniżej.");
+            noAccountInformation.setFont(Fonts.getStandardFont());
+            noAccountInformation.setForeground(Colors.getBrightTextColor());
+            investmentsSummaryPanel.add(noAccountInformation, c);
+        }
+
+        c.gridwidth = 2;
+
         for (Map.Entry<Integer, JSONObject> investment: investments.entrySet()) {
+            c.gridx = column % 2;
+            c.gridy = row;
             InvestmentPanel investmentPanel = new InvestmentPanel(this, investment.getKey(), investment.getValue());
-            investmentsSummaryPanel.add(investmentPanel);
+
+            if (counter == investmentsCount) {
+                if (investmentsCount % 2 == 1) column = 1;
+            }
+
+            counter++;
+            c.gridx = column;
+            c.gridy = row;
+            column += 2;
+            if (column % 4 == 0) {
+                column = 0;
+                row++;
+            }
+            investmentsSummaryPanel.add(investmentPanel, c);
         }
         investmentsSummaryPanel.updateUI();
     }
