@@ -49,7 +49,6 @@ public class InvestmentPanel extends JPanel {
 
         this.setBackground(Colors.getGrey());
         this.setPreferredSize(new Dimension(200, 150));
-        //this.setMinimumSize(new Dimension(150, 150));
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;

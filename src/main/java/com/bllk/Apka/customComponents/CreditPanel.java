@@ -36,11 +36,11 @@ public class CreditPanel extends JPanel {
         JLabel monthsRemainingLabel = new JLabel(credit.getString("monthsremaining"));
         JButton payInstallmentButton = new JButton("Spłać ratę kredytu");
 
-        for (JLabel jLabel : Arrays.asList(valueLabel, currencyLabel, interestLabel, commissionLabel, RRSOLabel, dateCreatedLabel, dateEndedLabel, remainingLabel, monthlyLabel, monthsRemainingLabel)) {
+        for (JLabel jLabel : Arrays.asList(valueLabel, currencyLabel, interestLabel, commissionLabel, RRSOLabel,
+                dateCreatedLabel, dateEndedLabel, remainingLabel, monthlyLabel, monthsRemainingLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
             jLabel.setFont(Fonts.getStandardFont());
             jLabel.setPreferredSize(new Dimension(10, 25));
-
         }
         payInstallmentButton.setFont(Fonts.getStandardFont());
 
@@ -50,31 +50,40 @@ public class CreditPanel extends JPanel {
         this.setBackground(Colors.getGrey());
         this.setPreferredSize(new Dimension(200, 150));
 
-        JPanel p1 = new JPanel();
-        p1.setBackground(Colors.getGrey());
-        p1.add(valueLabel);
-        p1.add(currencyLabel);
-        this.add(p1);
-        JPanel p2 = new JPanel();
-        p2.setBackground(Colors.getGrey());
-        p2.add(interestLabel);
-        p2.add(commissionLabel);
-        p2.add(RRSOLabel);
-        this.add(p2);
-        JPanel p3 = new JPanel();
-        p3.setBackground(Colors.getGrey());
-        p3.add(dateCreatedLabel);
-        p3.add(dateEndedLabel);
-        this.add(p3);
-        JPanel p4 = new JPanel();
-        p4.setBackground(Colors.getGrey());
-        p4.add(remainingLabel);
-        p4.add(currencyLabel);
-        p4.add(monthlyLabel);
-        p4.add(currencyLabel);
-        p4.add(monthsRemainingLabel);
-        this.add(p4);
-        this.add(payInstallmentButton);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridwidth = 1;
+
+        c.gridy = 0;
+        c.gridx = 0;
+        c.insets = new Insets(0, 0, 0, 2);
+        this.add(valueLabel, c);
+        c.gridx = 1;
+        c.insets = new Insets(0, 2, 0, 0);
+        this.add(currencyLabel, c);
+
+
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridy = 1;
+
+        c.gridx = 0;
+        c.gridwidth = 2;
+        this.add(interestLabel, c);
+        this.add(commissionLabel, c);
+        this.add(RRSOLabel, c);
+        this.add(dateCreatedLabel, c);
+        this.add(dateEndedLabel, c);
+        this.add(remainingLabel, c);
+        this.add(currencyLabel, c);
+        this.add(monthlyLabel, c);
+        this.add(currencyLabel, c);
+        this.add(monthsRemainingLabel, c);
+
+        c.gridwidth = 2;
+        c.gridx = 0;
+        c.gridy = 2;
+        this.add(payInstallmentButton, c);
 
 
         this.setBorder(BorderFactory.createTitledBorder(
