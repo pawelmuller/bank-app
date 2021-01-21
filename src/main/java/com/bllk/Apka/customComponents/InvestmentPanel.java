@@ -24,7 +24,7 @@ public class InvestmentPanel extends JPanel {
         inv = _inv;
         investmentName = inv.getString("name");
 
-        JLabel valueLabel = new JLabel("" + inv.getDouble("value") / 100);
+        JLabel valueLabel = new JLabel("" + String.format("%.2f", inv.getDouble("value") / 100));
         JLabel currencyLabel = new JLabel(MainUserPage.getCurrencies().get(inv.getString("currencyid")));
         JLabel profitLabel = new JLabel(inv.getString("profit"));
         JLabel yearProfitLabel = new JLabel(inv.getString("yearprofit"));
@@ -33,8 +33,14 @@ public class InvestmentPanel extends JPanel {
 
         JButton closeInvestmentButton = new JButton("Zamknij lokatę");
 
+        JLabel textProfitLabel = new JLabel("Oprocentowanie:");
+        JLabel textYearProfitLabel = new JLabel("Oprocentowanie roczne:");
+        JLabel textCapPeriodLabel = new JLabel("Okres kapitalizacji:");
+        JLabel textDateCreatedLabel = new JLabel("Data utworzenia:");
+
         for (JLabel jLabel : Arrays.asList(yearProfitLabel, capPeriodLabel, dateCreatedLabel,
-                valueLabel, currencyLabel, profitLabel)) {
+                valueLabel, currencyLabel, profitLabel,
+                textProfitLabel, textYearProfitLabel, textCapPeriodLabel, textDateCreatedLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
             jLabel.setFont(Fonts.getStandardFont());
             jLabel.setPreferredSize(new Dimension(10, 25));
@@ -67,18 +73,33 @@ public class InvestmentPanel extends JPanel {
         c.insets = new Insets(0, 0, 0, 0);
         c.gridy = 1;
 
+
         c.gridx = 0;
+        this.add(textProfitLabel, c);
+        c.gridx = 1;
         this.add(profitLabel, c);
+
+        c.gridy = 2;
+        c.gridx = 0;
+        this.add(textYearProfitLabel, c);
         c.gridx = 1;
         this.add(yearProfitLabel, c);
 
-        c.gridwidth = 2;
-        c.gridx = 0;
-        c.gridy = 2;
-        this.add(capPeriodLabel, c);
         c.gridy = 3;
-        this.add(dateCreatedLabel, c);
+        c.gridx = 0;
+        this.add(textCapPeriodLabel, c);
+        c.gridx = 1;
+        this.add(capPeriodLabel, c);
+
         c.gridy = 4;
+        c.gridx = 0;
+        this.add(textDateCreatedLabel, c);
+        c.gridx = 1;
+        this.add(dateCreatedLabel, c);
+
+        c.gridy = 5;
+        c.gridx = 0;
+        c.gridwidth = 2;
         this.add(closeInvestmentButton, c);
 
 
