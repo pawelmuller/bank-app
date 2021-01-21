@@ -301,19 +301,37 @@ public class MainUserPage {
 
         int option = JOptionPane.showConfirmDialog(null, message, "Nowy kredyt", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            connection.createCredit(
-                    login.getLogin(),
-                    login.getPasswordHash(),
-                    name.getText(),
-                    Math.round(Double.parseDouble(value.getText().replace(",",".")) * 100),
-                    interestRate.getValue()/1000.0,
-                    commission.getValue()/1000.0,
-                    Integer.parseInt((String) months.getValue()),
-                    accountsToSelect.get(accountBox.getSelectedIndex())
-            );
-            updateCreditsSummary();
-            updateAccounts();
-            JOptionPane.showMessageDialog(null,"Operacja powiodła się.","Sukces", JOptionPane.ERROR_MESSAGE);
+            class WrongCreditNameException extends Exception
+            { public WrongCreditNameException() {} }
+            class WrongCreditAmountException extends Exception
+            { public WrongCreditAmountException() {} }
+
+            try {
+                if (name.getText().length() < 1 || name.getText().length() > 100)
+                    throw new WrongCreditNameException();
+                long amount = Math.round(Double.parseDouble(value.getText().replace(",", ".")) * 100);
+                if (amount < 10000 || amount > 100000000)
+                    throw new WrongCreditAmountException();
+                connection.createCredit(
+                        login.getLogin(),
+                        login.getPasswordHash(),
+                        name.getText(),
+                        amount,
+                        interestRate.getValue() / 1000.0,
+                        commission.getValue() / 1000.0,
+                        Integer.parseInt((String) months.getValue()),
+                        accountsToSelect.get(accountBox.getSelectedIndex())
+                );
+                updateCreditsSummary();
+                updateAccounts();
+                JOptionPane.showMessageDialog(null, "Operacja powiodła się.", "Sukces", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null,"Błędna wartość liczbowa jednego z parametrów.\nSprawdź, czy wprowadziłeś kwotę kredytu.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            } catch (WrongCreditNameException e) {
+                JOptionPane.showMessageDialog(null,"Błąd w nazwie kredytu.\nNazwa powinna zawierać od 1 do 100 znaków.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            } catch (WrongCreditAmountException e) {
+                JOptionPane.showMessageDialog(null,"Błąd kwoty kredytu.\nKwota kredytu powinna zawierać się od 100 do 1 000 000.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     void changeLoginDialog() {
