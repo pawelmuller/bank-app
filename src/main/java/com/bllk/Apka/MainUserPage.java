@@ -647,15 +647,16 @@ public class MainUserPage {
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(10,10,10,10);
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.NONE;
         c.weightx = 1;
-        c.weighty = 1;
+        c.weighty = 0.1;
         c.gridwidth = 1;
 
         c.gridy = 0;
         if (accountsCount != 0) {
             for (int i = 0; i < 6; i++) {
                 JLabel nothing = new JLabel("");
+                nothing.setMaximumSize(new Dimension(1, 1));
                 c.gridx = i;
                 accountsSummaryPanel.add(nothing, c);
             }
@@ -666,6 +667,10 @@ public class MainUserPage {
             noAccountInformation.setForeground(Colors.getBrightTextColor());
             accountsSummaryPanel.add(noAccountInformation, c);
         }
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 1;
+
 
         Map<Integer, JSONObject> credits = connection.getCredits(login.getLogin(), login.getPasswordHash());
         Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
@@ -740,7 +745,7 @@ public class MainUserPage {
         c.insets = new Insets(10,10,10,10);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
-        c.weighty = 1;
+        c.weighty = 0.1;
         c.gridwidth = 1;
 
         c.gridy = 0;
@@ -748,6 +753,7 @@ public class MainUserPage {
         if (productsCount != 0) {
             for (int i = 0; i < 4; i++) {
                 JLabel nothing = new JLabel("");
+                nothing.setMaximumSize(new Dimension(1, 1));
                 c.gridx = i;
                 panelToUpdate.add(nothing, c);
             }
@@ -766,6 +772,8 @@ public class MainUserPage {
             panelToUpdate.add(noAccountInformation, c);
         }
 
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 1;
         c.gridwidth = 2;
 
 
