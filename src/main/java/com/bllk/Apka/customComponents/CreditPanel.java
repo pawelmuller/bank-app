@@ -47,6 +47,9 @@ public class CreditPanel extends JPanel {
         }
         payInstallmentButton.setFont(Fonts.getStandardFont());
 
+        valueLabel.setHorizontalAlignment(JLabel.RIGHT);
+        currencyLabel1.setHorizontalAlignment(JLabel.LEFT);
+
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
