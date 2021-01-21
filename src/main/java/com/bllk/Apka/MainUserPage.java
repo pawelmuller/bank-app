@@ -94,7 +94,7 @@ public class MainUserPage {
         historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         investmentsSummaryPanel.setLayout(new GridBagLayout());
-        creditsSummaryPanel.setLayout(new BoxLayout(creditsSummaryPanel, BoxLayout.Y_AXIS));
+        creditsSummaryPanel.setLayout(new GridBagLayout());
         updateFontsAndColors();
 
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());

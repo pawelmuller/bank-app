@@ -6,6 +6,7 @@ import com.bllk.Apka.resourceHandlers.Fonts;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CreditPanel extends JPanel {
+    String creditName;
     MainUserPage page;
     JSONObject credit;
 
@@ -20,8 +22,8 @@ public class CreditPanel extends JPanel {
         super();
         page = _page;
         credit = _credit;
+        creditName = credit.getString("name");
 
-        JLabel nameLabel = new JLabel(credit.getString("name"));
         JLabel valueLabel = new JLabel("" + credit.getDouble("value") / 100);
         JLabel currencyLabel = new JLabel(MainUserPage.getCurrencies().get(credit.getString("currencyid")));
         JLabel interestLabel = new JLabel(credit.getString("interest"));
@@ -34,22 +36,20 @@ public class CreditPanel extends JPanel {
         JLabel monthsRemainingLabel = new JLabel(credit.getString("monthsremaining"));
         JButton payInstallmentButton = new JButton("Spłać ratę kredytu");
 
-        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        for (JLabel jLabel : Arrays.asList(nameLabel, valueLabel, currencyLabel, interestLabel, commissionLabel, RRSOLabel, dateCreatedLabel, dateEndedLabel, remainingLabel, monthlyLabel, monthsRemainingLabel)) {
+        for (JLabel jLabel : Arrays.asList(valueLabel, currencyLabel, interestLabel, commissionLabel, RRSOLabel, dateCreatedLabel, dateEndedLabel, remainingLabel, monthlyLabel, monthsRemainingLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
             jLabel.setFont(Fonts.getStandardFont());
+            jLabel.setPreferredSize(new Dimension(10, 25));
+
         }
         payInstallmentButton.setFont(Fonts.getStandardFont());
-        dateCreatedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
 
         this.setBackground(Colors.getGrey());
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBorder(BorderFactory.createLineBorder(Colors.getOrange(), 3, true));
-        this.setMaximumSize(new Dimension(200, 200));
-        this.setPreferredSize(new Dimension(150, -1));
+        this.setPreferredSize(new Dimension(200, 150));
 
-        this.add(nameLabel);
         JPanel p1 = new JPanel();
         p1.setBackground(Colors.getGrey());
         p1.add(valueLabel);
@@ -74,7 +74,17 @@ public class CreditPanel extends JPanel {
         p4.add(currencyLabel);
         p4.add(monthsRemainingLabel);
         this.add(p4);
+        this.add(payInstallmentButton);
 
+
+        this.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
+                creditName,
+                TitledBorder.CENTER,
+                TitledBorder.DEFAULT_POSITION,
+                Fonts.getStandardFont(),
+                Colors.getBrightTextColor()
+        ));
         payInstallmentButton.addActionListener(e -> {
             int accountID = payInstallmentDialog();
             if (accountID >= 0) {
@@ -83,8 +93,6 @@ public class CreditPanel extends JPanel {
                 page.updateAccounts();
             }
         });
-        payInstallmentButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.add(payInstallmentButton);
     }
 
     int payInstallmentDialog() {
