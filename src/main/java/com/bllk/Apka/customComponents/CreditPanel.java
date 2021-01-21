@@ -24,8 +24,11 @@ public class CreditPanel extends JPanel {
         credit = _credit;
         creditName = credit.getString("name");
 
-        JLabel valueLabel = new JLabel("" + credit.getDouble("value") / 100);
-        JLabel currencyLabel = new JLabel(MainUserPage.getCurrencies().get(credit.getString("currencyid")));
+        JLabel valueLabel = new JLabel("" + String.format("%.2f", credit.getDouble("value") / 100));
+        JLabel currencyLabel1 = new JLabel(MainUserPage.getCurrencies().get(credit.getString("currencyid")));
+        JLabel currencyLabel2 = new JLabel(MainUserPage.getCurrencies().get(credit.getString("currencyid")));
+        JLabel currencyLabel3 = new JLabel(MainUserPage.getCurrencies().get(credit.getString("currencyid")));
+
         JLabel interestLabel = new JLabel(credit.getString("interest"));
         JLabel commissionLabel = new JLabel(credit.getString("commission"));
         JLabel RRSOLabel = new JLabel(credit.getString("rrso"));
@@ -36,11 +39,11 @@ public class CreditPanel extends JPanel {
         JLabel monthsRemainingLabel = new JLabel(credit.getString("monthsremaining"));
         JButton payInstallmentButton = new JButton("Spłać ratę kredytu");
 
-        for (JLabel jLabel : Arrays.asList(valueLabel, currencyLabel, interestLabel, commissionLabel, RRSOLabel,
+        for (JLabel jLabel : Arrays.asList(valueLabel, currencyLabel1, currencyLabel2, currencyLabel3, interestLabel, commissionLabel, RRSOLabel,
                 dateCreatedLabel, dateEndedLabel, remainingLabel, monthlyLabel, monthsRemainingLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
             jLabel.setFont(Fonts.getStandardFont());
-            jLabel.setPreferredSize(new Dimension(10, 25));
+            jLabel.setPreferredSize(new Dimension(50, 25));
         }
         payInstallmentButton.setFont(Fonts.getStandardFont());
 
@@ -48,7 +51,7 @@ public class CreditPanel extends JPanel {
         GridBagConstraints c = new GridBagConstraints();
 
         this.setBackground(Colors.getGrey());
-        this.setPreferredSize(new Dimension(200, 150));
+        this.setPreferredSize(new Dimension(200, 200));
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
@@ -61,28 +64,47 @@ public class CreditPanel extends JPanel {
         this.add(valueLabel, c);
         c.gridx = 1;
         c.insets = new Insets(0, 2, 0, 0);
-        this.add(currencyLabel, c);
+        this.add(currencyLabel1, c);
 
 
-        c.insets = new Insets(0, 0, 0, 0);
+        c.insets = new Insets(2, 2, 2, 2);
+
         c.gridy = 1;
-
         c.gridx = 0;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
         this.add(interestLabel, c);
+
+        c.gridy = 2;
         this.add(commissionLabel, c);
+
+        c.gridy = 3;
         this.add(RRSOLabel, c);
+
+        c.gridy = 4;
         this.add(dateCreatedLabel, c);
+
+        c.gridy = 5;
         this.add(dateEndedLabel, c);
+
+        c.gridy = 6;
+        c.gridx = 0;
         this.add(remainingLabel, c);
-        this.add(currencyLabel, c);
+        c.gridx = 1;
+        this.add(currencyLabel2, c);
+
+        c.gridy = 7;
+        c.gridx = 0;
         this.add(monthlyLabel, c);
-        this.add(currencyLabel, c);
+        c.gridx = 1;
+        this.add(currencyLabel3, c);
+
+        c.gridy = 8;
+        c.gridx = 0;
         this.add(monthsRemainingLabel, c);
 
         c.gridwidth = 2;
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 9;
         this.add(payInstallmentButton, c);
 
 
