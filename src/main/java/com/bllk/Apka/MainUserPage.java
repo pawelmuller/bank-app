@@ -706,9 +706,17 @@ public class MainUserPage {
     }
     public void updateInvestmentsSummary() {
         Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
+        updateFinancialProductSummary(investmentsSummaryPanel, investments, (char) 0);
+    }
+    public void updateCreditsSummary() {
+        Map<Integer, JSONObject> credits = connection.getCredits(login.getLogin(), login.getPasswordHash());
 
-        int column = 0, row = 1, counter = 1, investmentsCount = investments.size();
-        investmentsSummaryPanel.removeAll();
+        updateFinancialProductSummary(creditsSummaryPanel, credits, (char) 1);
+        updateCreditsBalance();
+    }
+    private void updateFinancialProductSummary(JPanel panelToUpdate, Map<Integer, JSONObject> mapOfProducts, char productType) {
+        int column = 0, row = 1, counter = 1, productsCount = mapOfProducts.size();
+        panelToUpdate.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(10,10,10,10);
@@ -719,29 +727,47 @@ public class MainUserPage {
 
         c.gridy = 0;
 
-        if (investmentsCount != 0) {
+        if (productsCount != 0) {
             for (int i = 0; i < 4; i++) {
                 JLabel nothing = new JLabel("");
                 c.gridx = i;
-                investmentsSummaryPanel.add(nothing, c);
+                panelToUpdate.add(nothing, c);
             }
         } else {
+            JLabel noAccountInformation;
             c.gridx = 0;
-            JLabel noAccountInformation = new JLabel("Nie masz żadnej lokaty. Możesz dodać ją poniżej.");
+            if (productType == 0) {
+                noAccountInformation = new JLabel("Nie masz żadnej lokaty. Możesz dodać ją poniżej.");
+            } else if (productType == 1) {
+                noAccountInformation = new JLabel("Nie masz żadnego kredytu. Możesz dodać go poniżej.");
+            } else {
+                noAccountInformation = new JLabel("Nie masz żadnego produktu. Możesz dodać go poniżej.");
+            }
             noAccountInformation.setFont(Fonts.getStandardFont());
             noAccountInformation.setForeground(Colors.getBrightTextColor());
-            investmentsSummaryPanel.add(noAccountInformation, c);
+            panelToUpdate.add(noAccountInformation, c);
         }
 
         c.gridwidth = 2;
 
-        for (Map.Entry<Integer, JSONObject> investment: investments.entrySet()) {
+
+        for (Map.Entry<Integer, JSONObject> product: mapOfProducts.entrySet()) {
             c.gridx = column % 2;
             c.gridy = row;
-            InvestmentPanel investmentPanel = new InvestmentPanel(this, investment.getKey(), investment.getValue());
 
-            if (counter == investmentsCount) {
-                if (investmentsCount % 2 == 1) column = 1;
+            JPanel productPanel;
+
+            if (productType == 0) {
+                productPanel = new InvestmentPanel(this, product.getKey(), product.getValue());
+            } else if (productType == 1) {
+                productPanel = new CreditPanel(this, product.getKey(), product.getValue());
+            } else {
+                productPanel = new JPanel();
+                productPanel.add(new JLabel("Błąd."));
+            }
+
+            if (counter == productsCount) {
+                if (productsCount % 2 == 1) column = 1;
             }
 
             counter++;
@@ -752,20 +778,9 @@ public class MainUserPage {
                 column = 0;
                 row++;
             }
-            investmentsSummaryPanel.add(investmentPanel, c);
+            panelToUpdate.add(productPanel, c);
         }
-        investmentsSummaryPanel.updateUI();
-    }
-    public void updateCreditsSummary() {
-        creditsSummaryPanel.removeAll();
-        Map<Integer, JSONObject> credits = connection.getCredits(login.getLogin(), login.getPasswordHash());
-
-        for (Map.Entry<Integer, JSONObject> credit: credits.entrySet()) {
-            CreditPanel creditPanel = new CreditPanel(this, credit.getKey(), credit.getValue());
-            creditsSummaryPanel.add(creditPanel);
-        }
-        updateCreditsBalance();
-        creditsSummaryPanel.updateUI();
+        panelToUpdate.updateUI();
     }
     private void updateCreditsBalance() {
         if (transfer_accountSelectBox.getItemCount() > 0) {
