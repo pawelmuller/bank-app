@@ -43,7 +43,7 @@ public class InvestmentPanel extends JPanel {
                 textProfitLabel, textYearProfitLabel, textCapPeriodLabel, textDateCreatedLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
             jLabel.setFont(Fonts.getStandardFont());
-            jLabel.setPreferredSize(new Dimension(10, 25));
+            jLabel.setPreferredSize(new Dimension(50, 25));
         }
         closeInvestmentButton.setFont(Fonts.getStandardFont());
 
@@ -70,7 +70,7 @@ public class InvestmentPanel extends JPanel {
         this.add(currencyLabel, c);
 
 
-        c.insets = new Insets(0, 0, 0, 0);
+        c.insets = new Insets(2, 2, 2, 2);
         c.gridy = 1;
 
 
@@ -102,14 +102,13 @@ public class InvestmentPanel extends JPanel {
         c.gridwidth = 2;
         this.add(closeInvestmentButton, c);
 
-
         if (inv.has("dateended")) {
+            c.gridy = 6;
             JLabel dateEndedLabel = new JLabel(inv.getString("dateended"));
             dateEndedLabel.setForeground(Colors.getBrightTextColor());
-            this.add(dateEndedLabel);
+            dateEndedLabel.setFont(Fonts.getStandardFont());
+            this.add(dateEndedLabel, c);
         }
-
-
 
         this.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
@@ -138,7 +137,6 @@ public class InvestmentPanel extends JPanel {
                         Colors.getBrightTextColor()
                 ));
             }
-
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 setBorder(BorderFactory.createTitledBorder(
                         BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
