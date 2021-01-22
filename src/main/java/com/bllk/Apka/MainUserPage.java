@@ -642,7 +642,10 @@ public class MainUserPage {
             user_currencies.add(account.getValue().getInt("currencyid"));
         }
 
+        tabbedPane.setEnabledAt(1, transfer_accountSelectBox.getItemCount() != 0);
         tabbedPane.setEnabledAt(2, transfer_accountSelectBox.getItemCount() != 0);
+        tabbedPane.setEnabledAt(3, transfer_accountSelectBox.getItemCount() != 0);
+        tabbedPane.setEnabledAt(4, transfer_accountSelectBox.getItemCount() != 0);
         updateMoney();
         updateAccountsSummary();
     }
