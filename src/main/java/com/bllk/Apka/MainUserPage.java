@@ -74,13 +74,13 @@ public class MainUserPage {
     private JScrollPane creditsSummaryPane;
     private JScrollPane investmentsSummaryPane;
 
-    List<Integer> user_currencies = new ArrayList<>();
+    List<Integer> userCurrencies = new ArrayList<>();
     List<Integer> accountBoxUnformatted = new ArrayList<>();
     Account activePayerAccount = null;
     Map <String, Integer> contacts;
     private static Map <Integer, JSONObject> accounts;
     private static Map <String, String> currencies;
-    boolean lock_combobox = false;
+    boolean lockComboBox = false;
 
     public MainUserPage(Client _client, Login _login) {
         client = _client;
@@ -111,11 +111,11 @@ public class MainUserPage {
             updateContactsSummary();
         });
         transfer_contactBox.addActionListener(e -> {
-            if (!lock_combobox) {
+            if (!lockComboBox) {
                 String name = (String) transfer_contactBox.getSelectedItem();
-                Integer accountid = contacts.get(name);
-                if (accountid != null)
-                    transfer_accountNumber.setText("" + accountid);
+                Integer accountID = contacts.get(name);
+                if (accountID != null)
+                    transfer_accountNumber.setText("" + accountID);
             }
         });
         createAccountButton.addActionListener(e -> createAccountDialog());
@@ -135,7 +135,7 @@ public class MainUserPage {
         JComboBox<String> currenciesComboBox = new JComboBox<>();
 
         for (Map.Entry<String, String> currency: currencies.entrySet()) {
-            if (!user_currencies.contains(Integer.parseInt(currency.getKey()))) {
+            if (!userCurrencies.contains(Integer.parseInt(currency.getKey()))) {
                 currenciesComboBox.addItem(currency.getValue());
             }
         }
@@ -148,8 +148,8 @@ public class MainUserPage {
         if (option == JOptionPane.OK_OPTION) {
             for (Map.Entry<String, String> entry : currencies.entrySet()) {
                 if (Objects.equals(currenciesComboBox.getSelectedItem(), entry.getValue())) {
-                    int currency_id = Integer.parseInt(entry.getKey());
-                    connection.createAccount(login.getLogin(), login.getPasswordHash(), currency_id);
+                    int currencyID = Integer.parseInt(entry.getKey());
+                    connection.createAccount(login.getLogin(), login.getPasswordHash(), currencyID);
                 }
             }
         }
@@ -161,12 +161,12 @@ public class MainUserPage {
         List<Integer> accountsToSelect = new ArrayList<>();
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
             accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()),
-                    account.getValue().getLong("value") / 100,
+                    account.getValue().getDouble("value") / 100,
                     currencies.get(account.getValue().getString("currencyid"))));
             accountsToSelect.add(account.getKey());
         }
         JTextField value = new JTextField();
-        JTextField capPeroid = new JTextField();
+        JTextField capitalisationPeriod = new JTextField();
 
         JLabel profitRateValue = new JLabel("Oprocentowanie: 5,0%");
         JLabel yearProfitRateValue = new JLabel("Oprocentowanie roczne: 5,0%");
@@ -202,24 +202,24 @@ public class MainUserPage {
                 "Kwota początkowa", value,
                 profitRateValue, profitRate,
                 yearProfitRateValue, yearProfitRate,
-                "Okres kapitalizacji [mies.]", capPeroid,
+                "Okres kapitalizacji [mies.]", capitalisationPeriod,
         };
 
         int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            if (name.getText().isEmpty() || value.getText().isEmpty() || capPeroid.getText().isEmpty())
+            if (name.getText().isEmpty() || value.getText().isEmpty() || capitalisationPeriod.getText().isEmpty())
                 JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else {
                 try {
                     long integerValue = Math.round(Double.parseDouble(value.getText().replace(",",".")) * 100);
-                    int integerCapPeroid = Integer.parseInt(capPeroid.getText());
+                    int integerCapitalisationPeriod = Integer.parseInt(capitalisationPeriod.getText());
 
                     if (accounts.get(accountsToSelect.get(accountBox.getSelectedIndex())).getLong("value") < integerValue)
                         JOptionPane.showMessageDialog(null,"Nie posiadasz tyle pieniędzy.", "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                     else {
                         connection.createInvestment(login.getLogin(), login.getPasswordHash(), name.getText(),
                                 integerValue, profitRate.getValue() / 1000.0, yearProfitRate.getValue() / 1000.0,
-                                integerCapPeroid, accountsToSelect.get(accountBox.getSelectedIndex()));
+                                integerCapitalisationPeriod, accountsToSelect.get(accountBox.getSelectedIndex()));
                         updateInvestmentsSummary();
                         updateAccounts();
                         JOptionPane.showMessageDialog(null,"Operacja powiodła się.","Sukces", JOptionPane.INFORMATION_MESSAGE);
@@ -235,7 +235,7 @@ public class MainUserPage {
         JComboBox<String> accountBox = new JComboBox<>();
         List<Integer> accountsToSelect = new ArrayList<>();
         for (Map.Entry<Integer, JSONObject> account : accounts.entrySet()) {
-            accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getLong("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
+            accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getDouble("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
             accountsToSelect.add(account.getKey());
         }
         JTextField value = new JTextField();
@@ -333,26 +333,26 @@ public class MainUserPage {
         }
     }
     void changeLoginDialog() {
-        JTextField new_name = new JTextField();
+        JTextField newName = new JTextField();
 
         Object[] message = {
                 "Czy chcesz zmienić login '" + login.getLogin() + "'?",
-                "Nowy login:", new_name
+                "Nowy login:", newName
         };
 
         int option = JOptionPane.showConfirmDialog(null, message,
                 "Zmiana loginu", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (option == JOptionPane.OK_OPTION) {
-            String new_name_string = new_name.getText();
-            if (new_name_string.isEmpty())
+            String newNameString = newName.getText();
+            if (newNameString.isEmpty())
                 JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
-            else if (connection.checkLogin(new_name_string))
+            else if (connection.checkLogin(newNameString))
                 JOptionPane.showMessageDialog(null,"Login jest zajęty.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else {
-                if (connection.updateLogin(login.getLogin(), login.getPasswordHash(), new_name_string)) {
+                if (connection.updateLogin(login.getLogin(), login.getPasswordHash(), newNameString)) {
                     JOptionPane.showMessageDialog(null,"Zmiana loginu powiodła się.","Sukces", JOptionPane.INFORMATION_MESSAGE);
-                    loginField.setText(new_name_string);
+                    loginField.setText(newNameString);
                 }
                 else
                     JOptionPane.showMessageDialog(null,"Serwer odrzucił żądanie","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
@@ -558,8 +558,8 @@ public class MainUserPage {
         creditsBalanceLabel.setFont(Fonts.getHeaderFont());
         creditsBalanceLabel.setForeground(Colors.getBrightTextColor());
 
-        String system_name = System.getProperty("os.name");
-        if (!system_name.startsWith("Windows")) {
+        String systemName = System.getProperty("os.name");
+        if (!systemName.startsWith("Windows")) {
             tabbedPane.setForeground(Colors.getOrange());
             financialProductsTabbedPane.setForeground(Colors.getOrange());
         }
@@ -568,7 +568,7 @@ public class MainUserPage {
      *  Runs updateTransactionTable()
      */
     public void updateContacts() {
-        lock_combobox = true;
+        lockComboBox = true;
         contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
         String temp = (String) transfer_contactBox.getSelectedItem();
         transfer_contactBox.removeAllItems();
@@ -577,12 +577,11 @@ public class MainUserPage {
             transfer_contactBox.addItem(contact.getKey());
         transfer_contactBox.setSelectedItem(temp);
         updateTransactionTable();
-        lock_combobox = false;
+        lockComboBox = false;
     }
     /** Updates transaction table. */
     private void updateTransactionTable() {
         historyPanel.removeAll();
-        //String[] columns = new String[] {"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"};
         Map<Integer, JSONObject> transactions = connection.getTransactions(login.getLogin(), login.getPasswordHash());
         char type = 0;
 
@@ -618,9 +617,9 @@ public class MainUserPage {
             if (transfer_accountSelectBox.getItemCount() > 0) {
                 activePayerAccount = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
                 String activeCurrencyShortcut = currencies.get("" + activePayerAccount.getCurrencyID());
-                long total_balance = connection.getTotalSavings(login.getLogin(), login.getPasswordHash(), activePayerAccount.getCurrencyID());
+                long totalBalance = connection.getTotalSavings(login.getLogin(), login.getPasswordHash(), activePayerAccount.getCurrencyID());
 
-                transfer_currentBalance.setText(String.format("%.2f %s", total_balance / 100.0, activeCurrencyShortcut));
+                transfer_currentBalance.setText(String.format("%.2f %s", totalBalance / 100.0, activeCurrencyShortcut));
                 transfer_payerBalance.setText(String.format("%.2f %s", activePayerAccount.getValue() / 100.0, activeCurrencyShortcut));
                 transfer_currencyLabel.setText(activeCurrencyShortcut);
             }
@@ -639,7 +638,7 @@ public class MainUserPage {
                     currencies.get(account.getValue().getString("currencyid")))
             );
             accountBoxUnformatted.add(account.getKey());
-            user_currencies.add(account.getValue().getInt("currencyid"));
+            userCurrencies.add(account.getValue().getInt("currencyid"));
         }
 
         tabbedPane.setEnabledAt(1, transfer_accountSelectBox.getItemCount() != 0);
@@ -683,15 +682,15 @@ public class MainUserPage {
 
         Map<Integer, JSONObject> credits = connection.getCredits(login.getLogin(), login.getPasswordHash());
         Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
-        List<String> currencies_used = new ArrayList<>();
+        List<String> currenciesUsed = new ArrayList<>();
 
         for (Map.Entry<Integer, JSONObject> credit : credits.entrySet()) {
             JSONObject values = credit.getValue();
-            currencies_used.add(values.getString("currencyid"));
+            currenciesUsed.add(values.getString("currencyid"));
         }
         for (Map.Entry<Integer, JSONObject> investment : investments.entrySet()) {
             JSONObject values = investment.getValue();
-            currencies_used.add(values.getString("currencyid"));
+            currenciesUsed.add(values.getString("currencyid"));
         }
 
         c.gridwidth = 2;
@@ -701,7 +700,7 @@ public class MainUserPage {
             long balance = account.getValue().getLong("value");
             String formattedBalance = String.format("%.2f", balance/100.0);
 
-            canBeDeleted = !currencies_used.contains(currencyID);
+            canBeDeleted = !currenciesUsed.contains(currencyID);
 
             AccountPanel accountPanel = new AccountPanel(getContactIfPossible(account.getKey()),
                     "" + account.getKey(), formattedBalance, currencyName, this, canBeDeleted);
@@ -820,10 +819,10 @@ public class MainUserPage {
     private void updateCreditsBalance() {
         if (transfer_accountSelectBox.getItemCount() > 0) {
             activePayerAccount = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
-            String active_currency_shortcut = currencies.get("" + activePayerAccount.getCurrencyID());
-            long credits_total = connection.getTotalCredits(login.getLogin(), login.getPasswordHash(), activePayerAccount.getCurrencyID());
+            String activeCurrencyShortcut = currencies.get("" + activePayerAccount.getCurrencyID());
+            long creditsTotal = connection.getTotalCredits(login.getLogin(), login.getPasswordHash(), activePayerAccount.getCurrencyID());
 
-            creditsBalance.setText(String.format("%.2f %s", credits_total / 100.0, active_currency_shortcut));
+            creditsBalance.setText(String.format("%.2f %s", creditsTotal / 100.0, activeCurrencyShortcut));
         }
     }
 
