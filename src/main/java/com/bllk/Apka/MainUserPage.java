@@ -612,7 +612,7 @@ public class MainUserPage {
     }
     /** Updates money header in transaction screen. */
     public void updateMoney() {
-        if (transfer_accountSelectBox.getItemCount() > 0) {
+        if (transfer_accountSelectBox.getItemCount() > 0 && accountBoxUnformatted.size() > 0) {
             activePayerAccount = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
             if (transfer_accountSelectBox.getItemCount() > 0) {
                 activePayerAccount = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
