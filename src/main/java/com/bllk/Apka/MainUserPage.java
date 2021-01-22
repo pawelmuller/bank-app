@@ -404,7 +404,7 @@ public class MainUserPage {
             int accountID = Integer.parseInt(transfer_accountNumber.getText());
             String name = (String) transfer_contactBox.getSelectedItem();
             if (!name.equals("")) {
-                if (!connection.checkAccount(Integer.parseInt(transfer_accountNumber.getText())))
+                if (!connection.checkAccountExistence(Integer.parseInt(transfer_accountNumber.getText())))
                     throw new NumberFormatException();
                 connection.createOrUpdateContact(login.getLogin(), login.getPasswordHash(), name, accountID);
                 transfer_message.setText(String.format("Konto %d: %s", accountID, name));
@@ -437,7 +437,7 @@ public class MainUserPage {
                     transfer_message.setText("Błąd transakcji: Konto docelowe jest takie samo jak początkowe.");
                 } else if (moneyValue > activePayerAccount.getValue() || moneyValue <= 0) {
                     transfer_message.setText("Błąd transakcji: Błędna kwota przelewu.");
-                } else if (!connection.checkAccount(Integer.parseInt(transfer_accountNumber.getText()))) {
+                } else if (!connection.checkAccountExistence(Integer.parseInt(transfer_accountNumber.getText()))) {
                     transfer_message.setText("Błąd transakcji: Konto docelowe nie istnieje.");
                 } else if (transfer_title.getText().equals("")) {
                     transfer_message.setText("Błąd transakcji: Tytuł nie może być pusty.");
