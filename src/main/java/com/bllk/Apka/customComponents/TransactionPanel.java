@@ -20,7 +20,7 @@ public class TransactionPanel extends JPanel {
     Color color;
 
     //"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"
-    public TransactionPanel(String _sender, String _receiver, String _date, String _title, Double _unformattedAmount,
+    public TransactionPanel(String _sender, String _receiver, String _date, String _title, Long _unformattedAmount,
                             String _currency, char _type) {
         super();
         sender = _sender;

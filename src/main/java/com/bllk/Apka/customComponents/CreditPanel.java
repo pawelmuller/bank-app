@@ -26,7 +26,7 @@ public class CreditPanel extends JPanel {
 
         String currencyShortcut = MainUserPage.getCurrencies().get(credit.getString("currencyid"));
 
-        JLabel valueLabel = new JLabel(String.format("%.2f", credit.getDouble("value") / 100) + " " + currencyShortcut, SwingConstants.CENTER);
+        JLabel valueLabel = new JLabel(String.format("%.2f", credit.getLong("value") / 100) + " " + currencyShortcut, SwingConstants.CENTER);
         //valueLabel.setFont(new Font(valueLabel.getFont() + "", Font.PLAIN, valueLabel.getFont().getSize() * 2));
 
         JLabel interestLabel        = new JLabel("Oprocentowanie: " + credit.getDouble("interest")   * 100 + "%");

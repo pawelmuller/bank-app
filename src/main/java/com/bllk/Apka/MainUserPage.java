@@ -161,7 +161,7 @@ public class MainUserPage {
         List<Integer> accountsToSelect = new ArrayList<>();
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
             accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()),
-                    account.getValue().getDouble("value") / 100,
+                    account.getValue().getLong("value") / 100,
                     currencies.get(account.getValue().getString("currencyid"))));
             accountsToSelect.add(account.getKey());
         }
@@ -214,7 +214,7 @@ public class MainUserPage {
                     long integerValue = Math.round(Double.parseDouble(value.getText().replace(",",".")) * 100);
                     int integerCapPeroid = Integer.parseInt(capPeroid.getText());
 
-                    if (accounts.get(accountsToSelect.get(accountBox.getSelectedIndex())).getInt("value") < integerValue)
+                    if (accounts.get(accountsToSelect.get(accountBox.getSelectedIndex())).getLong("value") < integerValue)
                         JOptionPane.showMessageDialog(null,"Nie posiadasz tyle pieniędzy.", "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                     else {
                         connection.createInvestment(login.getLogin(), login.getPasswordHash(), name.getText(),
@@ -235,7 +235,7 @@ public class MainUserPage {
         JComboBox<String> accountBox = new JComboBox<>();
         List<Integer> accountsToSelect = new ArrayList<>();
         for (Map.Entry<Integer, JSONObject> account : accounts.entrySet()) {
-            accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getDouble("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
+            accountBox.addItem(String.format("%s (%.2f %s)", getContactIfPossible(account.getKey()), account.getValue().getLong("value") / 100, currencies.get(account.getValue().getString("currencyid"))));
             accountsToSelect.add(account.getKey());
         }
         JTextField value = new JTextField();
@@ -604,7 +604,7 @@ public class MainUserPage {
                             getContactIfPossible(receiverID),
                             transaction.getString("date"),
                             transaction.getString("title"),
-                            transaction.getDouble("value"),
+                            transaction.getLong("value"),
                             currencies.get(transaction.getString("currencyid")),
                             type
                             ));
@@ -698,7 +698,7 @@ public class MainUserPage {
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
             String currencyID = account.getValue().getString("currencyid");
             String currencyName = currencies.get(currencyID);
-            int balance = account.getValue().getInt("value");
+            long balance = account.getValue().getLong("value");
             String formattedBalance = String.format("%.2f", balance/100.0);
 
             canBeDeleted = !currencies_used.contains(currencyID);

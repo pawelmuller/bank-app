@@ -430,7 +430,7 @@ public class Database {
             q.setParameter("param", payer.getCurrencyID());
             q.setParameter("param2", target.getCurrencyID());
             float modifier = ((BigDecimal) q.list().get(0)).floatValue();
-            int new_amount = (int) (amount*modifier);
+            long new_amount = (long) (amount*modifier);
 
             target.setValue(i+new_amount);
             session.update(target);

@@ -340,7 +340,7 @@ public class Server extends HttpServlet {
                         int payerid = Integer.parseInt(request.getParameter("payerid"));
                         int targetid = Integer.parseInt(request.getParameter("targetid"));
                         String title = request.getParameter("title");
-                        int amount = Integer.parseInt(request.getParameter("amount"));
+                        long amount = Long.parseLong(request.getParameter("amount"));
                         int currency = Integer.parseInt(request.getParameter("currencyid"));
                         data.makeTransfer(payerid, targetid, amount, title, currency);
                     }
@@ -370,7 +370,7 @@ public class Server extends HttpServlet {
                     String login = request.getParameter("login");
                     String password = request.getParameter("passwordhash");
                     String name = request.getParameter("name");
-                    int value = Integer.parseInt(request.getParameter("value"));
+                    long value = Long.parseLong(request.getParameter("value"));
                     double profrate = Double.parseDouble(request.getParameter("profrate"));
                     double yearprofrate = Double.parseDouble(request.getParameter("yearprofrate"));
                     int capperoid = Integer.parseInt(request.getParameter("capperoid"));
@@ -386,7 +386,7 @@ public class Server extends HttpServlet {
                     String login = request.getParameter("login");
                     String password = request.getParameter("passwordhash");
                     String name = request.getParameter("name");
-                    int value = Integer.parseInt(request.getParameter("value"));
+                    long value = Long.parseLong(request.getParameter("value"));
                     double interest = Double.parseDouble(request.getParameter("interest"));
                     double commission = Double.parseDouble(request.getParameter("commission"));
                     int months = Integer.parseInt(request.getParameter("months"));
