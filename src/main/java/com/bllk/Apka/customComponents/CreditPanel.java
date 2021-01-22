@@ -24,22 +24,22 @@ public class CreditPanel extends JPanel {
         credit = _credit;
         creditName = credit.getString("name");
 
-        JLabel valueLabel = new JLabel("" + String.format("%.2f", credit.getDouble("value") / 100));
-        JLabel currencyLabel1 = new JLabel(MainUserPage.getCurrencies().get(credit.getString("currencyid")));
-        JLabel currencyLabel2 = new JLabel(MainUserPage.getCurrencies().get(credit.getString("currencyid")));
-        JLabel currencyLabel3 = new JLabel(MainUserPage.getCurrencies().get(credit.getString("currencyid")));
+        String currencyShortcut = MainUserPage.getCurrencies().get(credit.getString("currencyid"));
 
-        JLabel interestLabel = new JLabel(credit.getString("interest"));
-        JLabel commissionLabel = new JLabel(credit.getString("commission"));
-        JLabel RRSOLabel = new JLabel(credit.getString("rrso"));
-        JLabel dateCreatedLabel = new JLabel(credit.getString("datecreated"));
-        JLabel dateEndedLabel = new JLabel(credit.getString("dateended"));
-        JLabel remainingLabel = new JLabel(credit.getString("remaining"));
-        JLabel monthlyLabel = new JLabel(credit.getString("monthly"));
-        JLabel monthsRemainingLabel = new JLabel(credit.getString("monthsremaining"));
+        JLabel valueLabel = new JLabel(String.format("%.2f", credit.getDouble("value") / 100) + currencyShortcut, SwingConstants.CENTER);
+
+        JLabel interestLabel        = new JLabel("Oprocentowanie: "   + credit.getDouble("interest")   * 100 + "%");
+        JLabel commissionLabel      = new JLabel("Prowizja: " + credit.getDouble("commission") * 100 + "%");
+        JLabel RRSOLabel            = new JLabel("RRSO: "       + credit.getDouble("rrso")       * 100 + "%");
+        JLabel dateCreatedLabel     = new JLabel(credit.getString("datecreated"));
+        JLabel dateEndedLabel       = new JLabel(credit.getString("dateended"));
+        JLabel remainingLabel       = new JLabel("Suma do spłaty: " + credit.getDouble("remaining") / 100 + currencyShortcut);
+        JLabel monthlyLabel         = new JLabel("Miesięczna rata: "  + credit.getDouble("monthly")   / 100 + currencyShortcut);
+        JLabel monthsRemainingLabel = new JLabel("Liczba pozostałych rat: " + credit.getString("monthsremaining"));
+
         JButton payInstallmentButton = new JButton("Spłać ratę kredytu");
 
-        for (JLabel jLabel : Arrays.asList(valueLabel, currencyLabel1, currencyLabel2, currencyLabel3, interestLabel, commissionLabel, RRSOLabel,
+        for (JLabel jLabel : Arrays.asList(valueLabel, interestLabel, commissionLabel, RRSOLabel,
                 dateCreatedLabel, dateEndedLabel, remainingLabel, monthlyLabel, monthsRemainingLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
             jLabel.setFont(Fonts.getStandardFont());
@@ -58,54 +58,35 @@ public class CreditPanel extends JPanel {
         c.weighty = 1;
         c.gridwidth = 1;
 
+        List<JLabel> list_of_labels = Arrays.asList(remainingLabel, interestLabel, monthlyLabel, commissionLabel, monthsRemainingLabel, RRSOLabel);
+
         c.gridy = 0;
         c.gridx = 0;
-        c.insets = new Insets(0, 0, 0, 2);
+        c.gridwidth = GridBagConstraints.REMAINDER;
         this.add(valueLabel, c);
-        c.gridx = 1;
-        c.insets = new Insets(0, 2, 0, 0);
-        this.add(currencyLabel1, c);
+        //c.insets = new Insets(0, 1, 0, 1);
 
+        for (int i = 0; i < list_of_labels.size();) {
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1 + i/2;
+            this.add(list_of_labels.get(i++), c);
+            c.gridwidth = 2; // GridBagConstraints.REMAINDER;
+            c.gridx = 3;
+            this.add(list_of_labels.get(i++), c);
+        }
 
-        c.insets = new Insets(2, 2, 2, 2);
-
-        c.gridy = 1;
-        c.gridx = 0;
         c.gridwidth = 1;
-        this.add(interestLabel, c);
-
-        c.gridy = 2;
-        this.add(commissionLabel, c);
-
-        c.gridy = 3;
-        this.add(RRSOLabel, c);
-
         c.gridy = 4;
-        this.add(dateCreatedLabel, c);
-
-        c.gridy = 5;
-        this.add(dateEndedLabel, c);
-
-        c.gridy = 6;
         c.gridx = 0;
-        this.add(remainingLabel, c);
-        c.gridx = 1;
-        this.add(currencyLabel2, c);
-
-        c.gridy = 7;
-        c.gridx = 0;
-        this.add(monthlyLabel, c);
-        c.gridx = 1;
-        this.add(currencyLabel3, c);
-
-        c.gridy = 8;
-        c.gridx = 0;
-        this.add(monthsRemainingLabel, c);
-
-        c.gridwidth = 2;
-        c.gridx = 0;
-        c.gridy = 9;
+        // this.add(new JLabel(""), c);
+        // c.gridx = 1;
+        // c.gridwidth = 3;
+        c.gridwidth = GridBagConstraints.REMAINDER;;
         this.add(payInstallmentButton, c);
+        // c.gridx = 4;
+        // c.gridwidth = 1;
+        // this.add(new JLabel(""), c);
 
 
         this.setBorder(BorderFactory.createTitledBorder(
