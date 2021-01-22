@@ -19,7 +19,6 @@ public class TransactionPanel extends JPanel {
     char type;
     Color color;
 
-    //"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"
     public TransactionPanel(String _sender, String _receiver, String _date, String _title, Long _unformattedAmount,
                             String _currency, char _type) {
         super();
@@ -72,7 +71,8 @@ public class TransactionPanel extends JPanel {
         JLabel arrowLabel = new JLabel("⭢");
 
         // Colors and fonts
-        for (JLabel label : Arrays.asList(signLabel, senderLabel, receiverLabel, dateLabel, titleLabel, amountLabel, arrowLabel)) {
+        for (JLabel label : Arrays.asList(signLabel, senderLabel, receiverLabel, dateLabel,
+                titleLabel, amountLabel,arrowLabel)) {
             label.setFont(Fonts.getStandardFont());
             label.setForeground(Colors.getBrightTextColor());
             label.setPreferredSize(new Dimension(10, 25));
@@ -111,7 +111,6 @@ public class TransactionPanel extends JPanel {
         c.gridwidth = 3;
         this.add(titleLabel, c);
 
-        //dateLabel.setPreferredSize(new Dimension(100, 50));
         dateLabel.setForeground(Colors.getBrightGrey());
         c.weightx = 1;
         c.gridx = 4;

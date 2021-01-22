@@ -27,7 +27,8 @@ public class ContactPanel extends JPanel {
         deleteButton.setFont(Fonts.getStandardFont());
 
         deleteButton.addActionListener(e -> {
-            MainUserPage.getConnection().removeContact(MainUserPage.getLogin().getLogin(), MainUserPage.getLogin().getPasswordHash(), targetID);
+            MainUserPage.getConnection().removeContact(MainUserPage.getLogin().getLogin(),
+                    MainUserPage.getLogin().getPasswordHash(), targetID);
             page.updateContacts();
             parent.remove(this);
             parent.updateUI();
