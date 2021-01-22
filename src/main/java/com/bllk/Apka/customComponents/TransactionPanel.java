@@ -121,7 +121,7 @@ public class TransactionPanel extends JPanel {
         amountLabel.setForeground(color);
         amountLabel.setFont(Fonts.getHeaderFont().deriveFont(26f));
         amountLabel.setHorizontalAlignment(JLabel.RIGHT);
-        amountLabel.setPreferredSize(new Dimension(120, 50));
+        amountLabel.setPreferredSize(new Dimension(250, 50));
         c.insets = new Insets(0, 0, 0, 2);
         c.weightx = 0;
         c.gridx = 6;
