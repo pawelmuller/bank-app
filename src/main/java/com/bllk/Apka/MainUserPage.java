@@ -89,18 +89,16 @@ public class MainUserPage {
         idLabel.setText("Numer klienta: " + client.getID());
         loginField.setText(login.getLogin());
         currencies = connection.getCurrencies();
+        accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
         accountsSummaryPanel.setLayout(new GridBagLayout());
         historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
         investmentsSummaryPanel.setLayout(new GridBagLayout());
         creditsSummaryPanel.setLayout(new GridBagLayout());
+
         updateFontsAndColors();
-
-        accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
-
         updateAll();
-
         transfer_sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> {
             StartWindow.startingPanel.setSize(currentPanel.getSize());
@@ -466,16 +464,16 @@ public class MainUserPage {
         return String.valueOf(value);
     }
 
+    /** Updates everything. */
     private void updateAll() {
         updateContacts();
         updateAccounts();
-        updateTransactionTable();
-        updateAccountsSummary();
         updateContactsSummary();
         updateCreditsBalance();
         updateInvestmentsSummary();
         updateCreditsSummary();
     }
+    /** Updates fonts of labels and sets backgrounds of fields. */
     private void updateFontsAndColors() {
         Font standardFont = Fonts.getStandardFont();
         Font headerFont = Fonts.getHeaderFont();
@@ -566,6 +564,9 @@ public class MainUserPage {
             financialProductsTabbedPane.setForeground(Colors.getOrange());
         }
     }
+    /** Updates contacts in transactions combobox.
+     *  Runs updateTransactionTable()
+     */
     public void updateContacts() {
         lock_combobox = true;
         contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
@@ -578,6 +579,7 @@ public class MainUserPage {
         updateTransactionTable();
         lock_combobox = false;
     }
+    /** Updates transaction table. */
     private void updateTransactionTable() {
         historyPanel.removeAll();
         //String[] columns = new String[] {"Od", "Do", "Data", "Tytuł", "Wartość", "Waluta"};
@@ -609,6 +611,7 @@ public class MainUserPage {
             historyPanel.add(new Box.Filler(new Dimension(1, 1), new Dimension(100, 1), new Dimension(600, 1)));
         }
     }
+    /** Updates money header in transaction screen. */
     public void updateMoney() {
         if (transfer_accountSelectBox.getItemCount() > 0) {
             activePayerAccount = connection.getAccount(login.getLogin(), login.getPasswordHash(), accountBoxUnformatted.get(transfer_accountSelectBox.getSelectedIndex()));
@@ -623,6 +626,9 @@ public class MainUserPage {
             }
         }
     }
+    /** Updates accounts in transaction combobox.
+     *  Runs updateMoney() and updateAccountsSummary()
+     */
     public void updateAccounts() {
         transfer_accountSelectBox.removeAllItems();
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
