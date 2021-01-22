@@ -30,12 +30,12 @@ public class CreditPanel extends JPanel {
         //valueLabel.setFont(new Font(valueLabel.getFont() + "", Font.PLAIN, valueLabel.getFont().getSize() * 2));
 
         JLabel interestLabel        = new JLabel("Oprocentowanie: "   + credit.getDouble("interest")   * 100 + "%");
-        JLabel commissionLabel      = new JLabel("Prowizja: " + credit.getDouble("commission") * 100 + "%");
-        JLabel RRSOLabel            = new JLabel("RRSO: "       + credit.getDouble("rrso")       * 100 + "%");
+        JLabel commissionLabel      = new JLabel("Prowizja: "         + credit.getDouble("commission") * 100 + "%");
+        JLabel RRSOLabel            = new JLabel("RRSO: "             + credit.getDouble("rrso")       * 100 + "%");
         JLabel dateCreatedLabel     = new JLabel("Data rozpoczęcia kredytu: " + credit.getString("datecreated").substring(0, 10));
         JLabel dateEndedLabel       = new JLabel("Data zakończenia kredytu: " + credit.getString("dateended").substring(0, 10));
-        JLabel remainingLabel       = new JLabel("Suma do spłaty: " + credit.getDouble("remaining") / 100 + " " + currencyShortcut);
-        JLabel monthlyLabel         = new JLabel("Miesięczna rata: "  + credit.getDouble("monthly")   / 100 + " " + currencyShortcut);
+        JLabel remainingLabel       = new JLabel("Suma do spłaty: "         + String.format("%.2f", credit.getDouble("remaining") / 100) + " " + currencyShortcut);
+        JLabel monthlyLabel         = new JLabel("Miesięczna rata: "        + String.format("%.2f", credit.getDouble("monthly") / 100) + " " + currencyShortcut);
         JLabel monthsRemainingLabel = new JLabel("Liczba pozostałych rat: " + credit.getString("monthsremaining"));
 
         JButton payInstallmentButton = new JButton("Spłać ratę kredytu");
