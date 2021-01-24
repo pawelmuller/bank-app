@@ -8,8 +8,6 @@ import org.json.JSONObject;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -79,7 +77,7 @@ public class CreditPanel extends JPanel {
         c.gridwidth = 1;
         c.gridy++;
         c.gridx = 0;
-        c.gridwidth = GridBagConstraints.REMAINDER;;
+        c.gridwidth = GridBagConstraints.REMAINDER;
         this.add(payInstallmentButton, c);
 
         this.setBorder(BorderFactory.createTitledBorder(
