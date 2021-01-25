@@ -463,6 +463,15 @@ public class MainUserPage {
                 return contact.getKey();
         return String.valueOf(value);
     }
+    public String getContactIfPossible(String value) {
+        try {
+            int value_parsed = Integer.parseInt(value);
+            return getContactIfPossible(value_parsed);
+        }
+        catch (NumberFormatException ex) {
+            return value;
+        }
+    }
 
     /** Updates everything. */
     private void updateAll() {
@@ -570,6 +579,7 @@ public class MainUserPage {
     public void updateContacts() {
         lockComboBox = true;
         contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
+        contacts.put("(Konto usunięte)", -1);
         String temp = (String) transfer_contactBox.getSelectedItem();
         transfer_contactBox.removeAllItems();
         transfer_contactBox.addItem("");
@@ -586,8 +596,19 @@ public class MainUserPage {
         char type = 0;
 
         for (JSONObject transaction: transactions.values()) {
-            int senderID = transaction.getInt("senderid");
-            int receiverID = transaction.getInt("receiverid");
+            String senderID_string = transaction.getString("senderid");
+            String receiverID_string = transaction.getString("receiverid");
+            int senderID, receiverID;
+
+            if (senderID_string.equals("null"))
+                senderID = -1;
+            else
+                senderID = Integer.parseInt(senderID_string);
+
+            if (receiverID_string.equals("null"))
+                receiverID = -1;
+            else
+                receiverID = Integer.parseInt(receiverID_string);
 
             if (accounts.containsKey(senderID) && !accounts.containsKey(receiverID)) {
                 type = 0; // outgoing
@@ -728,7 +749,7 @@ public class MainUserPage {
         Map<String, Integer> contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
 
         for (Map.Entry<String, Integer> contact: contacts.entrySet()) {
-            if (!accounts.containsKey(contact.getValue())) {
+            if (!accounts.containsKey(contact.getValue()) && contact.getValue() != -1) {
                 ContactPanel contactPanel = new ContactPanel(contactsSummary, this, contact.getValue(), contact.getKey());
                 contactsSummary.add(contactPanel);
                 contactsSummary.add(new JSeparator());
