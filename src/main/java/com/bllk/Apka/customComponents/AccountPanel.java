@@ -117,9 +117,6 @@ public class AccountPanel extends JPanel {
                 MainUserPage.getLogin().getPasswordHash(), Integer.parseInt(accountNumber));
             page.updateContacts();
             page.updateAccounts();
-            page.updateInvestmentsSummary();
-            page.updateAccountsSummary();
-            page.updateMoney();
         }).start();
     }
     private void renameAccount() {
