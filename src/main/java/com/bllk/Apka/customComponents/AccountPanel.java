@@ -107,27 +107,21 @@ public class AccountPanel extends JPanel {
                 ));
             }
         });
+
         deleteAccountButton.addActionListener(e -> deleteAccount());
-        renameAccountButton.addActionListener(e -> {
-            renameAccount();
+        renameAccountButton.addActionListener(e -> renameAccount());
+    }
+    private void deleteAccount() {
+        new Thread(() -> {
+            MainUserPage.getConnection().removeAccount(MainUserPage.getLogin().getLogin(),
+                MainUserPage.getLogin().getPasswordHash(), Integer.parseInt(accountNumber));
             page.updateContacts();
             page.updateAccounts();
             page.updateInvestmentsSummary();
             page.updateAccountsSummary();
             page.updateMoney();
-        });
+        }).start();
     }
-
-    private void deleteAccount() {
-        MainUserPage.getConnection().removeAccount(MainUserPage.getLogin().getLogin(),
-                MainUserPage.getLogin().getPasswordHash(), Integer.parseInt(accountNumber));
-        page.updateContacts();
-        page.updateAccounts();
-        page.updateInvestmentsSummary();
-        page.updateAccountsSummary();
-        page.updateMoney();
-    }
-
     private void renameAccount() {
         JTextField newName = new JTextField();
         String newNameString;
@@ -146,8 +140,15 @@ public class AccountPanel extends JPanel {
                         "Pole nazwy nie może być puste.",
                         "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             } else {
-                MainUserPage.getConnection().createOrUpdateContact(MainUserPage.getLogin().getLogin(),
+                new Thread(() -> {
+                    MainUserPage.getConnection().createOrUpdateContact(MainUserPage.getLogin().getLogin(),
                         MainUserPage.getLogin().getPasswordHash(), newNameString, Integer.parseInt(accountNumber));
+                    page.updateContacts();
+                    page.updateAccounts();
+                    page.updateInvestmentsSummary();
+                    page.updateAccountsSummary();
+                    page.updateMoney();
+                }).start();
             }
         }
     }

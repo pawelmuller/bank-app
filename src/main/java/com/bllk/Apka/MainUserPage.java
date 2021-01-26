@@ -99,6 +99,7 @@ public class MainUserPage {
 
         updateFontsAndColors();
         updateAll();
+
         transfer_sendMoneyButton.addActionListener(e -> makeTransaction());
         logOutButton.addActionListener(e -> {
             StartWindow.startingPanel.setSize(currentPanel.getSize());
@@ -153,7 +154,7 @@ public class MainUserPage {
                 }
             }
         }
-        updateAccounts();
+        new Thread(this::updateAccounts).start();
     }
     void addInvestmentDialog() {
         JTextField name = new JTextField();
@@ -220,8 +221,10 @@ public class MainUserPage {
                         connection.createInvestment(login.getLogin(), login.getPasswordHash(), name.getText(),
                                 integerValue, profitRate.getValue() / 1000.0, yearProfitRate.getValue() / 1000.0,
                                 integerCapitalisationPeriod, accountsToSelect.get(accountBox.getSelectedIndex()));
-                        updateInvestmentsSummary();
-                        updateAccounts();
+                        new Thread(() -> {
+                            updateInvestmentsSummary();
+                            updateAccounts();
+                        }).start();
                         JOptionPane.showMessageDialog(null,"Operacja powiodła się.","Sukces", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (NumberFormatException ex) {
@@ -320,8 +323,10 @@ public class MainUserPage {
                         Integer.parseInt((String) months.getValue()),
                         accountsToSelect.get(accountBox.getSelectedIndex())
                 );
-                updateCreditsSummary();
-                updateAccounts();
+                new Thread(() -> {
+                    updateCreditsSummary();
+                    updateAccounts();
+                }).start();
                 JOptionPane.showMessageDialog(null, "Operacja powiodła się.", "Sukces", JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null,"Błędna wartość liczbowa jednego z parametrów.\nSprawdź, czy wprowadziłeś kwotę kredytu.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
@@ -445,9 +450,11 @@ public class MainUserPage {
                     if (connection.getBasicAccount(targetID).getCurrencyID() == currencyID || (connection.getBasicAccount(targetID).getCurrencyID() != currencyID && currencyChangeWarning())) {
                         transfer_message.setText(String.format("Przesłano %.2f %s na konto %d.", moneyValue / 100.0, currencies.get("" + activePayerAccount.getCurrencyID()), targetID));
                         connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payerID, targetID, title, moneyValue, currencyID);
-                        updateMoney();
-                        updateTransactionTable();
-                        updateAccountsSummary();
+                        new Thread(() -> {
+                            updateMoney();
+                            updateTransactionTable();
+                            updateAccountsSummary();
+                        }).start();
                     }
                 }
             }
