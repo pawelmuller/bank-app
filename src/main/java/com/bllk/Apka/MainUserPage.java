@@ -6,6 +6,7 @@ import com.bllk.Apka.resourceHandlers.Fonts;
 import com.bllk.Mapclasses.Account;
 import com.bllk.Mapclasses.Client;
 import com.bllk.Mapclasses.Login;
+import com.google.common.base.CharMatcher;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -352,6 +353,8 @@ public class MainUserPage {
             String newNameString = newName.getText();
             if (newNameString.isEmpty())
                 JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+            else if (!CharMatcher.ascii().matchesAllOf(newNameString))
+                JOptionPane.showMessageDialog(null,"Login może składać się tylko ze znaków ASCII.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else if (connection.checkLogin(newNameString))
                 JOptionPane.showMessageDialog(null,"Login jest zajęty.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else {
@@ -752,7 +755,7 @@ public class MainUserPage {
         }
         accountsSummaryPanel.updateUI();
     }
-    private void updateContactsSummary() {
+    public void updateContactsSummary() {
         contactsSummary.removeAll();
         Map<String, Integer> contacts = connection.getContacts(login.getLogin(), login.getPasswordHash());
 
