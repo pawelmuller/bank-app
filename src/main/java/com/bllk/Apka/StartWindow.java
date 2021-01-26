@@ -52,6 +52,7 @@ public class StartWindow {
     private boolean isDataValid;
 
     static final Integer passwordMinimumLength = 8, passwordMaximumLength = 30;
+    static final Integer loginMinimumLength = 8, loginMaximumLength = 30;
 
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
@@ -391,7 +392,7 @@ public class StartWindow {
         register_mainErrorLabel.setVisible(false);
     }
     private boolean areAllFieldsValid() {
-        login = getDataFromField(register_login, register_loginErrorLabel, 8, 30);
+        login = getLoginFromField(register_login, register_loginErrorLabel);
         password = getPasswordFromField(register_password, register_passwordErrorLabel, 8, 30);
         repeatedPassword = getPasswordFromField(register_repeatPassword, register_repeatPasswordErrorLabel, 8, 30);
         name = getDataFromField(register_name, register_nameErrorLabel, 0, 60);
@@ -427,13 +428,13 @@ public class StartWindow {
             return null;
         }
     }
-    private String getLoginFromField(JTextField loginField, JLabel labelToModify, int minLength, int maxLength) {
+    private String getLoginFromField(JTextField loginField, JLabel labelToModify) {
         String inputData = loginField.getText();
         int inputLength = inputData.length();
         boolean is_valid;
         boolean isAscii = CharMatcher.ascii().matchesAllOf(inputData);
 
-        is_valid = validateDataFromField(labelToModify, inputLength, minLength, maxLength, "Login");
+        is_valid = validateDataFromField(labelToModify, inputLength, StartWindow.loginMinimumLength, StartWindow.loginMaximumLength, "Login");
 
         if (is_valid && isAscii) {
             isDataValid = true;
