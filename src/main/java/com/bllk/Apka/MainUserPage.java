@@ -127,7 +127,7 @@ public class MainUserPage {
         logoLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                updateAll();
+                new Thread(() -> updateAll()).start();
             }
         });
     }

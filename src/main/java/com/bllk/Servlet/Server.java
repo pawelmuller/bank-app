@@ -337,9 +337,16 @@ public class Server extends HttpServlet {
                     try {
                         String login = request.getParameter("login");
                         String newPasswordHash = request.getParameter("passwordhash");
-                        data.updatePassword(login, newPasswordHash);
+                        if (!login.isEmpty() && newPasswordHash.isEmpty()) {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            data.updatePassword(login, newPasswordHash);
+                        }
+                        else
+                            throw new Exception("Bad request");
                     }
-                    catch (Exception ignored) {}
+                    catch (Exception ex) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    }
                 }
             break;
             case 2:
