@@ -760,7 +760,8 @@ public class MainUserPage {
             if (!accounts.containsKey(contact.getValue()) && contact.getValue() != -1) {
                 ContactPanel contactPanel = new ContactPanel(contactsSummary, this, contact.getValue(), contact.getKey());
                 contactsSummary.add(contactPanel);
-                contactsSummary.add(new JSeparator());
+                contactsSummary.add(new Box.Filler(new Dimension(1, 5), new Dimension(100, 5), new Dimension(600, 5)));
+
             }
         }
     }

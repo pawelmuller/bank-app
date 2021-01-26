@@ -23,7 +23,7 @@ public class ContactPanel extends JPanel {
                 Colors.getBrightTextColor()
         ));
 
-        JButton deleteButton = new JButton("Usuń");
+        JButton deleteButton = new JButton("Usuń kontakt");
         deleteButton.setFont(Fonts.getStandardFont());
 
         deleteButton.addActionListener(e -> {
@@ -34,5 +34,28 @@ public class ContactPanel extends JPanel {
             parent.updateUI();
         });
         this.add(deleteButton);
+
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(Colors.getBlue(), 3, true),
+                        name + " (nr " + targetID + ")",
+                        TitledBorder.CENTER,
+                        TitledBorder.DEFAULT_POSITION,
+                        Fonts.getStandardFont(),
+                        Colors.getBrightTextColor()
+                ));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(Colors.getOrange(), 3, true),
+                        name + " (nr " + targetID + ")",
+                        TitledBorder.CENTER,
+                        TitledBorder.DEFAULT_POSITION,
+                        Fonts.getStandardFont(),
+                        Colors.getBrightTextColor()
+                ));
+            }
+        });
     }
 }
