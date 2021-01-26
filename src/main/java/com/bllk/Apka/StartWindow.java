@@ -43,7 +43,6 @@ public class StartWindow {
     private JLabel register_streetLabel, register_numberLabel, register_cityLabel, register_postcodeLabel, register_countryLabel;
     private JLabel register_loginHeaderLabel, register_personalHeaderLabel;
     private JPanel registerTab;
-    private JScrollPane registerScrollPanel;
 
     private String login, password, repeatedPassword;
     private String name, surname, gender;
@@ -169,7 +168,6 @@ public class StartWindow {
     }
     public StartWindow() {
         new Fonts();
-        new Colors();
         updateFontsAndColors();
         makeErrorLabelsInvisible();
 
