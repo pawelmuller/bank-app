@@ -2,8 +2,8 @@ package com.bllk.Apka;
 
 import com.bllk.Apka.resourceHandlers.Colors;
 import com.bllk.Apka.resourceHandlers.Fonts;
-import com.bllk.Servlet.mapclasses.Client;
-import com.bllk.Servlet.mapclasses.Login;
+import com.bllk.Mapclasses.Client;
+import com.bllk.Mapclasses.Login;
 
 import javax.swing.*;
 import java.awt.*;

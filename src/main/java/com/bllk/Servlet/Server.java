@@ -1,6 +1,6 @@
 package com.bllk.Servlet;
 
-import com.bllk.Servlet.mapclasses.*;
+import com.bllk.Mapclasses.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

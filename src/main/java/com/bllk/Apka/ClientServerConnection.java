@@ -1,7 +1,7 @@
 package com.bllk.Apka;
 
-import com.bllk.Servlet.mapclasses.Account;
-import com.bllk.Servlet.mapclasses.Client;
+import com.bllk.Mapclasses.Account;
+import com.bllk.Mapclasses.Client;
 import org.json.JSONObject;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -255,7 +255,7 @@ public class ClientServerConnection {
                 return true;
             }
             else
-                throw new Exception("Something went wrong.");
+                throw new Exception("POST failed: " + responseCode);
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());

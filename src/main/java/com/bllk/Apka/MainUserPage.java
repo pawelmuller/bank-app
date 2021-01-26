@@ -3,9 +3,9 @@ package com.bllk.Apka;
 import com.bllk.Apka.customComponents.*;
 import com.bllk.Apka.resourceHandlers.Colors;
 import com.bllk.Apka.resourceHandlers.Fonts;
-import com.bllk.Servlet.mapclasses.Account;
-import com.bllk.Servlet.mapclasses.Client;
-import com.bllk.Servlet.mapclasses.Login;
+import com.bllk.Mapclasses.Account;
+import com.bllk.Mapclasses.Client;
+import com.bllk.Mapclasses.Login;
 import org.json.JSONObject;
 
 import javax.swing.*;

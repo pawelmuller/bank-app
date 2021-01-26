@@ -1,6 +1,6 @@
 package com.bllk.Servlet;
-import com.bllk.Servlet.mapclasses.*;
-import com.bllk.Servlet.mapclasses.Currency;
+import com.bllk.Mapclasses.*;
+import com.bllk.Mapclasses.Currency;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -284,7 +284,7 @@ public class Database {
         }
         return account;
     }
-    public long getTotalSavings(String login, String hashedPassword, int currencyID) {
+    public Long getTotalSavings(String login, String hashedPassword, int currencyID) {
         Long savings = null;
         try {
             Session session = factory.openSession();
@@ -305,7 +305,7 @@ public class Database {
         }
         return savings;
     }
-    public long getTotalCredits(String login, String hashedPassword, int currencyID) {
+    public Long getTotalCredits(String login, String hashedPassword, int currencyID) {
         Long credits = null;
         try {
             Session session = factory.openSession();
