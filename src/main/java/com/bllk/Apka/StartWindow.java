@@ -36,7 +36,6 @@ public class StartWindow {
     private JLabel register_loginErrorLabel, register_passwordErrorLabel, register_repeatPasswordErrorLabel;
     private JLabel register_nameErrorLabel, register_surnameErrorLabel, register_genderErrorLabel;
     private JLabel register_address1ErrorLabel, register_address2ErrorLabel;
-    private JLabel register_mainErrorLabel;
     private JLabel loginLabel, passwordLabel;
     private JLabel register_loginLabel, register_passwordLabel, register_repeatPasswordLabel;
     private JLabel register_nameLabel, register_surnameLabel, register_birthDateLabel, register_genderLabel;
@@ -232,17 +231,17 @@ public class StartWindow {
     }
     private void performRegister() {
         if (areAllFieldsValid()) {
-            register_mainErrorLabel.setVisible(false);
             String password_hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
             String date = year + "-" + month + "-" + day;
             connection.createClient(name, surname, date, gender, street, buildingNumber, city, postcode, country, login, password_hash);
-            register_mainErrorLabel.setText("Konto zostało utworzone. Możesz się zalogować :)");
-            register_mainErrorLabel.setForeground(Color.green);
+            JOptionPane.showMessageDialog(null,
+                    "Założono konto.\nMożesz się zalogować :D",
+                    "Operacja powiodła się", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            register_mainErrorLabel.setForeground(Color.red);
-            register_mainErrorLabel.setText("Formularz został błędnie uzupełniony.");
+            JOptionPane.showMessageDialog(null,
+                    "Formularz został błędnie uzupełniony.",
+                    "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
         }
-        register_mainErrorLabel.setVisible(true);
     }
     private void changePassword() {
         JTextField login = new JTextField();
@@ -393,7 +392,6 @@ public class StartWindow {
         register_genderErrorLabel.setVisible(false);
         register_address1ErrorLabel.setVisible(false);
         register_address2ErrorLabel.setVisible(false);
-        register_mainErrorLabel.setVisible(false);
     }
     private boolean areAllFieldsValid() {
         login = getLoginFromField(register_login, register_loginErrorLabel);
