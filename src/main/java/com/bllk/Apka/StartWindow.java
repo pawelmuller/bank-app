@@ -4,6 +4,7 @@ import com.bllk.Apka.resourceHandlers.Colors;
 import com.bllk.Apka.resourceHandlers.Fonts;
 import com.bllk.Mapclasses.Client;
 import com.bllk.Mapclasses.Login;
+import com.google.common.base.CharMatcher;
 
 import javax.swing.*;
 import java.awt.*;
@@ -425,6 +426,23 @@ public class StartWindow {
             return null;
         }
     }
+    private String getLoginFromField(JTextField loginField, JLabel labelToModify, int minLength, int maxLength) {
+        String inputData = loginField.getText();
+        int inputLength = inputData.length();
+        boolean is_valid;
+        boolean isAscii = CharMatcher.ascii().matchesAllOf(inputData);
+
+        is_valid = validateDataFromField(labelToModify, inputLength, minLength, maxLength, "Login");
+
+        if (is_valid && isAscii) {
+            isDataValid = true;
+            return inputData;
+        } else {
+            isDataValid = false;
+            return null;
+        }
+    }
+
     private String getPasswordFromField(JPasswordField passwordField, JLabel labelToModify, int minLength, int maxLength) {
         String inputData = String.valueOf(passwordField.getPassword());
         int inputLength = inputData.length();
@@ -465,7 +483,11 @@ public class StartWindow {
             isDataValid = false;
             return;
         }
-        if (connection.checkLogin(login)) {
+        if (!CharMatcher.ascii().matchesAllOf(login)) {
+            isDataValid = false;
+            register_loginErrorLabel.setText("Login może składać się tylko ze znaków ASCII.");
+            register_loginErrorLabel.setVisible(true);
+        } else if (connection.checkLogin(login)) {
             isDataValid = false;
             register_loginErrorLabel.setText("Podany login już istnieje w bazie.");
             register_loginErrorLabel.setVisible(true);
