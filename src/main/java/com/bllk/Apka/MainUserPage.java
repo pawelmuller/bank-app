@@ -408,7 +408,8 @@ public class MainUserPage {
         try {
             int accountID = Integer.parseInt(transfer_accountNumber.getText());
             String name = (String) transfer_contactBox.getSelectedItem();
-            if (!name.equals("")) {
+
+            if (name != null && !name.equals("")) {
                 if (!connection.checkAccountExistence(Integer.parseInt(transfer_accountNumber.getText())))
                     throw new NumberFormatException();
                 connection.createOrUpdateContact(login.getLogin(), login.getPasswordHash(), name, accountID);
