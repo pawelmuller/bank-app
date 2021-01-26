@@ -2,10 +2,10 @@ package com.bllk.Apka.resourceHandlers;
 
 import java.awt.*;
 
-public final class Colors {
+public class Colors {
     private static Color brightTextColor, orange, blue, darkGrey, grey, lightGrey, brightGrey, red, green;
 
-    private Colors() {
+    public Colors() {
         brightTextColor = Color.decode("#EEEEEE");
         blue = Color.decode("#1891FF");
         orange = Color.decode("#FF7F00");

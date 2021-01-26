@@ -168,6 +168,7 @@ public class StartWindow {
     }
     public StartWindow() {
         new Fonts();
+        new Colors();
         updateFontsAndColors();
         makeErrorLabelsInvisible();
 
