@@ -7,6 +7,8 @@ import com.bllk.Mapclasses.Login;
 import com.google.common.base.CharMatcher;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDateTime;
@@ -98,25 +100,22 @@ public class StartWindow {
                 }
             }
         });
-        mainTabbedPane.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (mainTabbedPane.getSelectedIndex() == 1) {
-                    if (register_yearsComboBox.getItemCount() == 0) {
-                        LocalDateTime now = LocalDateTime.now();
-                        year = now.getYear();
-                        month = now.getMonthValue();
-                        day = now.getDayOfMonth();
-                        register_yearsComboBox.removeAllItems();
-                        fillYearComboBox(LocalDateTime.now());
-                    }
-                    if (register_countriesComboBox.getItemCount() == 0) {
-                        fillCountriesComboBox();
-                    }
+        mainTabbedPane.addChangeListener(e -> {
+            if (mainTabbedPane.getSelectedIndex() == 1) {
+                if (register_yearsComboBox.getItemCount() == 0) {
+                    LocalDateTime now = LocalDateTime.now();
+                    year = now.getYear();
+                    month = now.getMonthValue();
+                    day = now.getDayOfMonth();
+                    register_yearsComboBox.removeAllItems();
+                    fillYearComboBox(LocalDateTime.now());
+                }
+                if (register_countriesComboBox.getItemCount() == 0) {
+                    fillCountriesComboBox();
                 }
             }
         });
-        register_yearsComboBox.addActionListener(e -> {
+                register_yearsComboBox.addActionListener(e -> {
             year = (Integer) register_yearsComboBox.getSelectedItem();
             if (year == null)
                 year = LocalDateTime.now().getYear();
