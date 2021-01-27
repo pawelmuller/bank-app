@@ -1,6 +1,7 @@
 package com.bllk.Servlet;
 
 import com.bllk.Mapclasses.*;
+import com.google.common.base.CharMatcher;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -337,30 +338,38 @@ public class Server extends HttpServlet {
                     try {
                         String login = request.getParameter("login");
                         String newPasswordHash = request.getParameter("passwordhash");
-                        if (!login.isEmpty() && newPasswordHash.isEmpty()) {
+                        if (!login.isEmpty() && !newPasswordHash.isEmpty()) {
                             response.setStatus(HttpServletResponse.SC_OK);
                             data.updatePassword(login, newPasswordHash);
-                        }
-                        else
+                        } else
                             throw new Exception("Bad request");
-                    }
-                    catch (Exception ex) {
+                    } catch (NullPointerException ex) {
+                        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                    } catch (Exception ex) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     }
                 }
             break;
             case 2:
                 if (attributes[0].equals("login") && attributes[1].equals("transaction")) {
-                    String login = request.getParameter("login");
-                    String password = request.getParameter("password");
-                    Login log = data.getLogin(login, password);
-                    if (log != null) {
-                        int payerID = Integer.parseInt(request.getParameter("payerid"));
-                        int targetID = Integer.parseInt(request.getParameter("targetid"));
+                    try {
                         String title = request.getParameter("title");
-                        long amount = Long.parseLong(request.getParameter("amount"));
-                        int currency = Integer.parseInt(request.getParameter("currencyid"));
-                        data.makeTransfer(payerID, targetID, amount, title, currency);
+                        if (title.length() == 0 || title.length() > 100)
+                            throw new Exception("Bad request");
+                        String login = request.getParameter("login");
+                        String passwordhash = request.getParameter("passwordhash");
+                        Login log = data.getLogin(login, passwordhash);
+                        if (log != null) {
+                            int payerID = Integer.parseInt(request.getParameter("payerid"));
+                            int targetID = Integer.parseInt(request.getParameter("targetid"));
+                            long amount = Long.parseLong(request.getParameter("amount"));
+                            int currency = Integer.parseInt(request.getParameter("currencyid"));
+                            data.makeTransfer(payerID, targetID, amount, title, currency);
+                        }
+                    } catch (NullPointerException ex) {
+                        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                    } catch (Exception ex) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     }
                 }
                 if (attributes[0].equals("login") && attributes[1].equals("createaccount")) {
@@ -456,10 +465,23 @@ public class Server extends HttpServlet {
                     }
                 }
                 if (attributes[0].equals("login") && attributes[1].equals("updatelogin")) {
-                    String login = request.getParameter("login");
-                    String password = request.getParameter("passwordhash");
-                    String newLogin = request.getParameter("newlogin");
-                    data.updateLogin(login, password, newLogin);
+                    try {
+                        String login = request.getParameter("login");
+                        String passwordhash = request.getParameter("passwordhash");
+                        String newLogin = request.getParameter("newlogin");
+                        if (!login.isEmpty() &&
+                                !passwordhash.isEmpty() &&
+                                !newLogin.isEmpty() &&
+                                CharMatcher.ascii().matchesAllOf(newLogin)) {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            data.updateLogin(login, passwordhash, newLogin);
+                        } else
+                            throw new Exception("Bad request");
+                    } catch (NullPointerException ex) {
+                        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                    } catch (Exception ex) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    }
                 }
                 break;
         }

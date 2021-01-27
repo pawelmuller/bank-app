@@ -106,7 +106,7 @@ public class ClientServerConnection {
 
     public void makeTransfer(String login, String hashedPassword, int payerID, int targetID, String title, long amount, int currencyID) {
         String postData = "login=" + login;
-        postData += "&password=" + hashedPassword;
+        postData += "&passwordhash=" + hashedPassword;
         postData += "&payerid=" + payerID;
         postData += "&targetid=" + targetID;
         postData += "&title=" + title;
