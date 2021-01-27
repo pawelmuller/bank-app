@@ -662,8 +662,8 @@ public class MainUserPage {
      */
     public void updateAccounts() {
         transfer_accountSelectBox.removeAllItems();
+        userCurrencies.clear();
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
-
         for (Map.Entry<Integer, JSONObject> account: accounts.entrySet()) {
             transfer_accountSelectBox.addItem(String.format("%s (%s)",
                     getContactIfPossible(account.getKey()),
