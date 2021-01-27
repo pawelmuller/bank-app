@@ -330,12 +330,15 @@ public class Server extends HttpServlet {
                         String login = request.getParameter("login");
                         String passwordHash = request.getParameter("passwordhash");
 
-                        if ( name.isEmpty()     || name.length()     > 100 ||
+                        if ( !CharMatcher.ascii().matchesAllOf(login) ||
+                             login.length() < 8 || login.length()    > 30  ||
+                             name.isEmpty()     || name.length()     > 100 ||
                              surname.isEmpty()  || surname.length()  > 100 ||
                              street.isEmpty()   || street.length()   > 100 ||
                              num.isEmpty()      || num.length()      > 100 ||
                              city.isEmpty()     || city.length()     > 100 ||
-                             postcode.isEmpty() || postcode.length() > 100 )
+                             postcode.isEmpty() || postcode.length() > 100 ||
+                             passwordHash.length() == 0 || passwordHash.length() > 100 )
                             throw new Exception("Bad request");
 
                         data.addClient(name, surname, date, gender, street, num, city, postcode, countryName, login, passwordHash);

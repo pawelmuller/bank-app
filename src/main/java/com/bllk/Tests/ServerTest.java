@@ -245,6 +245,74 @@ public class ServerTest {
         assertEquals(response.getStatus(), HttpServletResponse.SC_SERVICE_UNAVAILABLE);
     }
     @Test
+    public void createClientLoginTooShort() throws IOException {
+        request.setRequestURI("/createclient");
+        request.addParameter("login"       , "gulugul"); // 7
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "Google");
+        request.addParameter("surname"     , "Wujek");
+        request.addParameter("date"        , "1998-09-04");
+        request.addParameter("gender"      , "M");
+        request.addParameter("street"      , "Amphitheatre Pkwy");
+        request.addParameter("num"         , "1600");
+        request.addParameter("city"        , "Mountain View");
+        request.addParameter("postcode"    , "94043");
+        request.addParameter("country"     , "USA");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void createClientLoginTooLong() throws IOException {
+        request.setRequestURI("/createclient");
+        request.addParameter("login"       , "abcdefghi jklmnopqr stuvwxyza b"); // 31
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "Google");
+        request.addParameter("surname"     , "Wujek");
+        request.addParameter("date"        , "1998-09-04");
+        request.addParameter("gender"      , "M");
+        request.addParameter("street"      , "Amphitheatre Pkwy");
+        request.addParameter("num"         , "1600");
+        request.addParameter("city"        , "Mountain View");
+        request.addParameter("postcode"    , "94043");
+        request.addParameter("country"     , "USA");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void createClientPasswordHashNull() throws IOException {
+        request.setRequestURI("/createclient");
+        request.addParameter("login"       , "gulugulu");
+        request.addParameter("passwordhash", "");
+        request.addParameter("name"        , "Google");
+        request.addParameter("surname"     , "Wujek");
+        request.addParameter("date"        , "1998-09-04");
+        request.addParameter("gender"      , "M");
+        request.addParameter("street"      , "Amphitheatre Pkwy");
+        request.addParameter("num"         , "1600");
+        request.addParameter("city"        , "Mountain View");
+        request.addParameter("postcode"    , "94043");
+        request.addParameter("country"     , "USA");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void createClientPasswordHashTooLong() throws IOException {
+        request.setRequestURI("/createclient");
+        request.addParameter("login"       , "gulugulu");
+        request.addParameter("passwordhash", "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxyz"); // 101
+        request.addParameter("name"        , "Google");
+        request.addParameter("surname"     , "Wujek");
+        request.addParameter("date"        , "1998-09-04");
+        request.addParameter("gender"      , "M");
+        request.addParameter("street"      , "Amphitheatre Pkwy");
+        request.addParameter("num"         , "1600");
+        request.addParameter("city"        , "Mountain View");
+        request.addParameter("postcode"    , "94043");
+        request.addParameter("country"     , "USA");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
     public void createClientNameNull() throws IOException {
         request.setRequestURI("/createclient");
         request.addParameter("login"       , "gulugulu");
@@ -267,6 +335,23 @@ public class ServerTest {
         request.addParameter("login"       , "gulugulu");
         request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
         request.addParameter("name"        , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxyz"); // 101
+        request.addParameter("surname"     , "Wujek");
+        request.addParameter("date"        , "1998-09-04");
+        request.addParameter("gender"      , "M");
+        request.addParameter("street"      , "Amphitheatre Pkwy");
+        request.addParameter("num"         , "1600");
+        request.addParameter("city"        , "Mountain View");
+        request.addParameter("postcode"    , "94043");
+        request.addParameter("country"     , "USA");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void createClientNameNotASCII() throws IOException {
+        request.setRequestURI("/createclient");
+        request.addParameter("login"       , "zażółć gęślą jaźń");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "Google"); // 101
         request.addParameter("surname"     , "Wujek");
         request.addParameter("date"        , "1998-09-04");
         request.addParameter("gender"      , "M");
