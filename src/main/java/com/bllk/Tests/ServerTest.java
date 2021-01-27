@@ -99,4 +99,47 @@ public class ServerTest {
         server.doPost(request, response);
         assertEquals(response.getStatus(), HttpServletResponse.SC_SERVICE_UNAVAILABLE);
     }
-}
+    /* -------------------------------------------- /login/createcredit --------------------------------------------- */
+    @Test
+    public void newCreditAssert() throws IOException {
+        request.setRequestURI("/login/createcredit");
+        request.addParameter("login", "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name", "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
+        request.addParameter("value", "1");
+        request.addParameter("interest", "1"); // 100
+        request.addParameter("commission", "1");
+        request.addParameter("months", "1");
+        request.addParameter("accountid", "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+    }
+    @Test
+    public void newCreditNameNull() throws IOException {
+        request.setRequestURI("/login/createcredit");
+        request.addParameter("login", "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name", "");
+        request.addParameter("value", "1");
+        request.addParameter("interest", "1"); // 100
+        request.addParameter("commission", "1");
+        request.addParameter("months", "1");
+        request.addParameter("accountid", "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newCreditNameTooLong() throws IOException {
+        request.setRequestURI("/login/createcredit");
+        request.addParameter("login", "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name", "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxyz"); // 101
+        request.addParameter("value", "1");
+        request.addParameter("interest", "1"); // 100
+        request.addParameter("commission", "1");
+        request.addParameter("months", "1");
+        request.addParameter("accountid", "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+ }

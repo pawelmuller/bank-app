@@ -374,9 +374,9 @@ public class Server extends HttpServlet {
                 }
                 if (attributes[0].equals("login") && attributes[1].equals("createaccount")) {
                     String login = request.getParameter("login");
-                    String password = request.getParameter("password");
+                    String passwordhash = request.getParameter("passwordhash");
                     int currencyID = Integer.parseInt(request.getParameter("currencyid"));
-                    Login log = data.getLogin(login, password);
+                    Login log = data.getLogin(login, passwordhash);
                     if (log != null) {
                         Client client = data.getClient(log.getID());
                         data.addAccount(currencyID, client.getID());
@@ -410,19 +410,26 @@ public class Server extends HttpServlet {
                     }
                 }
                 if (attributes[0].equals("login") && attributes[1].equals("createcredit")) {
-                    String login = request.getParameter("login");
-                    String password = request.getParameter("passwordhash");
-                    String name = request.getParameter("name");
-                    long value = Long.parseLong(request.getParameter("value"));
-                    double interest = Double.parseDouble(request.getParameter("interest"));
-                    double commission = Double.parseDouble(request.getParameter("commission"));
-                    int months = Integer.parseInt(request.getParameter("months"));
-                    int accountID = Integer.parseInt(request.getParameter("accountid"));
-                    Login log = data.getLogin(login, password);
-                    if (log != null) {
-                        Client client = data.getClient(log.getID());
-                        //System.out.println("logged in");
-                        data.addCredit(client.getID(), name, value, interest, commission, months, accountID);
+                    try {
+                        String login = request.getParameter("login");
+                        String password = request.getParameter("passwordhash");
+                        String name = request.getParameter("name");
+                        if (name.length() == 0 || name.length() > 100)
+                            throw new Exception("Bad request");
+                        long value = Long.parseLong(request.getParameter("value"));
+                        double interest = Double.parseDouble(request.getParameter("interest"));
+                        double commission = Double.parseDouble(request.getParameter("commission"));
+                        int months = Integer.parseInt(request.getParameter("months"));
+                        int accountID = Integer.parseInt(request.getParameter("accountid"));
+                        Login log = data.getLogin(login, password);
+                        if (log != null) {
+                            Client client = data.getClient(log.getID());
+                            data.addCredit(client.getID(), name, value, interest, commission, months, accountID);
+                        }
+                    } catch (NullPointerException ex) {
+                        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                    } catch (Exception ex) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     }
                 }
                 if (attributes[0].equals("login") && attributes[1].equals("removecontact")) {

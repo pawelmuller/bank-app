@@ -117,7 +117,7 @@ public class ClientServerConnection {
     }
     public void createAccount(String login, String hashedPassword, int currencyID) {
         String postData = "login=" + login;
-        postData += "&password=" + hashedPassword;
+        postData += "&passwordhash=" + hashedPassword;
         postData += "&currencyid=" + currencyID;
 
         postData("login/createaccount", postData);
