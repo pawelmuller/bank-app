@@ -330,19 +330,29 @@ public class Server extends HttpServlet {
                         String login = request.getParameter("login");
                         String passwordHash = request.getParameter("passwordhash");
 
+                        if ( name.isEmpty()     || name.length()     > 100 ||
+                             surname.isEmpty()  || surname.length()  > 100 ||
+                             street.isEmpty()   || street.length()   > 100 ||
+                             num.isEmpty()      || num.length()      > 100 ||
+                             city.isEmpty()     || city.length()     > 100 ||
+                             postcode.isEmpty() || postcode.length() > 100 )
+                            throw new Exception("Bad request");
+
                         data.addClient(name, surname, date, gender, street, num, city, postcode, countryName, login, passwordHash);
+                    } catch (NullPointerException ex) {
+                        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                    } catch (Exception ex) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     }
-                    catch (Exception ignored) {}
                 }
                 else if (attributes[0].equals("updatepassword")) {
                     try {
                         String login = request.getParameter("login");
                         String newPasswordHash = request.getParameter("passwordhash");
-                        if (!login.isEmpty() && !newPasswordHash.isEmpty()) {
-                            response.setStatus(HttpServletResponse.SC_OK);
-                            data.updatePassword(login, newPasswordHash);
-                        } else
+                        if (login.isEmpty() || newPasswordHash.isEmpty())
                             throw new Exception("Bad request");
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        data.updatePassword(login, newPasswordHash);
                     } catch (NullPointerException ex) {
                         response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                     } catch (Exception ex) {
@@ -354,7 +364,7 @@ public class Server extends HttpServlet {
                 if (attributes[0].equals("login") && attributes[1].equals("transaction")) {
                     try {
                         String title = request.getParameter("title");
-                        if (title.length() == 0 || title.length() > 100)
+                        if (title.isEmpty() || title.length() > 100)
                             throw new Exception("Bad request");
                         String login = request.getParameter("login");
                         String passwordhash = request.getParameter("passwordhash");
@@ -383,30 +393,47 @@ public class Server extends HttpServlet {
                     }
                 }
                 if (attributes[0].equals("login") && attributes[1].equals("createorupdatecontact")) {
-                    String login = request.getParameter("login");
-                    String password = request.getParameter("passwordhash");
-                    String name = request.getParameter("name");
-                    int accountID = Integer.parseInt(request.getParameter("accountid"));
-                    Login log = data.getLogin(login, password);
-                    if (log != null) {
-                        Client client = data.getClient(log.getID());
-                        data.addOrUpdateContact(client.getID(), accountID, name);
+                    try {
+                        String login = request.getParameter("login");
+                        String password = request.getParameter("passwordhash");
+                        String name = request.getParameter("name");
+                        int accountID = Integer.parseInt(request.getParameter("accountid"));
+
+                        if (name.isEmpty() || name.length() > 100)
+                            throw new Exception("Bad request");
+                        Login log = data.getLogin(login, password);
+                        if (log != null) {
+                            Client client = data.getClient(log.getID());
+                            data.addOrUpdateContact(client.getID(), accountID, name);
+                        }
+                    } catch (NullPointerException ex) {
+                        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                    } catch (Exception ex) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     }
                 }
                 if (attributes[0].equals("login") && attributes[1].equals("createinvestment")) {
-                    String login = request.getParameter("login");
-                    String password = request.getParameter("passwordhash");
-                    String name = request.getParameter("name");
-                    long value = Long.parseLong(request.getParameter("value"));
-                    double profitRate = Double.parseDouble(request.getParameter("profrate"));
-                    double yearProfitRate = Double.parseDouble(request.getParameter("yearprofrate"));
-                    int capitalisationPeriodID = Integer.parseInt(request.getParameter("capperoid"));
-                    int accountID = Integer.parseInt(request.getParameter("accountid"));
-                    Login log = data.getLogin(login, password);
-                    if (log != null) {
-                        Client client = data.getClient(log.getID());
-                        System.out.println("Read");
-                        data.addInvestment(client.getID(), name, value, profitRate, yearProfitRate, capitalisationPeriodID, accountID);
+                    try {
+                        String login = request.getParameter("login");
+                        String password = request.getParameter("passwordhash");
+                        String name = request.getParameter("name");
+                        if (name.isEmpty() || name.length() > 100)
+                            throw new Exception("Bad request");
+                        long value = Long.parseLong(request.getParameter("value"));
+                        double profitRate = Double.parseDouble(request.getParameter("profrate"));
+                        double yearProfitRate = Double.parseDouble(request.getParameter("yearprofrate"));
+                        int capitalisationPeriodID = Integer.parseInt(request.getParameter("capperiod"));
+                        int accountID = Integer.parseInt(request.getParameter("accountid"));
+                        Login log = data.getLogin(login, password);
+                        if (log != null) {
+                            Client client = data.getClient(log.getID());
+                            System.out.println("Read");
+                            data.addInvestment(client.getID(), name, value, profitRate, yearProfitRate, capitalisationPeriodID, accountID);
+                        }
+                    } catch (NullPointerException ex) {
+                        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                    } catch (Exception ex) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     }
                 }
                 if (attributes[0].equals("login") && attributes[1].equals("createcredit")) {
@@ -414,7 +441,7 @@ public class Server extends HttpServlet {
                         String login = request.getParameter("login");
                         String password = request.getParameter("passwordhash");
                         String name = request.getParameter("name");
-                        if (name.length() == 0 || name.length() > 100)
+                        if (name.isEmpty() || name.length() > 100)
                             throw new Exception("Bad request");
                         long value = Long.parseLong(request.getParameter("value"));
                         double interest = Double.parseDouble(request.getParameter("interest"));

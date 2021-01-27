@@ -145,7 +145,7 @@ public class ClientServerConnection {
         postData += "&value=" + value;
         postData += "&profrate=" + profitRate;
         postData += "&yearprofrate=" + yearProfitRate;
-        postData += "&capperoid=" + capitalisationPeriodID;
+        postData += "&capperiod=" + capitalisationPeriodID;
         postData += "&accountid=" + accountID;
 
         postData("login/createinvestment", postData);
