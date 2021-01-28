@@ -59,18 +59,19 @@ public class StartWindow {
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
         Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
-        URL imageResource = StartWindow.class.getClassLoader().getResource("BLLK.png");
-        Image image = defaultToolkit.getImage(imageResource);
-        Taskbar taskbar = Taskbar.getTaskbar();
-
         try {
-            taskbar.setIconImage(image);
-        } catch (final UnsupportedOperationException e) {
-            System.out.println("The os does not support: 'taskbar.setIconImage'");
-        } catch (final SecurityException e) {
-            System.out.println("There was a security exception for: 'taskbar.setIconImage'");
+            URL imageResource = StartWindow.class.getClassLoader().getResource("BLLK.png");
+            Image image = defaultToolkit.getImage(imageResource);
+            Taskbar taskbar = Taskbar.getTaskbar();
+
+            try {
+                taskbar.setIconImage(image);
+            } catch (UnsupportedOperationException e) {
+                frame.setIconImage(image);
+            }
+        } catch (Exception ex) {
+            System.out.println("Icon error");
         }
-        frame.setIconImage(image);
 
         connection = new ClientServerConnection();
         if (!connection.checkConnection()) {
@@ -93,7 +94,6 @@ public class StartWindow {
 
     public StartWindow() {
         new Fonts();
-        new Colors();
         updateFontsAndColors();
         makeErrorLabelsInvisible();
 
