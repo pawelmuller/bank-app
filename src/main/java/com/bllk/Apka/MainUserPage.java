@@ -360,7 +360,7 @@ public class MainUserPage {
             { public WrongAmountException() {} }
 
             try {
-                if (name.getText().isEmpty() || name.getText().length() > 100)
+                if (name.getText().isEmpty())
                     throw new WrongCreditNameException();
                 long amount = Math.round(Double.parseDouble(value.getText().replace(",", ".")) * 100);
                 if (amount < 10000 || amount > 7000000000L)
@@ -383,7 +383,7 @@ public class MainUserPage {
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null,"Błędna wartość liczbowa jednego z parametrów.\nSprawdź, czy poprawnie wprowadziłeś kwotę kredytu.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             } catch (WrongCreditNameException e) {
-                JOptionPane.showMessageDialog(null,"Błąd w nazwie kredytu.\nNazwa powinna zawierać od 1 do 100 znaków.","Błąd w nazwie kredytu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"Błąd w nazwie kredytu.\nNazwa nie powinna pozostawać pusta.","Pusta nazwa kredytu", JOptionPane.ERROR_MESSAGE);
             } catch (WrongAmountException e) {
                 JOptionPane.showMessageDialog(null,"Błąd kwoty kredytu.\nKwota kredytu powinna zawierać się od 100 do 70 000 000.","Błąd kwoty kredytu", JOptionPane.ERROR_MESSAGE);
             }
