@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -92,6 +93,8 @@ public class MainUserPage {
         currencies = connection.getCurrencies();
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
+        transfer_contactBox.setEditor(new ColorableComboBoxEditor(Colors.getBrightGrey()));
+
         accountsSummaryPanel.setLayout(new GridBagLayout());
         historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
         contactsSummary.setLayout(new BoxLayout(contactsSummary, BoxLayout.Y_AXIS));
@@ -172,7 +175,6 @@ public class MainUserPage {
             accountsToSelect.add(account.getKey());
         }
         JTextField value = new JTextField();
-        JTextField capitalisationPeriod = new JTextField();
 
         JLabel profitRateValue = new JLabel("Oprocentowanie: 5,0%");
         JLabel yearProfitRateValue = new JLabel("Oprocentowanie roczne: 5,0%");
@@ -183,7 +185,6 @@ public class MainUserPage {
         accountBox.setBackground(Colors.getGrey());
         accountBox.setForeground(Colors.getOrange());
         value.setBackground(Colors.getBrightGrey());
-        capitalisationPeriod.setBackground(Colors.getBrightGrey());
         name.setBackground(Colors.getBrightGrey());
         profitRateValue.setFont(Fonts.getStandardFont());
         profitRateValue.setForeground(Colors.getBrightTextColor());
@@ -207,12 +208,22 @@ public class MainUserPage {
         profitRate.setPaintTicks(true);
         profitRate.setLabelTable(slidersLabelTable);
         profitRate.setPaintLabels(true);
+        profitRate.setBackground(Colors.getDarkGrey());
 
         yearProfitRate.setMajorTickSpacing(10);
         yearProfitRate.setMinorTickSpacing(5);
         yearProfitRate.setPaintTicks(true);
         yearProfitRate.setLabelTable(slidersLabelTable);
         yearProfitRate.setPaintLabels(true);
+        yearProfitRate.setBackground(Colors.getDarkGrey());
+
+        List<String> monthsList = new ArrayList<>();
+        for (int i = 1; i <= 120; i++)
+            monthsList.add(i + "");
+        SpinnerListModel monthsModel = new SpinnerListModel(monthsList.toArray());
+        JSpinner months = new JSpinner(monthsModel);
+        ((JSpinner.ListEditor) months.getEditor()).getTextField().setBackground(Colors.getBrightGrey());
+        months.setValue("24");
 
         Object[] message = {
                 "Nazwa:", name,
@@ -220,24 +231,23 @@ public class MainUserPage {
                 "Kwota początkowa", value,
                 profitRateValue, profitRate,
                 yearProfitRateValue, yearProfitRate,
-                "Okres kapitalizacji [mies.]", capitalisationPeriod,
+                "Okres kapitalizacji [mies.]", months,
         };
 
         int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            if (name.getText().isEmpty() || value.getText().isEmpty() || capitalisationPeriod.getText().isEmpty())
+            if (name.getText().isEmpty() || value.getText().isEmpty())
                 JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else {
                 try {
                     long integerValue = Math.round(Double.parseDouble(value.getText().replace(",",".")) * 100);
-                    int integerCapitalisationPeriod = Integer.parseInt(capitalisationPeriod.getText());
 
                     if (accounts.get(accountsToSelect.get(accountBox.getSelectedIndex())).getLong("value") < integerValue)
                         JOptionPane.showMessageDialog(null,"Nie posiadasz tyle pieniędzy.", "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                     else {
                         connection.createInvestment(login.getLogin(), login.getPasswordHash(), name.getText(),
                                 integerValue, profitRate.getValue() / 1000.0, yearProfitRate.getValue() / 1000.0,
-                                integerCapitalisationPeriod, accountsToSelect.get(accountBox.getSelectedIndex()));
+                                Integer.parseInt((String) months.getValue()), accountsToSelect.get(accountBox.getSelectedIndex()));
                         new Thread(() -> {
                             updateInvestmentsSummary();
                             updateAccounts();
@@ -290,12 +300,14 @@ public class MainUserPage {
         commission.setMinorTickSpacing(5);
         commission.setPaintTicks(true);
         commission.setPaintLabels(true);
+        commission.setBackground(Colors.getDarkGrey());
 
         interestRate.addChangeListener(interestChangeListener);
         interestRate.setMajorTickSpacing(10);
         interestRate.setMinorTickSpacing(5);
         interestRate.setPaintTicks(true);
         interestRate.setPaintLabels(true);
+        interestRate.setBackground(Colors.getDarkGrey());
 
         //Create the label table
         Hashtable<Integer, JLabel> slidersLabelTable = new Hashtable<>();
@@ -316,6 +328,7 @@ public class MainUserPage {
             monthsList.add(i + "");
         SpinnerListModel monthsModel = new SpinnerListModel(monthsList.toArray());
         JSpinner months = new JSpinner(monthsModel);
+        ((JSpinner.ListEditor) months.getEditor()).getTextField().setBackground(Colors.getBrightGrey());
         months.setValue("24");
 
         Object[] message = {
