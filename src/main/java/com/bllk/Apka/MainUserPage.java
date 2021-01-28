@@ -28,7 +28,6 @@ public class MainUserPage {
     private JLabel logoLabel, nameLabel;
     private JTextField transfer_amount;
     private JButton transfer_sendMoneyButton, logOutButton;
-    private JLabel transfer_message;
     private JLabel transfer_currentBalance;
     private JLabel idLabel;
     private JPanel transactionPanel;
@@ -459,17 +458,29 @@ public class MainUserPage {
                 if (!connection.checkAccountExistence(Integer.parseInt(transfer_accountNumber.getText())))
                     throw new NumberFormatException();
                 connection.createOrUpdateContact(login.getLogin(), login.getPasswordHash(), name, accountID);
-                transfer_message.setText(String.format("Konto %d: %s", accountID, name));
+                JOptionPane.showMessageDialog(null,
+                        String.format("Konto %d: %s", accountID, name),
+                        "Utworzono kontakt",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
 
         } catch(NumberFormatException ex) {
-            transfer_message.setText("Nie można dodać kontaktu: błędny numer konta.");
+            JOptionPane.showMessageDialog(null,
+                    "Podano błędny numer konta.",
+                    "Błąd dodawania kontaktu",
+                    JOptionPane.ERROR_MESSAGE);
             System.out.println(ex.getMessage());
         } catch (InputMismatchException ex) {
-            transfer_message.setText("Nie można dodać kontaktu: błędna nazwa.");
+            JOptionPane.showMessageDialog(null,
+                    "Podano błędną nazwę.",
+                    "Błąd dodawania kontaktu",
+                    JOptionPane.ERROR_MESSAGE);
             System.out.println(ex.getMessage());
         } catch (Exception ex) {
-            transfer_message.setText("Nie można dodać kontaktu.");
+            JOptionPane.showMessageDialog(null,
+                    ex.getMessage(),
+                    "Błąd dodawania kontaktu",
+                    JOptionPane.ERROR_MESSAGE);
             System.out.println(ex.getMessage());
         }
     }
