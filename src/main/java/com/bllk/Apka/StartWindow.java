@@ -59,7 +59,7 @@ public class StartWindow {
     public static void main(String[] args) {
         frame = new JFrame("BLLK");
         Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
-        URL imageResource = StartWindow.class.getClassLoader().getResource("pobierz.gif");
+        URL imageResource = StartWindow.class.getClassLoader().getResource("BLLK.png");
         Image image = defaultToolkit.getImage(imageResource);
         Taskbar taskbar = Taskbar.getTaskbar();
 
