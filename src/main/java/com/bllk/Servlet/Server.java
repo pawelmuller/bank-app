@@ -369,13 +369,15 @@ public class Server extends HttpServlet {
                         String title = request.getParameter("title");
                         if (title.isEmpty() || title.length() > 100)
                             throw new Exception("Bad request");
+                        long amount = Long.parseLong(request.getParameter("amount"));
+                        if (amount <= 0 || amount > 7000000000L)
+                            throw new Exception("Bad request");
                         String login = request.getParameter("login");
                         String passwordhash = request.getParameter("passwordhash");
                         Login log = data.getLogin(login, passwordhash);
                         if (log != null) {
                             int payerID = Integer.parseInt(request.getParameter("payerid"));
                             int targetID = Integer.parseInt(request.getParameter("targetid"));
-                            long amount = Long.parseLong(request.getParameter("amount"));
                             int currency = Integer.parseInt(request.getParameter("currencyid"));
                             data.makeTransfer(payerID, targetID, amount, title, currency);
                         }
@@ -423,6 +425,8 @@ public class Server extends HttpServlet {
                         if (name.isEmpty() || name.length() > 100)
                             throw new Exception("Bad request");
                         long value = Long.parseLong(request.getParameter("value"));
+                        if (value < 10000 || value > 7000000000L)
+                            throw new Exception("Bad request");
                         double profitRate = Double.parseDouble(request.getParameter("profrate"));
                         double yearProfitRate = Double.parseDouble(request.getParameter("yearprofrate"));
                         int capitalisationPeriodID = Integer.parseInt(request.getParameter("capperiod"));
@@ -447,6 +451,8 @@ public class Server extends HttpServlet {
                         if (name.isEmpty() || name.length() > 100)
                             throw new Exception("Bad request");
                         long value = Long.parseLong(request.getParameter("value"));
+                        if (value < 10000 || value > 7000000000L)
+                            throw new Exception("Bad request");
                         double interest = Double.parseDouble(request.getParameter("interest"));
                         double commission = Double.parseDouble(request.getParameter("commission"));
                         int months = Integer.parseInt(request.getParameter("months"));

@@ -174,6 +174,7 @@ public class MainUserPage {
             accountsToSelect.add(account.getKey());
         }
         JTextField value = new JTextField();
+        value.setText("1000");
 
         JLabel profitRateValue = new JLabel("Oprocentowanie: 5,0%");
         JLabel yearProfitRateValue = new JLabel("Oprocentowanie roczne: 5,0%");
@@ -235,26 +236,38 @@ public class MainUserPage {
 
         int option = JOptionPane.showConfirmDialog(null, message, "Nowa lokata", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
+            class WrongAmountException extends Exception
+            { public WrongAmountException() {} }
             if (name.getText().isEmpty() || value.getText().isEmpty())
                 JOptionPane.showMessageDialog(null,"Pole nie może być puste.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             else {
                 try {
-                    long integerValue = Math.round(Double.parseDouble(value.getText().replace(",",".")) * 100);
+                    long amount = Math.round(Double.parseDouble(value.getText().replace(",",".")) * 100);
+                    if (amount < 10000 || amount > 7000000000L)
+                        throw new WrongAmountException();
 
-                    if (accounts.get(accountsToSelect.get(accountBox.getSelectedIndex())).getLong("value") < integerValue)
+                    if (accounts.get(accountsToSelect.get(accountBox.getSelectedIndex())).getLong("value") < amount)
                         JOptionPane.showMessageDialog(null,"Nie posiadasz tyle pieniędzy.", "Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                     else {
-                        connection.createInvestment(login.getLogin(), login.getPasswordHash(), name.getText(),
-                                integerValue, profitRate.getValue() / 1000.0, yearProfitRate.getValue() / 1000.0,
-                                Integer.parseInt((String) months.getValue()), accountsToSelect.get(accountBox.getSelectedIndex()));
+                        connection.createInvestment(
+                                login.getLogin(),
+                                login.getPasswordHash(),
+                                name.getText().substring(0, Math.min(name.getText().length(), 100)),
+                                amount,
+                                profitRate.getValue() / 1000.0,
+                                yearProfitRate.getValue() / 1000.0,
+                                Integer.parseInt((String) months.getValue()),
+                                accountsToSelect.get(accountBox.getSelectedIndex()));
                         new Thread(() -> {
                             updateInvestmentsSummary();
                             updateAccounts();
                         }).start();
                         JOptionPane.showMessageDialog(null,"Operacja powiodła się.","Sukces", JOptionPane.INFORMATION_MESSAGE);
                     }
+                } catch (WrongAmountException e) {
+                    JOptionPane.showMessageDialog(null,"Błędna kwota inwestycji.\nKwota powinna zawierać się w przedziale od 100 do 70 000 000.","Błędna kwota inwestycji", JOptionPane.ERROR_MESSAGE);
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null,"Błędna wartość.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null,"Wprowadzona wartość inwestycji nie jest liczbą.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -343,19 +356,19 @@ public class MainUserPage {
         if (option == JOptionPane.OK_OPTION) {
             class WrongCreditNameException extends Exception
             { public WrongCreditNameException() {} }
-            class WrongCreditAmountException extends Exception
-            { public WrongCreditAmountException() {} }
+            class WrongAmountException extends Exception
+            { public WrongAmountException() {} }
 
             try {
-                if (name.getText().length() < 1 || name.getText().length() > 100)
+                if (name.getText().isEmpty() || name.getText().length() > 100)
                     throw new WrongCreditNameException();
                 long amount = Math.round(Double.parseDouble(value.getText().replace(",", ".")) * 100);
-                if (amount < 10000 || amount > 100000000)
-                    throw new WrongCreditAmountException();
+                if (amount < 10000 || amount > 7000000000L)
+                    throw new WrongAmountException();
                 connection.createCredit(
                         login.getLogin(),
                         login.getPasswordHash(),
-                        name.getText(),
+                        name.getText().substring(0, Math.min(name.getText().length(), 100)),
                         amount,
                         interestRate.getValue() / 1000.0,
                         commission.getValue() / 1000.0,
@@ -368,11 +381,11 @@ public class MainUserPage {
                 }).start();
                 JOptionPane.showMessageDialog(null, "Operacja powiodła się.", "Sukces", JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null,"Błędna wartość liczbowa jednego z parametrów.\nSprawdź, czy wprowadziłeś kwotę kredytu.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"Błędna wartość liczbowa jednego z parametrów.\nSprawdź, czy poprawnie wprowadziłeś kwotę kredytu.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
             } catch (WrongCreditNameException e) {
-                JOptionPane.showMessageDialog(null,"Błąd w nazwie kredytu.\nNazwa powinna zawierać od 1 do 100 znaków.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
-            } catch (WrongCreditAmountException e) {
-                JOptionPane.showMessageDialog(null,"Błąd kwoty kredytu.\nKwota kredytu powinna zawierać się od 100 do 1 000 000.","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"Błąd w nazwie kredytu.\nNazwa powinna zawierać od 1 do 100 znaków.","Błąd w nazwie kredytu", JOptionPane.ERROR_MESSAGE);
+            } catch (WrongAmountException e) {
+                JOptionPane.showMessageDialog(null,"Błąd kwoty kredytu.\nKwota kredytu powinna zawierać się od 100 do 70 000 000.","Błąd kwoty kredytu", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
