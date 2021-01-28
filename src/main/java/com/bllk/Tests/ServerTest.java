@@ -26,14 +26,6 @@ public class ServerTest {
 
     /* ---------------------------------------------- /updatepassword ----------------------------------------------- */
     @Test
-    public void newPasswordHashNull() throws IOException {
-        request.setRequestURI("/updatepassword");
-        request.addParameter("login"       , "bilbo");
-        request.addParameter("passwordhash", "");
-        server.doPost(request, response);
-        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
-    }
-    @Test
     public void newPasswordAssert() throws IOException {
         request.setRequestURI("/updatepassword");
         request.addParameter("login"       , "bilbo");
@@ -41,7 +33,24 @@ public class ServerTest {
         server.doPost(request, response);
         assertEquals(response.getStatus(), HttpServletResponse.SC_SERVICE_UNAVAILABLE);
     }
+    @Test
+    public void newPasswordHashNull() throws IOException {
+        request.setRequestURI("/updatepassword");
+        request.addParameter("login"       , "bilbo");
+        request.addParameter("passwordhash", "");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
     /* --------------------------------------------- /login/updatelogin --------------------------------------------- */
+    @Test
+    public void newLoginAssert() throws IOException {
+        request.setRequestURI("/login/updatelogin");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("newlogin"    , "szokobons");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+    }
     @Test
     public void newLoginNotASCII() throws IOException {
         request.setRequestURI("/login/updatelogin");
@@ -60,16 +69,20 @@ public class ServerTest {
         server.doPost(request, response);
         assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
     }
+    /* --------------------------------------------- /login/transaction --------------------------------------------- */
     @Test
-    public void newLoginAssert() throws IOException {
-        request.setRequestURI("/login/updatelogin");
+    public void newTransactionAssert() throws IOException {
+        request.setRequestURI("/login/transaction");
         request.addParameter("login"       , "schogetten");
         request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
-        request.addParameter("newlogin"    , "szokobons");
+        request.addParameter("payerid"     , "0");
+        request.addParameter("targetid"    , "1");
+        request.addParameter("title"       , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
+        request.addParameter("amount"      , "1");
+        request.addParameter("currencyid"  , "0");
         server.doPost(request, response);
         assertEquals(response.getStatus(), HttpServletResponse.SC_SERVICE_UNAVAILABLE);
     }
-    /* --------------------------------------------- /login/transaction --------------------------------------------- */
     @Test
     public void newTransactionNameNull() throws IOException {
         request.setRequestURI("/login/transaction");
@@ -97,17 +110,69 @@ public class ServerTest {
         assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
     }
     @Test
-    public void newTransactionAssert() throws IOException {
+    public void newTransactionAmountNull() throws IOException {
         request.setRequestURI("/login/transaction");
         request.addParameter("login"       , "schogetten");
         request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
         request.addParameter("payerid"     , "0");
         request.addParameter("targetid"    , "1");
         request.addParameter("title"       , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
-        request.addParameter("amount"      , "1");
+        request.addParameter("amount"      , "");
         request.addParameter("currencyid"  , "0");
         server.doPost(request, response);
-        assertEquals(response.getStatus(), HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newTransactionAmountZero() throws IOException {
+        request.setRequestURI("/login/transaction");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("payerid"     , "0");
+        request.addParameter("targetid"    , "1");
+        request.addParameter("title"       , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
+        request.addParameter("amount"      , "0");
+        request.addParameter("currencyid"  , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newTransactionAmountTooBig() throws IOException {
+        request.setRequestURI("/login/transaction");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("payerid"     , "0");
+        request.addParameter("targetid"    , "1");
+        request.addParameter("title"       , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
+        request.addParameter("amount"      , "7000000001");
+        request.addParameter("currencyid"  , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newTransactionAmountNegative() throws IOException {
+        request.setRequestURI("/login/transaction");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("payerid"     , "0");
+        request.addParameter("targetid"    , "1");
+        request.addParameter("title"       , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
+        request.addParameter("amount"      , "-1");
+        request.addParameter("currencyid"  , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newTransactionAmountIsNotNumber() throws IOException {
+        request.setRequestURI("/login/transaction");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("payerid"     , "0");
+        request.addParameter("targetid"    , "1");
+        request.addParameter("title"       , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
+        request.addParameter("amount"      , "siedemdziesiąt milionów");
+        request.addParameter("currencyid"  , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
     }
     /* -------------------------------------------- /login/createcredit --------------------------------------------- */
     @Test
@@ -116,7 +181,7 @@ public class ServerTest {
         request.addParameter("login"       , "schogetten");
         request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
         request.addParameter("name"        , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
-        request.addParameter("value"       , "1");
+        request.addParameter("value"       , "7000000000"); // 70 mln
         request.addParameter("interest"    , "1");
         request.addParameter("commission"  , "1");
         request.addParameter("months"      , "1");
@@ -152,6 +217,48 @@ public class ServerTest {
         server.doPost(request, response);
         assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
     }
+    @Test
+    public void newCreditAmountTooBig() throws IOException {
+        request.setRequestURI("/login/createcredit");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "whatever");
+        request.addParameter("value"       , "7000000001"); // 70 mln 1 gr
+        request.addParameter("interest"    , "1");
+        request.addParameter("commission"  , "1");
+        request.addParameter("months"      , "1");
+        request.addParameter("accountid"   , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newCreditAmountTooSmall() throws IOException {
+        request.setRequestURI("/login/createcredit");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "whatever");
+        request.addParameter("value"       , "9999"); // 99zł 99gr
+        request.addParameter("interest"    , "1");
+        request.addParameter("commission"  , "1");
+        request.addParameter("months"      , "1");
+        request.addParameter("accountid"   , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newCreditAmountIsNotNumber() throws IOException {
+        request.setRequestURI("/login/createcredit");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "siedemdziesiąt milionów");
+        request.addParameter("value"       , "abc");
+        request.addParameter("interest"    , "1");
+        request.addParameter("commission"  , "1");
+        request.addParameter("months"      , "1");
+        request.addParameter("accountid"   , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
     /* ------------------------------------------ /login/createinvestment ------------------------------------------- */
     @Test
     public void newInvestmentAssert() throws IOException {
@@ -159,7 +266,7 @@ public class ServerTest {
         request.addParameter("login"       , "schogetten");
         request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
         request.addParameter("name"        , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
-        request.addParameter("value"       , "1");
+        request.addParameter("value"       , "7000000000");
         request.addParameter("profrate"    , "1");
         request.addParameter("yearprofrate", "1");
         request.addParameter("capperiod"   , "1");
@@ -188,6 +295,48 @@ public class ServerTest {
         request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
         request.addParameter("name"        , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxyz"); // 101
         request.addParameter("value"       , "1");
+        request.addParameter("profrate"    , "1");
+        request.addParameter("yearprofrate", "1");
+        request.addParameter("capperiod"   , "1");
+        request.addParameter("accountid"   , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newInvestmentValueTooBig() throws IOException {
+        request.setRequestURI("/login/createinvestment");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
+        request.addParameter("value"       , "7000000001"); // 70 mln 1 gr
+        request.addParameter("profrate"    , "1");
+        request.addParameter("yearprofrate", "1");
+        request.addParameter("capperiod"   , "1");
+        request.addParameter("accountid"   , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newInvestmentValueTooLittle() throws IOException {
+        request.setRequestURI("/login/createinvestment");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
+        request.addParameter("value"       , "9999"); // 99 zł 99 gr
+        request.addParameter("profrate"    , "1");
+        request.addParameter("yearprofrate", "1");
+        request.addParameter("capperiod"   , "1");
+        request.addParameter("accountid"   , "0");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
+    public void newInvestmentValueIsNotNumber() throws IOException {
+        request.setRequestURI("/login/createinvestment");
+        request.addParameter("login"       , "schogetten");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxy"); // 100
+        request.addParameter("value"       , "siedemdziesiąt milionów");
         request.addParameter("profrate"    , "1");
         request.addParameter("yearprofrate", "1");
         request.addParameter("capperiod"   , "1");
@@ -279,6 +428,23 @@ public class ServerTest {
         assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
     }
     @Test
+    public void createClientLoginNotASCII() throws IOException {
+        request.setRequestURI("/createclient");
+        request.addParameter("login"       , "zażółć gęślą jaźń");
+        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
+        request.addParameter("name"        , "Google"); // 101
+        request.addParameter("surname"     , "Wujek");
+        request.addParameter("date"        , "1998-09-04");
+        request.addParameter("gender"      , "M");
+        request.addParameter("street"      , "Amphitheatre Pkwy");
+        request.addParameter("num"         , "1600");
+        request.addParameter("city"        , "Mountain View");
+        request.addParameter("postcode"    , "94043");
+        request.addParameter("country"     , "USA");
+        server.doPost(request, response);
+        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
+    }
+    @Test
     public void createClientPasswordHashNull() throws IOException {
         request.setRequestURI("/createclient");
         request.addParameter("login"       , "gulugulu");
@@ -335,23 +501,6 @@ public class ServerTest {
         request.addParameter("login"       , "gulugulu");
         request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
         request.addParameter("name"        , "abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwx abcdefghijklmnopqrstuvwxyz"); // 101
-        request.addParameter("surname"     , "Wujek");
-        request.addParameter("date"        , "1998-09-04");
-        request.addParameter("gender"      , "M");
-        request.addParameter("street"      , "Amphitheatre Pkwy");
-        request.addParameter("num"         , "1600");
-        request.addParameter("city"        , "Mountain View");
-        request.addParameter("postcode"    , "94043");
-        request.addParameter("country"     , "USA");
-        server.doPost(request, response);
-        assertEquals(response.getStatus(), HttpServletResponse.SC_BAD_REQUEST);
-    }
-    @Test
-    public void createClientNameNotASCII() throws IOException {
-        request.setRequestURI("/createclient");
-        request.addParameter("login"       , "zażółć gęślą jaźń");
-        request.addParameter("passwordhash", "$2a$12$7ohvjhK6XYvHI/lj041hX.jcx9F5W1gVaAZVIl7hyUaEDqKwXNJtS");
-        request.addParameter("name"        , "Google"); // 101
         request.addParameter("surname"     , "Wujek");
         request.addParameter("date"        , "1998-09-04");
         request.addParameter("gender"      , "M");
