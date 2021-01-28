@@ -65,10 +65,10 @@ public class MainUserPage {
     private JPanel creditsBalancePanel;
     private JPanel investmentsPanel;
     private JPanel creditsPanel;
-    private JButton changeLoginButton;
-    private JButton changePasswordButton;
-    private JTextField loginField;
-    private JLabel loginPasswordLabel;
+    private JButton settings_changeLoginButton;
+    private JButton settings_changePasswordButton;
+    private JTextField settings_newLoginField;
+    private JLabel settings_loginPasswordLabel;
     private JLabel creditsBalanceLabel;
     private JPanel historyPanel;
     private JScrollPane accountsSummaryPane;
@@ -88,7 +88,7 @@ public class MainUserPage {
         login = _login;
         nameLabel.setText("Witaj " + client.getName() + "!");
         idLabel.setText("Numer klienta: " + client.getID());
-        loginField.setText(login.getLogin());
+        settings_newLoginField.setText(login.getLogin());
         currencies = connection.getCurrencies();
         accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
 
@@ -123,8 +123,8 @@ public class MainUserPage {
         createAccountButton.addActionListener(e -> createAccountDialog());
         createInvestmentButton.addActionListener(e -> addInvestmentDialog());
         createCreditButton.addActionListener(e -> addCreditDialog());
-        changeLoginButton.addActionListener(e -> changeLoginDialog());
-        changePasswordButton.addActionListener(e -> changePasswordDialog());
+        settings_changeLoginButton.addActionListener(e -> changeLoginDialog());
+        settings_changePasswordButton.addActionListener(e -> changePasswordDialog());
         logoLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -141,6 +141,10 @@ public class MainUserPage {
                 currenciesComboBox.addItem(currency.getValue());
             }
         }
+
+        currenciesComboBox.setFont(Fonts.getStandardFont());
+        currenciesComboBox.setBackground(Colors.getGrey());
+        currenciesComboBox.setForeground(Colors.getOrange());
 
         Object[] message = {
                 "Wybierz walutę", currenciesComboBox
@@ -175,16 +179,28 @@ public class MainUserPage {
         JSlider profitRate = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
         JSlider yearProfitRate = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
 
+        accountBox.setFont(Fonts.getStandardFont());
+        accountBox.setBackground(Colors.getGrey());
+        accountBox.setForeground(Colors.getOrange());
+        value.setBackground(Colors.getBrightGrey());
+        capitalisationPeriod.setBackground(Colors.getBrightGrey());
+        name.setBackground(Colors.getBrightGrey());
+        profitRateValue.setFont(Fonts.getStandardFont());
+        profitRateValue.setForeground(Colors.getBrightTextColor());
+        yearProfitRateValue.setFont(Fonts.getStandardFont());
+        yearProfitRateValue.setForeground(Colors.getBrightTextColor());
+
         profitRate.addChangeListener(e -> profitRateValue.setText("Oprocentowanie: " + String.format("%.1f", profitRate.getValue() / 10f) + "%"));
         yearProfitRate.addChangeListener(e -> yearProfitRateValue.setText("Oprocentowanie roczne: " + String.format("%.1f", yearProfitRate.getValue() / 10f) + "%"));
 
         Hashtable<Integer, JLabel> slidersLabelTable = new Hashtable<>();
-        slidersLabelTable.put(2, new JLabel("0%") );
-        slidersLabelTable.put(22, new JLabel("2%") );
-        slidersLabelTable.put(42, new JLabel("4%") );
-        slidersLabelTable.put(62, new JLabel("6%") );
-        slidersLabelTable.put(82, new JLabel("8%") );
-        slidersLabelTable.put(100, new JLabel("10%") );
+
+        slidersLabelTable.put(2, new BetterJLabel("0%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(22, new BetterJLabel("2%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(42, new BetterJLabel("4%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(62, new BetterJLabel("6%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(82, new BetterJLabel("8%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(100, new BetterJLabel("10%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
 
         profitRate.setMajorTickSpacing(10);
         profitRate.setMinorTickSpacing(5);
@@ -250,6 +266,16 @@ public class MainUserPage {
         JSlider interestRate = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
         JSlider commission = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
 
+        accountBox.setFont(Fonts.getStandardFont());
+        accountBox.setBackground(Colors.getGrey());
+        accountBox.setForeground(Colors.getOrange());
+        value.setBackground(Colors.getBrightGrey());
+        name.setBackground(Colors.getBrightGrey());
+        interestValue.setFont(Fonts.getStandardFont());
+        interestValue.setForeground(Colors.getBrightTextColor());
+        commissionValue.setFont(Fonts.getStandardFont());
+        commissionValue.setForeground(Colors.getBrightTextColor());
+
         ChangeListener interestChangeListener = e -> {
             JSlider slider = (JSlider)e.getSource();
             interestValue.setText("Oprocentowanie: " + String.format("%.1f", slider.getValue() / 10f) + "%");
@@ -273,12 +299,12 @@ public class MainUserPage {
 
         //Create the label table
         Hashtable<Integer, JLabel> slidersLabelTable = new Hashtable<>();
-        slidersLabelTable.put(2, new JLabel("0%") );
-        slidersLabelTable.put(22, new JLabel("2%") );
-        slidersLabelTable.put(42, new JLabel("4%") );
-        slidersLabelTable.put(62, new JLabel("6%") );
-        slidersLabelTable.put(82, new JLabel("8%") );
-        slidersLabelTable.put(100, new JLabel("10%") );
+        slidersLabelTable.put(2, new BetterJLabel("0%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(22, new BetterJLabel("2%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(42, new BetterJLabel("4%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(62, new BetterJLabel("6%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(82, new BetterJLabel("8%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
+        slidersLabelTable.put(100, new BetterJLabel("10%", Colors.getBrightTextColor(), Fonts.getStandardFont()) );
 
         commission.setLabelTable( slidersLabelTable );
         commission.setPaintLabels(true);
@@ -341,6 +367,8 @@ public class MainUserPage {
     void changeLoginDialog() {
         JTextField newName = new JTextField();
 
+        newName.setBackground(Colors.getBrightGrey());
+
         Object[] message = {
                 "Czy chcesz zmienić login '" + login.getLogin() + "'?",
                 "Nowy login:", newName
@@ -360,7 +388,7 @@ public class MainUserPage {
             else {
                 if (connection.updateLogin(login.getLogin(), login.getPasswordHash(), newNameString)) {
                     JOptionPane.showMessageDialog(null,"Zmiana loginu powiodła się.","Sukces", JOptionPane.INFORMATION_MESSAGE);
-                    loginField.setText(newNameString);
+                    settings_newLoginField.setText(newNameString);
                 }
                 else
                     JOptionPane.showMessageDialog(null,"Serwer odrzucił żądanie","Wystąpił błąd", JOptionPane.ERROR_MESSAGE);
@@ -370,6 +398,9 @@ public class MainUserPage {
     void changePasswordDialog() {
         JTextField newPassword = new JPasswordField();
         JTextField newPasswordRepeat = new JPasswordField();
+
+        newPassword.setBackground(Colors.getBrightGrey());
+        newPasswordRepeat.setBackground(Colors.getBrightGrey());
 
         Object[] message = {
                 "Czy chcesz zmienić twoje hasło?",
@@ -564,9 +595,11 @@ public class MainUserPage {
         historyPane.getViewport().setBackground(Colors.getDarkGrey());
 
         // Settings
-        loginPasswordLabel.setFont(Fonts.getHeaderFont());
-        loginPasswordLabel.setForeground(Colors.getBrightTextColor());
-        loginField.setFont(standardFont);
+        settings_loginPasswordLabel.setFont(Fonts.getHeaderFont());
+        settings_loginPasswordLabel.setForeground(Colors.getBrightTextColor());
+        settings_newLoginField.setFont(standardFont);
+        settings_changeLoginButton.setFont(standardFont);
+        settings_changePasswordButton.setFont(standardFont);
 
         // Investments
         createInvestmentButton.setFont(standardFont);
@@ -577,6 +610,11 @@ public class MainUserPage {
         creditsBalance.setForeground(Colors.getBrightTextColor());
         creditsBalanceLabel.setFont(Fonts.getHeaderFont());
         creditsBalanceLabel.setForeground(Colors.getBrightTextColor());
+
+        UIManager.put("OptionPane.background", Colors.getDarkGrey());
+        UIManager.put("Panel.background", Colors.getDarkGrey());
+        UIManager.put("OptionPane.messageForeground", Colors.getBrightTextColor());
+        UIManager.put("OptionPane.messageFont", standardFont);
 
         String systemName = System.getProperty("os.name");
         if (!systemName.startsWith("Windows")) {

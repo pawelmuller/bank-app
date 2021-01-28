@@ -261,6 +261,10 @@ public class StartWindow {
         JTextField login = new JTextField();
         JPasswordField newPassword = new JPasswordField(), newPasswordRepeat = new JPasswordField();
 
+        login.setBackground(Colors.getBrightGrey());
+        newPassword.setBackground(Colors.getBrightGrey());
+        newPasswordRepeat.setBackground(Colors.getBrightGrey());
+
         Object[] message = {
                 "Nazwa użytkownika:", login,
                 "Nowe hasło:", newPassword,
@@ -348,6 +352,11 @@ public class StartWindow {
         }
         register_countriesComboBox.setFont(standardFont);
         register_button.setFont(standardFont);
+
+        UIManager.put("OptionPane.background", Colors.getDarkGrey());
+        UIManager.put("Panel.background", Colors.getDarkGrey());
+        UIManager.put("OptionPane.messageForeground", Colors.getBrightTextColor());
+        UIManager.put("OptionPane.messageFont", standardFont);
 
         String system_name = System.getProperty("os.name");
         if (!system_name.startsWith("Windows")) {

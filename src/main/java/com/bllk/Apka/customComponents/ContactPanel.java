@@ -76,8 +76,10 @@ public class ContactPanel extends JPanel {
         JTextField newName = new JTextField();
         String newNameString;
 
+        newName.setBackground(Colors.getBrightGrey());
+
         Object[] message = {
-                "Chcesz zmienić nazwę kontaktu '" + contactName + "'",
+                "Chcesz zmienić nazwę kontaktu '" + contactName + "'\n",
                 "Nowa nazwa:", newName
         };
 

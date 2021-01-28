@@ -123,8 +123,10 @@ public class AccountPanel extends JPanel {
         JTextField newName = new JTextField();
         String newNameString;
 
+        newName.setBackground(Colors.getBrightGrey());
+
         Object[] message = {
-                "Chcesz zmienić nazwę konta '" + accountName + "'",
+                "Chcesz zmienić nazwę konta '" + accountName + "'\n",
                 "Nowa nazwa:", newName
         };
 
