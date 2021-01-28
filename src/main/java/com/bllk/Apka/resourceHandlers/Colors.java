@@ -2,20 +2,16 @@ package com.bllk.Apka.resourceHandlers;
 
 import java.awt.*;
 
-public class Colors {
-    private static Color brightTextColor, orange, blue, darkGrey, grey, lightGrey, brightGrey, red, green;
-
-    public Colors() {
-        brightTextColor = Color.decode("#EEEEEE");
-        blue = Color.decode("#1891FF");
-        orange = Color.decode("#FF7F00");
-        darkGrey = Color.decode("#222222");
-        grey = Color.decode("#333333");
-        lightGrey = Color.decode("#444444");
-        brightGrey = Color.decode("#808080");
-        red = Color.decode("#FF3C30");
-        green = Color.decode("#A1FF03");
-    }
+public final class Colors {
+    static Color brightTextColor = Color.decode("#EEEEEE");
+    static Color blue = Color.decode("#1891FF");
+    static Color orange = Color.decode("#FF7F00");
+    static Color darkGrey = Color.decode("#222222");
+    static Color grey = Color.decode("#333333");
+    static Color lightGrey = Color.decode("#444444");
+    static Color brightGrey = Color.decode("#808080");
+    static Color red = Color.decode("#FF3C30");
+    static Color green = Color.decode("#A1FF03");
 
     public static Color getBrightTextColor() {
         return brightTextColor;
