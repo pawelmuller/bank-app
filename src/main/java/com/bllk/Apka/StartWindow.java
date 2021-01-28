@@ -25,7 +25,6 @@ public class StartWindow {
     private JTextField loginField;
     private JPasswordField passwordField;
     private JButton loginButton, forgotPasswordButton;
-    private JLabel login_mainErrorLabel;
     private JTabbedPane mainTabbedPane;
     private JLabel logoLabel;
     private JTextField register_login;
@@ -217,14 +216,15 @@ public class StartWindow {
         Login log = null;
 
         if (login.isEmpty() || password.isEmpty()) {
-            login_mainErrorLabel.setVisible(true);
-            login_mainErrorLabel.setText("Pole loginu i hasła nie może być puste.");
+            JOptionPane.showMessageDialog(null,
+                    "Pole loginu i hasła nie może być puste.",
+                    "Błąd logowania",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
-            login_mainErrorLabel.setVisible(true);
-            login_mainErrorLabel.setText("Logowanie...");
+            System.out.println("Logowanie...");
             String passwordSalt = connection.getSalt(login);
             String hashedPassword = BCrypt.hashpw(password, passwordSalt);
 
@@ -233,15 +233,15 @@ public class StartWindow {
         }
         catch (Exception ex) {
             System.out.println(ex.getMessage());
-            login_mainErrorLabel.setVisible(true);
-            login_mainErrorLabel.setText("Błędny login lub hasło.");
+            JOptionPane.showMessageDialog(null,
+                    "Błędny login lub hasło.",
+                    "Błąd logowania",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         frame.setContentPane(new MainUserPage(client, log).currentPanel);
         loginField.setText("");
         passwordField.setText("");
-        login_mainErrorLabel.setText("");
-        login_mainErrorLabel.setVisible(false);
     }
     private void performRegister() {
         if (areAllFieldsValid()) {
@@ -406,7 +406,6 @@ public class StartWindow {
     }
 
     private void makeErrorLabelsInvisible() {
-        login_mainErrorLabel.setVisible(false);
         register_loginErrorLabel.setVisible(false);
         register_passwordErrorLabel.setVisible(false);
         register_repeatPasswordErrorLabel.setVisible(false);

@@ -26,7 +26,7 @@
         </properties>
         <border type="empty"/>
         <children>
-          <grid id="6fc78" layout-manager="GridLayoutManager" row-count="10" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="6fc78" layout-manager="GridLayoutManager" row-count="9" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Logowanie"/>
@@ -81,12 +81,12 @@
               </component>
               <hspacer id="12ed9">
                 <constraints>
-                  <grid row="0" column="0" row-span="10" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="9" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
               </hspacer>
               <hspacer id="6df93">
                 <constraints>
-                  <grid row="0" column="3" row-span="10" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="3" row-span="9" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
               </hspacer>
               <component id="22b5" class="javax.swing.JButton" binding="loginButton">
@@ -123,28 +123,17 @@
               </vspacer>
               <vspacer id="ea102">
                 <constraints>
-                  <grid row="9" column="1" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="8" column="1" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                 </constraints>
               </vspacer>
-              <component id="800b0" class="javax.swing.JLabel" binding="login_mainErrorLabel">
-                <constraints>
-                  <grid row="7" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <foreground color="-65536"/>
-                  <text value=""/>
-                  <verifyInputWhenFocusTarget value="true"/>
-                  <visible value="true"/>
-                </properties>
-              </component>
               <hspacer id="dfe90">
                 <constraints>
-                  <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
               </hspacer>
               <hspacer id="bf37a">
                 <constraints>
-                  <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
               </hspacer>
             </children>
@@ -159,7 +148,7 @@
               <horizontalScrollBarPolicy value="30"/>
               <opaque value="true"/>
               <verticalScrollBarPolicy value="22"/>
-              <visible value="true"/>
+              <visible value="false"/>
               <wheelScrollingEnabled value="true"/>
             </properties>
             <border type="empty"/>
