@@ -444,7 +444,7 @@ public class MainUserPage {
     boolean currencyChangeWarning() {
         int n = JOptionPane.showConfirmDialog(
                 frame,
-                "Konto, na które zamierzasz wysłać przelew, zawiera inną walutę niż wysyłana, czy chcesz przewalutować?",
+                "Konto, na które zamierzasz wysłać przelew,\nzawiera inną walutę niż wysyłana. \n\nCzy chcesz przewalutować?",
                 "Przewalutowanie",
                 JOptionPane.YES_NO_OPTION);
         return n==0;
@@ -476,38 +476,74 @@ public class MainUserPage {
     void makeTransaction() {
         try {
             if (activePayerAccount == null) {
-                transfer_message.setText("Błąd transakcji: Nie posiadasz żadnego konta.");
+                JOptionPane.showMessageDialog(null,
+                        "Nie posiadasz żadnego konta.",
+                        "Błąd transakcji",
+                        JOptionPane.ERROR_MESSAGE);
             }
             else {
                 int payerID = activePayerAccount.getID();
-                int targetID = Integer.parseInt(transfer_accountNumber.getText());
-                int currencyID = activePayerAccount.getCurrencyID();
-                long moneyValue = Math.round(Double.parseDouble(transfer_amount.getText().replace(",", ".")) * 100.0);
-                String title = transfer_title.getText();
+                String stringTargetID = transfer_accountNumber.getText();
+                String stringAmount = transfer_amount.getText();
 
-                if (activePayerAccount.getID() == targetID) {
-                    transfer_message.setText("Błąd transakcji: Konto docelowe jest takie samo jak początkowe.");
-                } else if (moneyValue > activePayerAccount.getValue() || moneyValue <= 0) {
-                    transfer_message.setText("Błąd transakcji: Błędna kwota przelewu.");
-                } else if (!connection.checkAccountExistence(Integer.parseInt(transfer_accountNumber.getText()))) {
-                    transfer_message.setText("Błąd transakcji: Konto docelowe nie istnieje.");
-                } else if (transfer_title.getText().equals("")) {
-                    transfer_message.setText("Błąd transakcji: Tytuł nie może być pusty.");
+                if (stringTargetID.equals("")) {
+                    JOptionPane.showMessageDialog(null,
+                            "Nie podano konta docelowego.",
+                            "Błąd transakcji",
+                            JOptionPane.ERROR_MESSAGE);
+                } else if (stringAmount.equals("")) {
+                    JOptionPane.showMessageDialog(null,
+                            "Nie podano kwoty przelewu.",
+                            "Błąd transakcji",
+                            JOptionPane.ERROR_MESSAGE);
                 } else {
-                    if (connection.getBasicAccount(targetID).getCurrencyID() == currencyID || (connection.getBasicAccount(targetID).getCurrencyID() != currencyID && currencyChangeWarning())) {
-                        transfer_message.setText(String.format("Przesłano %.2f %s na konto %d.", moneyValue / 100.0, currencies.get("" + activePayerAccount.getCurrencyID()), targetID));
-                        new Thread(() -> {
-                            connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payerID, targetID, title, moneyValue, currencyID);
-                            updateMoney();
-                            updateTransactionTable();
-                            updateAccountsSummary();
-                        }).start();
+                    int targetID = Integer.parseInt(stringTargetID);
+                    int currencyID = activePayerAccount.getCurrencyID();
+                    long moneyValue = Math.round(Double.parseDouble(stringAmount.replace(",", ".")) * 100.0);
+                    String title = transfer_title.getText();
+
+                    if (activePayerAccount.getID() == targetID) {
+                        JOptionPane.showMessageDialog(null,
+                                "Konto docelowe jest takie samo jak początkowe.",
+                                "Błąd transakcji",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else if (moneyValue > activePayerAccount.getValue() || moneyValue <= 0) {
+                        JOptionPane.showMessageDialog(null,
+                                "Błędna kwota przelewu.",
+                                "Błąd transakcji",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else if (!connection.checkAccountExistence(targetID)) {
+                        JOptionPane.showMessageDialog(null,
+                                "Konto docelowe nie istnieje.",
+                                "Błąd transakcji",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else if (transfer_title.getText().equals("")) {
+                        JOptionPane.showMessageDialog(null,
+                                "Tytuł nie może być pusty.",
+                                "Błąd transakcji",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        if (connection.getBasicAccount(targetID).getCurrencyID() == currencyID || (connection.getBasicAccount(targetID).getCurrencyID() != currencyID && currencyChangeWarning())) {
+                            JOptionPane.showMessageDialog(null,
+                                    String.format("Przesłano %.2f %s na konto %d.", moneyValue / 100.0, currencies.get("" + activePayerAccount.getCurrencyID()), targetID),
+                                    "Wykonano przelew",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                            new Thread(() -> {
+                                connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payerID, targetID, title, moneyValue, currencyID);
+                                updateMoney();
+                                updateTransactionTable();
+                                updateAccountsSummary();
+                            }).start();
+                        }
                     }
                 }
             }
         }
         catch (Exception ex) {
-            transfer_message.setText("Błąd transakcji: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null,
+                    ex.getMessage(),
+                    "Błąd transakcji (exception)",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -582,7 +618,7 @@ public class MainUserPage {
 
         // Transfers
         for (JLabel jLabel : Arrays.asList(transfer_contactNameLabel, transfer_currencyLabel, transfer_currentBalance,
-                transfer_currentBalanceLabel, transfer_fromLabel, transfer_message, transfer_payerBalance,
+                transfer_currentBalanceLabel, transfer_fromLabel, transfer_payerBalance,
                 transfer_titleLabel, transfer_toLabel, transfer_valueLabel)) {
             jLabel.setForeground(Colors.getBrightTextColor());
             jLabel.setFont(standardFont);
