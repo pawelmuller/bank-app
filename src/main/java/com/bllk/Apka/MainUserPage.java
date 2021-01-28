@@ -484,8 +484,8 @@ public class MainUserPage {
                 } else {
                     if (connection.getBasicAccount(targetID).getCurrencyID() == currencyID || (connection.getBasicAccount(targetID).getCurrencyID() != currencyID && currencyChangeWarning())) {
                         transfer_message.setText(String.format("Przesłano %.2f %s na konto %d.", moneyValue / 100.0, currencies.get("" + activePayerAccount.getCurrencyID()), targetID));
-                        connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payerID, targetID, title, moneyValue, currencyID);
                         new Thread(() -> {
+                            connection.makeTransfer(login.getLogin(), login.getPasswordHash(), payerID, targetID, title, moneyValue, currencyID);
                             updateMoney();
                             updateTransactionTable();
                             updateAccountsSummary();
@@ -632,8 +632,10 @@ public class MainUserPage {
         String temp = (String) transfer_contactBox.getSelectedItem();
         transfer_contactBox.removeAllItems();
         transfer_contactBox.addItem("");
-        for (Map.Entry<String, Integer> contact: contacts.entrySet())
-            transfer_contactBox.addItem(contact.getKey());
+        for (Map.Entry<String, Integer> contact: contacts.entrySet()) {
+            if (contact.getValue() != -1)
+                transfer_contactBox.addItem(contact.getKey());
+        }
         transfer_contactBox.setSelectedItem(temp);
         updateTransactionTable();
         lockComboBox = false;
@@ -752,6 +754,7 @@ public class MainUserPage {
 
         Map<Integer, JSONObject> credits = connection.getCredits(login.getLogin(), login.getPasswordHash());
         Map<Integer, JSONObject> investments = connection.getInvestments(login.getLogin(), login.getPasswordHash());
+        Map<Integer, JSONObject> accounts = connection.getUserAccounts(login.getLogin(), login.getPasswordHash());
         List<String> currenciesUsed = new ArrayList<>();
 
         for (Map.Entry<Integer, JSONObject> credit : credits.entrySet()) {
