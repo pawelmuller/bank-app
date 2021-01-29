@@ -1,6 +1,6 @@
 # Opis aplikacji
 
-## Główne funkcje gotowego produktu
+### Główne funkcje gotowego produktu
 
 
 Przygotowana przez nas aplikacja pozwala użytkownikowi na:
@@ -15,9 +15,9 @@ Przygotowana przez nas aplikacja pozwala użytkownikowi na:
  - Założenie lokaty i możliwość wypłacenia z niej środków,
  - Zmianę loginu i hasła swojego konta użytkownika.
 
-## Struktura aplikacji i wykorzystane technologie
+### Struktura aplikacji i wykorzystane technologie
 
-### Nasza aplikacja została podzielona na 3 warstwy: 
+#### Nasza aplikacja została podzielona na 3 warstwy: 
  - Warstwa prezentacji - obejmuje aplikację kliencką obsługującą wymienione wyżej funkcjonalności. Komunikuje się z warstwą 2. za pomocą stworzonego przez nas API — przesyła zapytanie w formie URL, a następnie odczytuje odpowiedź w formacie JSON, interpretuje ją i wyświetla użytkownikowi.
  - Warstwa logiki biznesowej - obejmuje servlet pośredniczący pomiędzy bazą danych oraz aplikacją końcową, przetwarza i obrabia dane, udostępnia API naszego systemu. Łączy się z niższą warstwą przy pomocy technologii Hibernate.
  - Warstwa danych - złożona z kilkunastu tabel baza danych ma za zadanie przechowywanie informacji dotyczących klientów, kont, przelewów, itp.
@@ -55,29 +55,29 @@ Na tym etapie:
 
 
 # Opis napotkanych problemów
-## Układ graficzny aplikacji
+### Układ graficzny aplikacji
 
 Gdy rozwój funkcjonalności był jeszcze w powijakach, nie skupialiśmy się na tworzeniu interfejsu użytkownika. Jednakże, wraz z implementacją nowych funkcji, nieuporządkowany układ graficzny aplikacji stał się uciążliwy.
 Rozwiązaniem problemu było zastosowanie innych niż FlowLayout układów dostępnych w Swingu. W większości przypadków wystarczył BoxLayout, jednak dla bardziej skomplikowanych komponentów (np. panel reprezentujący rekord historii transakcji, panel reprezentujący konta użytkownika) użyliśmy bardziej rozbudowanego GridBagLayout.
 
-## Interfejs programowania aplikacji (API)
+### Interfejs programowania aplikacji (API)
 
 Początkowo aplikacja bezpośrednio łączyła się z bazą danych, jednak nie było to najbardziej bezpieczne i optymalne rozwiązanie. Za namową prowadzącego projekt postanowiliśmy wdrożyć servlet działający w warstwie logiki biznesowej. Nie mając wcześniej kontaktu z podobnymi rozwiązaniami prace nad projektem ustały na kilka dni.
 Rozwiązanie przyszło wraz z wiedzą na temat REST API. Po poznaniu założeń tego interfejsu przystąpiliśmy do dalszej realizacji zadań. Używając Apache Tomcat stworzyliśmy Servlet, który umożliwia aplikacji klienckiej komunikację poprzez API.
 
-## Polski alfabet
+### Polski alfabet
 
 Jednym z bardziej uciążliwych błędów było zapewnienie zgodności aplikacji z językiem polskim. Problem występował na dwóch płaszczyznach - kodowania systemu operacyjnego (system Windows używa Windows-1250, macOS UTF-8) oraz kodowania bazy danych.
 Aby pozbyć się tych problemów należało wprowadzić konwerter w warstwie logiki biznesowej, który przesyłał do aplikacji klienta znaki kodowane przy pomocy UTF-8. Ponieważ programy Javy uruchamiane są używając domyślnego kodowania systemu, należało dodać odpowiednie argumenty rozruchowe aplikacji w systemie Windows, aby również tutaj korzystano z UTF-8.
 
-## Zły dobór typu danych
+### Zły dobór typu danych
 
 Już na początku tworzenia bazy danych zdecydowaliśmy się, aby przechowywać ilość pieniędzy w danej walucie przy pomocy typu całkowitego, aby z czasem dane te nie traciły na precyzji. W tym celu zdecydowaliśmy się zmienić jednostkę podstawową waluty na jej 1/100 część, tj. np. złotówki na grosze. Szybko jednak okazało się, że typ int nie był wystarczający, ponieważ większe kwoty powodowały przekroczenie jego zakresu.
 Rozwiązaniem było przejście na typ long, co przysporzyło nam żmudnej pracy przy zmianie deklaracji zmiennych, konstruktorów klas, a także aktualizowaniu sporej części metod.
 
 
 # Opis implementacji wybranej funkcji
-## Client
+### Client
 
 Implementacja większości naszych funkcji rozpoczyna się w warstwie klienta, w tym przypadku rozważymy funkcję tworzącą nowe konto dla klienta. W tym celu tworzymy okno dialogowe za pomocą SWING-a wykorzystujące dane pobrane z mapy currencies, która jest pobierana z bazy danych przy aktualizacji.
 
@@ -119,7 +119,7 @@ Na końcu odświeżamy okno wyboru kontaktów uruchamiając ją w nowym wątku, 
 }
 ```
 
-## Serwer
+### Serwer
 
 Serwer oczekuje na żądania klientów. W przypadku wystąpienia takiego zdarzenia pobiera parametry i konwertuje je na odpowiednie typy danych. Warto zauważyć, że każda operacja wymaga podania loginu i hasha hasła użytkownika, by zapobiec nieautoryzowanym operacjom. Gdy login zostanie zweryfikowany serwer odpytuje bazę o dane użytkownika i wykonuje bezpośrednią operację dodania nowego konta.
 
@@ -134,7 +134,7 @@ if (log != null) {
 }
 ```
 
-## Baza danych
+### Baza danych
 
 Procedura otwarcia nowego konta jest realizowana przez biblioteki JPA (Hibernate) i rozpoczyna się od otwarcia nowej sesji i transakcji. Później baza danych odpytywana jest o dostępny nowy identyfikator konta. Na końcu tworzona jest nowa klasa Account z parametrami: walutą podaną w żądaniu, wartością 0 i identyfikatorem klienta. Klasa ta jest następnie zapisywana do bazy. Transakcja zostaje zaakceptowana, a sesja zamknięta. W przypadku wystąpienia jakichkolwiek błędów zagrażającym stabilności bazy, połączenie z nią zostaje zrestartowane, by zapewnić ciągłość funkcjonowania
 
@@ -161,7 +161,7 @@ public void addAccount(int currencyID, int ownerID) {
 
 # Podział pracy na osoby
 
-## @pawelmuller
+### [@pawelmuller](https://github.com/pawelmuller)
 
  - Strona logowania i rejestracji użytkowników, haszowanie haseł,
  - Sekcja kont (zakładanie, zmiana nazwy, zamykanie),
@@ -169,7 +169,7 @@ public void addAccount(int currencyID, int ownerID) {
  - Klasy odpowiedzialne za kolory i fonty,
  - Układ graficzny i kolorystyka aplikacji.
  
-## @Robak132
+### [@Robak132](https://github.com/Robak132)
 
  - Serwer warstwy logiki biznesowej,
  - Połączenie serwera z bazą danych przy pomocy JPA (Hibernate),
@@ -178,7 +178,7 @@ public void addAccount(int currencyID, int ownerID) {
  - Sekcja lokat (tworzenie, zamykanie),
  - Zmiana loginu i hasła w ustawieniach aplikacji.
  
-## @Kszesiek
+### [@Kszesiek](https://github.com/Kszesiek)
 
  - Stworzenie tabeli i relacji w bazie danych,
  - Stworzenie funkcji, procedur i wyzwalaczy w bazie danych,
@@ -186,6 +186,6 @@ public void addAccount(int currencyID, int ownerID) {
  - Testy jednostkowe.
  
 # Opis sposobu testowania systemu
-## Testy jednostkowe
+### Testy jednostkowe
 
 <writing>
